@@ -1,9 +1,7 @@
 import streamlit as st
+from utilities.fixed_params import page_setup
 
-st.set_page_config(
-    page_title='#BeeWell School Dashboard',
-    page_icon='🐝',
-    initial_sidebar_state='expanded'
-)
+# Set page configuration
+page_setup()
 
 st.title('About')
