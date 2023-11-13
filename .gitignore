@@ -1,2 +1,5 @@
 # MSOA for England and Wales (large files, not needed)
 data/MSOA_2021_EW_BFC/
+
+# Byte-compiled / optimized / DLL files (e.g. .pyc files)
+__pycache__/
