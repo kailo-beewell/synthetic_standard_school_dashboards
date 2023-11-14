@@ -52,6 +52,7 @@ chosen = data[
     (data['sen_lab'].isin(sen)) &
     (~data['variable'].isin(['birth_you_age_score', 'overall_count']))]
 
+# ISSUE: This reorders the columns
 if chosen_group != 'All pupils':
     chosen = chosen[['variable', pivot_var, 'rag']].pivot(
         index='variable', columns=pivot_var, values='rag').reset_index()
@@ -67,6 +68,22 @@ st.dataframe(chosen, use_container_width=True, hide_index=True)
 ##########################################################
 
 st.markdown('Click on a row to see results from that topic in more detail...')
+
+# Set number of columns
+ncol = len(chosen.columns)
+
+# Add column names
+cols = st.columns(ncol)
+for i in range(ncol):
+    with cols[i]:
+        st.markdown('**' + chosen.columns[i] + '**')
+
+# For each row of dataframe, create streamlit columns and write data from cell
+for index, row in chosen.iterrows():
+    cols = st.columns(ncol)
+    for i in range(ncol):
+        with cols[i]:
+            st.markdown(row[i])
 
 # METHOD 2: Columns
 # Can't have one button at end of each as they need unique labels
@@ -87,3 +104,6 @@ with col1:
     st.markdown('**Life satisfaction**', help='''Life satisfaction is about how satisfied students feel with their lives''')
 with col2:
     st.markdown('❗')
+
+with st.expander('Autonomy'):
+    st.write('You can see more')
