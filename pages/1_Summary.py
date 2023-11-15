@@ -53,10 +53,12 @@ chosen = data[
         'birth_you_age_score', 'overall_count', 'staff_talk_score',
         'home_talk_score', 'peer_talk_score']))]
 
-# ISSUE: This reorders the columns
 if chosen_group != 'All pupils':
-    chosen = chosen[['variable_lab', pivot_var, 'rag']].pivot(
-        index='variable_lab', columns=pivot_var, values='rag').reset_index()
+    # Pivot from wide to long whilst maintaining row order
+    chosen = pd.pivot_table(
+        chosen[['variable_lab', pivot_var, 'rag']],
+        values='rag', index=['variable_lab'], columns=pivot_var,
+        aggfunc='sum', sort=False).reset_index().replace(0, np.nan)
 else:
     chosen = chosen[['variable_lab', 'rag']]
 
@@ -69,6 +71,8 @@ page = st.sidebar.radio(
 
 ##########################################################
 
+st.markdown('#')
+
 # Set number of columns
 ncol = len(chosen.columns)
 
@@ -79,18 +83,23 @@ colnames = {
 }
 chosen = chosen.rename(columns=colnames)
 
-# TO ADD: Set the dimensions of columns (e.g. [0.4, 0.4, 0.2] for each ncol number)
-# Would then be st.columns(col_widths) e.g. st.columns([0.4, 0.4, 0.2])
+# Set up columns with custom dimensions if just 2
+if ncol == 2:
+    cols = st.columns([0.333, 0.333, 0.333])
+else:
+    cols = st.columns(ncol)
 
 # Add column names
-cols = st.columns(ncol)
 for i in range(ncol):
     with cols[i]:
         st.markdown('**' + chosen.columns[i] + '**')
 
 # For each row of dataframe, create streamlit columns and write data from cell
 for index, row in chosen.iterrows():
-    cols = st.columns(ncol)
+    if ncol == 2:
+        cols = st.columns([0.333, 0.333, 0.333])
+    else:
+        cols = st.columns(ncol)
     for i in range(ncol):
         with cols[i]:
             if row[i] == 'below':
@@ -101,5 +110,5 @@ for index, row in chosen.iterrows():
                 st.success('↑ Above average')
             else:
                 st.markdown('')
-                st.markdown(row[i])
+                st.markdown(row[i], help='Description of variable')
 
