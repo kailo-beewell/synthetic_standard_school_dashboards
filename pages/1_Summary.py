@@ -30,17 +30,21 @@ sen = ['All']
 if chosen_group == 'By year group':
     pivot_var = 'year_group_lab'
     year_group = ['Year 8', 'Year 10']
+    order = ['Year 8', 'Year 10']
 elif chosen_group == 'By gender':
     pivot_var = 'gender_lab'
-    gender = ['Boy', 'Girl']
+    gender = ['Girl', 'Boy']
               #'I describe myself in another way', 'Non-binary',
               #'Prefer not to say']
+    order = ['Girl', 'Boy']
 elif chosen_group == 'By FSM':
     pivot_var = 'fsm_lab'
     fsm = ['FSM', 'Non-FSM']
+    order = ['FSM', 'Non-FSM']
 elif chosen_group == 'By SEN':
     pivot_var = 'sen_lab'
     sen = ['SEN', 'Non-SEN']
+    order = ['SEN', 'Non-SEN']
 
 # Filter data
 chosen = data[
@@ -56,11 +60,13 @@ chosen = data[
 if chosen_group != 'All pupils':
     # Pivot from wide to long whilst maintaining row order
     chosen = pd.pivot_table(
-        chosen[['variable_lab', pivot_var, 'rag']],
-        values='rag', index=['variable_lab'], columns=pivot_var,
+        chosen[['variable_lab', pivot_var, 'rag', 'description']],
+        values='rag', index=['variable_lab', 'description'], columns=pivot_var,
         aggfunc='sum', sort=False).reset_index().replace(0, np.nan)
+    # Reorder columns
+    chosen = chosen[['variable_lab'] + order + ['description']]
 else:
-    chosen = chosen[['variable_lab', 'rag']]
+    chosen = chosen[['variable_lab', 'rag', 'description']]
 
 ##########################################################
 
@@ -72,6 +78,9 @@ page = st.sidebar.radio(
 ##########################################################
 
 st.markdown('#')
+
+description = chosen['description']
+chosen = chosen.drop('description', axis=1)
 
 # Set number of columns
 ncol = len(chosen.columns)
@@ -108,7 +117,9 @@ for index, row in chosen.iterrows():
                 st.warning('~ Average')
             elif row[i] == 'above':
                 st.success('↑ Above average')
+            elif pd.isnull(row[i]):
+                st.info('n<10')
             else:
                 st.markdown('')
-                st.markdown(row[i], help='Description of variable')
+                st.markdown('**' + row[i] + '**', help=description[index])
 
