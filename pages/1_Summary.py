@@ -12,9 +12,7 @@ school = st.selectbox(
 
 st.title('''Your school's results''')
 
-##########################################################
-
-# METHOD 1: Dataframes
+# Chosen data
 
 # Import data
 data = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
@@ -59,15 +57,64 @@ if chosen_group != 'All pupils':
 else:
     chosen = chosen[['variable', 'rag']]
 
-# Introduce
-st.markdown('Click on a row to see results from that topic in more detail...')
+##########################################################
+
+# Show the detail pages on the sidebar when on summary or a detail page
+page = st.sidebar.radio(
+    '''Your school's results''',
+    options=['All results'] + chosen['variable'].to_list())
+
+##########################################################
+
+##########################################################
+
+# METHOD 1: Dataframes
 
 # Show dataframe
 st.dataframe(chosen, use_container_width=True, hide_index=True)
 
 ##########################################################
 
-st.markdown('Click on a row to see results from that topic in more detail...')
+col_widths = [0.3, 0.3, 0.4]
+
+col1, col2, col3 = st.columns(col_widths)
+with col1:
+    st.markdown('**Topic**')
+with col2:
+    st.markdown('**All pupils** (box)')
+with col3:
+    st.markdown('**All pupils** (emoji)')
+
+col1, col2, col3 = st.columns(col_widths)
+with col1:
+    st.markdown('')
+    st.markdown('**Autonomy**', help='''Autonomy is about how 'in control' students feel about their lives''')
+with col2:
+    st.success('Above average', icon='✅')
+with col3:
+    st.markdown('✅')
+
+col1, col2, col3 = st.columns(col_widths)
+with col1:
+    st.markdown('')
+    st.markdown('**Life satisfaction**', help='''Life satisfaction is about how satisfied students feel with their lives''')
+with col2:
+    st.warning('Average')
+with col3:
+    st.warning('🟡')
+
+col1, col2, col3 = st.columns(col_widths)
+with col1:
+    st.markdown('')
+    st.markdown('**Optimism**', help='''Optimism is about how hopeful and confident students feel about the future''')
+with col2:
+    st.error('↓ Below average')
+with col3:
+    st.markdown('❗')
+
+##########################################################
+
+# METHOD 2: Columns iterative
 
 # Set number of columns
 ncol = len(chosen.columns)
@@ -85,25 +132,3 @@ for index, row in chosen.iterrows():
         with cols[i]:
             st.markdown(row[i])
 
-# METHOD 2: Columns
-# Can't have one button at end of each as they need unique labels
-col1, col2, col3 = st.columns([0.4, 0.2, 0.4])
-with col1:
-    st.markdown('**Topic**')
-with col2:
-    st.markdown('**All pupils**')
-
-col1, col2, col3 = st.columns([0.4, 0.2, 0.4])
-with col1:
-    st.markdown('**Autonomy**', help='''Autonomy is about how 'in control' students feel about their lives''')
-with col2:
-    st.markdown('✅')
-
-col1, col2, col3 = st.columns([0.4, 0.2, 0.4])
-with col1:
-    st.markdown('**Life satisfaction**', help='''Life satisfaction is about how satisfied students feel with their lives''')
-with col2:
-    st.markdown('❗')
-
-with st.expander('Autonomy'):
-    st.write('You can see more')
