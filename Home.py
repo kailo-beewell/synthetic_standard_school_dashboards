@@ -12,7 +12,7 @@ data = pd.read_csv('data/survey_data/aggregate_scores.csv')
 illustration = Image.open('images/levelling-the-ground.jpg')
 
 # Need to change to globally set school depending on login
-school_name = st.radio('School', ['School A', 'School B', 'School C', 'School D',
+school_name = st.selectbox('School', ['School A', 'School B', 'School C', 'School D',
                              'School E', 'School F', 'School G'])
 
 # Find school size
@@ -32,6 +32,7 @@ st.markdown('''
 Your survey results are provided, including comparison against:
 * Other schools in Northern Devon
 * Matched schools from across the country (based on having similar ethnicity, FSM, size and rurality)
+
 Use the sidebar or the buttons below…
 ''')
 
@@ -45,3 +46,9 @@ if st.button('About the survey'):
     switch_page('about')
 
 st.image(illustration)
+
+with st.expander('How do I use this dashboard?'):
+    st.write('Explanation')
+
+with st.expander('How do I print or save a page as a PDF?'):
+    st.write('There are several options...')
