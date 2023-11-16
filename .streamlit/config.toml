@@ -1,6 +1,23 @@
 [theme]
+
+# Kailo blue: #5900FF
+# Kailo cream: #F5F0ED
+# Kailo orange: #FF6E4A
+# Kailo purple: #E0BFE5
+# Kailo dark green: #05291F
+# Kailo light green: #D4ED6B
+
+# Primary accent colour for interactive elements.
 primaryColor="#FF6E4A"
+
+# Background colour for the main content area.
 backgroundColor="#F5F0ED"
+
+# Background colour used for sidebar and most ineractive widgets
 secondaryBackgroundColor="#E0BFE5"
+
+# Colour used for almost all text.
 textColor="#05291F"
+
+# Font family for all text in the app except code blocks, one of 3 options.
 font="sans serif"
