@@ -7,7 +7,7 @@ import streamlit as st
 from utilities.fixed_params import page_setup
 
 # Set page configuration
-page_setup()
+page_setup('wide')
 
 # Need to change to globally set school depending on login
 school = st.selectbox(
@@ -48,8 +48,9 @@ labels = {
 }
 df_prop['measure_lab'] = df_prop['measure'].map(labels)
 
-st.markdown('Breakdown of responses for your school')
+st.header('Breakdown of responses for your school')
 
+# Filter to chosen variable and school
 chosen = df_prop[
     (df_prop['measure'].isin(constituents[chosen_variable])) &
     (df_prop['school_lab'] == school) &
@@ -58,6 +59,9 @@ chosen = df_prop[
     (df_prop['fsm_lab'] == 'All') &
     (df_prop['sen_lab'] == 'All')]
 
+# Extract the lists with results stored in the dataframe
+# e.g. ['Yes', 'No'], [20, 80], [2, 8] in the original data will become
+# seperate columns with [Yes, 20, 2] and [No, 80, 8]
 df_list = []
 for index, row in chosen.iterrows():
     df = pd.DataFrame(zip(literal_eval(row['cat_lab']),
@@ -68,15 +72,32 @@ for index, row in chosen.iterrows():
     df_list.append(df)
 chosen_result = pd.concat(df_list)
 
+# Create plot, and add percent sign to the numbers labelling the bars
 fig = px.bar(
     chosen_result, x='percentage', y='measure_lab', color='cat_lab',
-    text_auto=True, title=chosen_variable, hover_data=['count'], orientation='h').for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + ' %'))
+    text_auto=True, title=chosen_variable, hover_data=['count'],
+    orientation='h').for_each_trace(
+        lambda t: t.update(texttemplate = t.texttemplate + ' %'))
+
+# Disable zooming and panning
 fig.layout.xaxis.fixedrange = True
 fig.layout.yaxis.fixedrange = True
+
+# Show plot
 st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
 ###############################################################################
 # Initial basic example of doing the comparator chart between schools...
+
+# Set up columns
+cols = st.columns(2)
+
+# Print text about the school in first column
+with cols[0]:
+    st.header('Comparison to other schools in Northern Devon')
+    st.markdown('Your school was below average / average / above average')
+
+# Create dataframe based on chosen variable
 between_schools = df_scores[
     (df_scores['variable_lab'] == chosen_variable) &
     (df_scores['year_group_lab'] == 'All') &
@@ -105,15 +126,20 @@ fig.update_layout(yaxis_range=[ymin, ymax])
 lower = between_schools['lower'].to_list()[0]
 upper = between_schools['upper'].to_list()[0]
 fig.add_hrect(y0=ymin, y1=lower, fillcolor='#F8DCDC', layer='below',
-              line={'color': '#9A505B'}, line_width=0.5)
+              line={'color': '#9A505B'}, line_width=0.5,
+              annotation_text='Below average', annotation_position='top left')
 fig.add_hrect(y0=lower, y1=upper, fillcolor='#F8ECD4', layer='below',
-              line={'color': '#B3852A'}, line_width=0.5)
+              line={'color': '#B3852A'}, line_width=0.5,
+              annotation_text='Average', annotation_position='top left')
 fig.add_hrect(y0=upper, y1=ymax, fillcolor='#E0ECDC', layer='below',
-              line={'color': '#3A8461'}, line_width=0.5)
+              line={'color': '#3A8461'}, line_width=0.5,
+              annotation_text='Above average', annotation_position='top left')
 
 # Prevent zooming and panning, remove grid, and hide plotly toolbar
 fig.layout.xaxis.fixedrange = True
 fig.layout.yaxis.fixedrange = True
 fig.update_yaxes(showgrid=False)
-st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
-#fig.show(config={'displayModeBar': False})
+
+# Show figure within column
+with cols[1]:
+    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
