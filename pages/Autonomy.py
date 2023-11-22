@@ -14,45 +14,26 @@ school = st.selectbox(
     'School', ['School A', 'School B', 'School C', 'School D',
                'School E', 'School F', 'School G'])
 
-
-st.title('''Autonomy''')
-
 # Import the scores and the proportion each response
 df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
 df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
 
-# Test run - but need to change to a smarter way
-# Won't actually want to toggle change on page as seperate pages for each
-# measure so can customise the page (as some will display multiple seperate graphs)
-chosen_variable = st.selectbox(
-    'Chosen variable',
-    ['Autonomy', 'Stress and coping'])
-constituents = {
-    'Autonomy': ['autonomy_pressure', 'autonomy_express', 'autonomy_decide',
-                 'autonomy_told', 'autonomy_myself', 'autonomy_choice'],
-    'Stress and coping': ['stress_control', 'stress_overcome',
-               'stress_confident', 'stress_way']
-}
+###############################################################################
+# Breakdown of question responses chart
+# Basic example
+# TO DO: how deal with multiple questions with different responses categories
 
-# Testing out labels (would need to move to csv creation rather than here)
-labels = {
-    'autonomy_pressure': 'I feel pressured in my life',
-    'autonomy_express': 'I generally feel free to express my ideas and opinions',
-    'autonomy_decide': 'I feel like I am free to decide for myself how to live my life',
-    'autonomy_told': 'In my daily life I often have to do what I am told',
-    'autonomy_myself': 'I feel I can pretty much be myself in daily situations',
-    'stress_control': 'In the last month, how often have you felt that you were unable to control the important things in your life?',
-    'stress_overcome': 'In the last month, how often have you felt difficulties were piling up so high that you could not overcome them?',
-    'stress_confident': 'In the last month, how often have you felt confident about your ability to handle your personal problems?',
-    'stress_way': 'In the last month, how often have you felt that things were going your way?'
-}
-df_prop['measure_lab'] = df_prop['measure'].map(labels)
+# Create selectbox with available topics
+topics = df_prop['group'].drop_duplicates().to_list()
+chosen_variable = st.selectbox('Chosen variable', topics)
 
+# Title and header
+st.title(chosen_variable)
 st.header('Breakdown of responses for your school')
 
 # Filter to chosen variable and school
 chosen = df_prop[
-    (df_prop['measure'].isin(constituents[chosen_variable])) &
+    (df_prop['group'] == chosen_variable) &
     (df_prop['school_lab'] == school) &
     (df_prop['year_group_lab'] == 'All') &
     (df_prop['gender_lab'] == 'All') &
@@ -88,6 +69,7 @@ st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
 ###############################################################################
 # Initial basic example of doing the comparator chart between schools...
+# TO DO: matching chosen variable with variable lab
 
 # Set up columns
 cols = st.columns(2)
@@ -95,11 +77,12 @@ cols = st.columns(2)
 # Print text about the school in first column
 with cols[0]:
     st.header('Comparison to other schools in Northern Devon')
-    st.markdown('Your school was below average / average / above average')
+    st.markdown('Your school was below average / average / above average, e.g.:')
+    st.error('↓ Below average')
 
 # Create dataframe based on chosen variable
 between_schools = df_scores[
-    (df_scores['variable_lab'] == chosen_variable) &
+    (df_scores['variable_lab'].str.lower() == chosen_variable) &
     (df_scores['year_group_lab'] == 'All') &
     (df_scores['gender_lab'] == 'All') &
     (df_scores['fsm_lab'] == 'All') &
@@ -141,5 +124,14 @@ fig.layout.yaxis.fixedrange = True
 fig.update_yaxes(showgrid=False)
 
 # Show figure within column
+with cols[1]:
+    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+
+# Example of repeat for matched
+cols = st.columns(2)
+with cols[0]:
+    st.header('Comparison to matched schools from across the country')
+    st.markdown('Your school was below average / average / above average, e.g.:')
+    st.error('↓ Below average')
 with cols[1]:
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
