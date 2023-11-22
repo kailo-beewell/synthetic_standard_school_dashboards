@@ -1,10 +1,9 @@
 from ast import literal_eval
-import math
 import numpy as np
 import pandas as pd
-import plotly
 import plotly.express as px
 import streamlit as st
+import textwrap as tr
 from utilities.fixed_params import page_setup
 from utilities.colours import linear_gradient
 
@@ -69,14 +68,28 @@ colours = linear_gradient(start_colour, end_colour, n_cat-1)['hex']
 # Add final colour of grey for the last category, which will be "missing"
 colours += ['#DDDDDD']
 
+# Convert labels to wrapped lines, with max length and new lines \n
+chosen_result['measure_lab_wrap'] = chosen_result['measure_lab'].apply(
+    lambda x: '<br>'.join(tr.wrap(x, width=50)))
+
 # Create plot
 fig = px.bar(
-    chosen_result, x='percentage', y='measure_lab', color='cat_lab',
-    text_auto=True, hover_data=['count'], orientation='h',
+    chosen_result, x='percentage', y='measure_lab_wrap', color='cat_lab',
+    text_auto=True, hover_data=['count', 'measure_lab'], orientation='h',
     color_discrete_sequence=colours)
 
 # Add percent sign to the numbers labelling the bars
 fig.for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + ' %'))
+
+# Find number of variables being plot, then set height of figure based on that
+# so the bars appear to be fairly consistent height between different charts
+n_var = chosen_result['measure_lab'].drop_duplicates().size
+height = 100 * n_var
+if height <= 200:
+    height += 100
+elif height >=700:
+    height -= 100
+fig.update_layout(autosize=True, height=height)
 
 # Disable zooming and panning
 fig.layout.xaxis.fixedrange = True
