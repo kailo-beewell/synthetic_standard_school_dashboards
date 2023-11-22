@@ -23,9 +23,10 @@ df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
 # Basic example
 # TO DO: how deal with multiple questions with different responses categories
 
-# Create selectbox with available topics
+# Create selectbox with available topics (excluding demographic)
 topics = df_prop['group'].drop_duplicates().to_list()
-chosen_variable = st.selectbox('Chosen variable', topics)
+topics.remove('demographic')
+chosen_variable = st.sidebar.radio('Topic', topics)
 
 # Title and header
 st.title(chosen_variable)
@@ -74,19 +75,24 @@ st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 # Set up columns
 cols = st.columns(2)
 
-# Print text about the school in first column
-with cols[0]:
-    st.header('Comparison to other schools in Northern Devon')
-    st.markdown('Your school was below average / average / above average, e.g.:')
-    st.error('↓ Below average')
-
 # Create dataframe based on chosen variable
 between_schools = df_scores[
-    (df_scores['variable_lab'].str.lower() == chosen_variable) &
+    (df_scores['variable'].str.replace('_score', '') == chosen_variable) &
     (df_scores['year_group_lab'] == 'All') &
     (df_scores['gender_lab'] == 'All') &
     (df_scores['fsm_lab'] == 'All') &
     (df_scores['sen_lab'] == 'All')]
+
+# Add box with RAG rating
+devon_rag = between_schools.loc[between_schools['school_lab'] == school, 'rag'].to_list()[0]
+with cols[0]:
+    st.header('Comparison to other schools in Northern Devon')
+    if devon_rag == 'below':
+        st.error('↓ Below average')
+    elif devon_rag == 'average':
+        st.warning('~ Average')
+    elif devon_rag == 'above':
+        st.success('↑ Above average')
 
 # Add colour for bar based on school
 between_schools['colour'] = np.where(
@@ -124,14 +130,5 @@ fig.layout.yaxis.fixedrange = True
 fig.update_yaxes(showgrid=False)
 
 # Show figure within column
-with cols[1]:
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
-
-# Example of repeat for matched
-cols = st.columns(2)
-with cols[0]:
-    st.header('Comparison to matched schools from across the country')
-    st.markdown('Your school was below average / average / above average, e.g.:')
-    st.error('↓ Below average')
 with cols[1]:
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
