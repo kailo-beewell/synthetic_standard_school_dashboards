@@ -59,11 +59,69 @@ for index, row in chosen.iterrows():
     df_list.append(df)
 chosen_result = pd.concat(df_list)
 
+###
+
+# Source: https://bsouthga.dev/posts/color-gradients-with-python
+
+def hex_to_RGB(hex):
+  ''' "#FFFFFF" -> [255,255,255] '''
+  # Pass 16 to the integer function for change of base
+  return [int(hex[i:i+2], 16) for i in range(1,6,2)]
+
+def RGB_to_hex(RGB):
+  ''' [255,255,255] -> "#FFFFFF" '''
+  # Components need to be integers for hex to make sense
+  RGB = [int(x) for x in RGB]
+  return "#"+"".join(["0{0:x}".format(v) if v < 16 else
+            "{0:x}".format(v) for v in RGB])
+
+def color_dict(gradient):
+  ''' Takes in a list of RGB sub-lists and returns dictionary of
+    colors in RGB and hex form for use in a graphing function
+    defined later on '''
+  return {"hex":[RGB_to_hex(RGB) for RGB in gradient],
+      "r":[RGB[0] for RGB in gradient],
+      "g":[RGB[1] for RGB in gradient],
+      "b":[RGB[2] for RGB in gradient]}
+
+def linear_gradient(start_hex, finish_hex="#FFFFFF", n=10):
+  ''' returns a gradient list of (n) colors between
+    two hex colors. start_hex and finish_hex
+    should be the full six-digit color string,
+    inlcuding the number sign ("#FFFFFF") '''
+  # Starting and ending colors in RGB form
+  s = hex_to_RGB(start_hex)
+  f = hex_to_RGB(finish_hex)
+  # Initilize a list of the output colors with the starting color
+  RGB_list = [s]
+  # Calcuate a color at each evenly spaced value of t from 1 to n
+  for t in range(1, n):
+    # Interpolate RGB vector for color at the current value of t
+    curr_vector = [
+      int(s[j] + (float(t)/(n-1))*(f[j]-s[j]))
+      for j in range(3)
+    ]
+    # Add it to our list of output colors
+    RGB_list.append(curr_vector)
+
+  return color_dict(RGB_list)
+
+###
+
+# Get colour spectrum between the provided colours, for all except one category
+start_colour = '#2A52BE'
+end_colour = '#D4DCF2'
+# Use this rather than 'cat' as sometimes cat is 0-indexed or 1-indexed
+n_cat = chosen_result['cat_lab'].drop_duplicates().size
+colours = linear_gradient(start_colour, end_colour, n_cat-1)['hex']
+# Add final colour of grey for the last category, which will be "missing"
+colours += ['#DDDDDD']
+
 # Create plot
 fig = px.bar(
-    chosen_result, x='percentage', y='measure_lab', color='cat',
+    chosen_result, x='percentage', y='measure_lab', color='cat_lab',
     text_auto=True, hover_data=['count'], orientation='h',
-    color_continuous_scale=px.colors.sequential.Viridis)
+    color_discrete_sequence=colours)
 
 # Add percent sign to the numbers labelling the bars
 fig.for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + ' %'))
