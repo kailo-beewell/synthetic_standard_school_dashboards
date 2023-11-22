@@ -2,6 +2,7 @@ from ast import literal_eval
 import math
 import numpy as np
 import pandas as pd
+import plotly
 import plotly.express as px
 import streamlit as st
 from utilities.fixed_params import page_setup
@@ -46,20 +47,37 @@ chosen = df_prop[
 # seperate columns with [Yes, 20, 2] and [No, 80, 8]
 df_list = []
 for index, row in chosen.iterrows():
-    df = pd.DataFrame(zip(literal_eval(row['cat_lab']),
+    df = pd.DataFrame(zip(literal_eval(row['cat'].replace('nan', 'None')),
+                          literal_eval(row['cat_lab']),
                           literal_eval(row['percentage']),
                           literal_eval(row['count'])),
-                      columns=['cat_lab', 'percentage', 'count'])
+                      columns=['cat', 'cat_lab', 'percentage', 'count'])
+    # Replace NaN with max number so stays at end of sequence
+    df['cat'] = df['cat'].fillna(df['cat'].max()+1)
+    # Add measure label (don't need to extract as string rather than list in df)
     df['measure_lab'] = row['measure_lab']
     df_list.append(df)
 chosen_result = pd.concat(df_list)
 
-# Create plot, and add percent sign to the numbers labelling the bars
+# Create plot
 fig = px.bar(
-    chosen_result, x='percentage', y='measure_lab', color='cat_lab',
-    text_auto=True, title=chosen_variable, hover_data=['count'],
-    orientation='h').for_each_trace(
-        lambda t: t.update(texttemplate = t.texttemplate + ' %'))
+    chosen_result, x='percentage', y='measure_lab', color='cat',
+    text_auto=True, hover_data=['count'], orientation='h',
+    color_continuous_scale=px.colors.sequential.Viridis)
+
+# Add percent sign to the numbers labelling the bars
+fig.for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + ' %'))
+
+# Create label for legend to map from number to category
+#legend_lab = dict(zip(chosen_result['cat'].astype(str), chosen_result['cat_lab']))
+#fig.for_each_trace(lambda t: t.update(
+#    name = legend_lab[t.name],
+#    legendgroup = legend_lab[t.name],
+#    hovertemplate = t.hovertemplate.replace(t.name, legend_lab[t.name])))
+#st.markdown(fig.data)
+#for key, value in legend_lab.items():
+#    fig.data[int(float(key))].name = value
+#    fig.data[int(float(key))].hovertemplate = value
 
 # Disable zooming and panning
 fig.layout.xaxis.fixedrange = True
@@ -105,9 +123,13 @@ fig = px.bar(between_schools, x='school_lab', y='mean',
 # Reorder x axis so in ascending order
 fig.update_layout(xaxis={'categoryorder':'total ascending'})
 
-# Set y axis limits to nearest int above and below the min and max
-ymin = math.floor(between_schools['mean'].min())
-ymax = math.ceil(between_schools['mean'].max())
+# Set y axis limits so the first and last bars of the chart a consistent height
+# between different plots - find 15% of range and adj min and max by that
+min = between_schools['mean'].min()
+max = between_schools['mean'].max()
+adj_axis = (max - min)*0.15
+ymin = min - adj_axis
+ymax = max + adj_axis
 fig.update_layout(yaxis_range=[ymin, ymax])
 
 # Extract lower and upper rag boundaries amd shade the RAG areas
