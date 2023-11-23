@@ -58,8 +58,9 @@ def details_stacked_bar(df):
     # Create plot
     fig = px.bar(
         df, x='percentage', y='measure_lab_wrap', color='cat_lab',
-        text_auto=True, hover_data=['count', 'measure_lab'], orientation='h',
-        color_discrete_sequence=colours)
+        text_auto=True, orientation='h', color_discrete_sequence=colours,
+        hover_data={'cat_lab': True, 'percentage': True,
+                    'measure_lab_wrap': False, 'count': True},)
 
     # Add percent sign to the numbers labelling the bars
     fig.for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + ' %'))
