@@ -69,8 +69,22 @@ colours = linear_gradient(start_colour, end_colour, n_cat-1)['hex']
 colours += ['#DDDDDD']
 
 # Convert labels to wrapped lines, with max length and new lines \n
+def wrap_text(string, width):
+    '''
+    Wrap the provided string to the specified width, producing a single string
+    with new lines indicated by '<br>'. If string length is less than the
+    specified width, add blank space to the start of the string (so it will
+    still occupy the same amount of space on the chart)
+    '''
+    wrap = '<br>'.join(tr.wrap(string, width=width))
+    if len(wrap) < width:
+        blank = width - len(wrap)
+        wrap=(' '*blank) + wrap
+    return(wrap)
+
+
 chosen_result['measure_lab_wrap'] = chosen_result['measure_lab'].apply(
-    lambda x: '<br>'.join(tr.wrap(x, width=50)))
+    lambda x: wrap_text(x, 50))
 
 # Create plot
 fig = px.bar(
@@ -81,6 +95,9 @@ fig = px.bar(
 # Add percent sign to the numbers labelling the bars
 fig.for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + ' %'))
 
+# Remove x and y axes as they are redundant
+fig.update_layout(yaxis_title=None, xaxis_title='Percentage')
+
 # Find number of variables being plot, then set height of figure based on that
 # so the bars appear to be fairly consistent height between different charts
 n_var = chosen_result['measure_lab'].drop_duplicates().size
@@ -90,6 +107,14 @@ if height <= 200:
 elif height >=700:
     height -= 100
 fig.update_layout(autosize=True, height=height)
+
+# Make legend horizontal and center on 0.5, and lower on y so not overlapping
+# with the title
+fig.update_layout(legend=dict(
+    orientation='h',
+    x=0.5,
+    xanchor='center',
+    y=-0.15))
 
 # Disable zooming and panning
 fig.layout.xaxis.fixedrange = True
