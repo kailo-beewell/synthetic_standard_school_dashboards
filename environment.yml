@@ -19,3 +19,4 @@ dependencies:
     - mypy==1.1.1
     - nbqa==1.6.4
     - statsmodels==0.14.0
+    - odfpy==1.4.1
