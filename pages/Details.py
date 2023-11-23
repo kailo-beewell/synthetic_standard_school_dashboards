@@ -53,13 +53,41 @@ for index, row in chosen.iterrows():
                       columns=['cat', 'cat_lab', 'percentage', 'count'])
     # Replace NaN with max number so stays at end of sequence
     df['cat'] = df['cat'].fillna(df['cat'].max()+1)
-    # Add measure label (don't need to extract as string rather than list in df)
+    # Add measure (don't need to extract as string rather than list in df)
+    df['measure'] = row['measure']
     df['measure_lab'] = row['measure_lab']
     df_list.append(df)
 chosen_result = pd.concat(df_list)
 
-# Create stacked bar chart
-details_stacked_bar(chosen_result)
+multiple_charts = {
+    'optimism': [['optimism_future'],
+                 ['optimism_best', 'optimism_good', 'optimism_work']],
+    'appearance': [['appearance_happy'], ['appearance_feel']],
+    'physical': [['physical_days'], ['physical_hours']],
+    'places': [['places_freq'],
+               ['places_barriers___1', 'places_barriers___2',
+                'places_barriers___3', 'places_barriers___4',
+                'places_barriers___5', 'places_barriers___6',
+                'places_barriers___7', 'places_barriers___8',
+                'places_barriers___9']],
+    'talk': [['staff_talk', 'home_talk', 'peer_talk'],
+             ['staff_talk_listen', 'home_talk_listen', 'peer_talk_listen'],
+             ['staff_talk_helpful', 'home_talk_helpful', 'peer_talk_helpful'],
+             ['staff_talk_if', 'home_talk_if', 'peer_talk_if']],
+    'local_env': [['local_safe'],
+                  ['local_support', 'local_trust',
+                   'local_neighbours', 'local_places']],
+    'future': [['future_options'], ['future_interest'], ['future_support']]
+}
+
+# Create stacked bar chart - with seperate charts if required
+if chosen_variable in multiple_charts:
+    var_list = multiple_charts[chosen_variable]
+    for var in var_list:
+        to_plot = chosen_result[chosen_result['measure'].isin(var)]
+        details_stacked_bar(to_plot)
+else:
+    details_stacked_bar(chosen_result)
 
 ###############################################################################
 # Initial basic example of doing the comparator chart between schools...
@@ -88,7 +116,7 @@ with cols[0]:
 
 # Add colour for bar based on school
 between_schools['colour'] = np.where(
-    between_schools['school_lab']==school, '#004E7C', '#6699CC')
+    between_schools['school_lab']==school, '#2A52BE', '#9BAEE0')
 
 # Plot the results
 fig = px.bar(between_schools, x='school_lab', y='mean',
