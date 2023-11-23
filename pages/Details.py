@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 from utilities.fixed_params import page_setup
-from utilities.details import details_stacked_bar
+from utilities.details import details_stacked_bar, details_ordered_bar
 
 # Set page configuration
 page_setup('wide')
@@ -20,8 +20,6 @@ df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
 
 ###############################################################################
 # Breakdown of question responses chart
-# Basic example
-# TO DO: how deal with multiple questions with different responses categories
 
 # Get the unique topics
 topic_df = df_scores[['variable', 'variable_lab']].drop_duplicates()
@@ -43,7 +41,6 @@ chosen_variable = topic_dict[chosen_variable_lab]
 
 # Title and header
 st.title(chosen_variable_lab)
-st.header('Breakdown of responses for your school')
 
 # Filter to chosen variable and school
 chosen = df_prop[
@@ -72,6 +69,7 @@ for index, row in chosen.iterrows():
     df_list.append(df)
 chosen_result = pd.concat(df_list)
 
+# For categories with multiple charts, list the variables for each chart
 multiple_charts = {
     'optimism': [['optimism_future'],
                  ['optimism_best', 'optimism_good', 'optimism_work']],
@@ -93,6 +91,22 @@ multiple_charts = {
     'future': [['future_options'], ['future_interest'], ['future_support']]
 }
 
+# EXAMPLE: Description above stacked barchart
+stacked_descrip = {
+    'autonomy': '''These questions are about how 'in control' young people feel about their lives. They were asked how true they felt the following statements to be for themselves.''',
+    'life_satisfaction': '''This question is about how satisfied young people feel with their life.'''
+}
+
+# Setting up markdown style so I can increase the font size (safer alternative
+# using streamlit headings but that forces text to be bold)
+st.markdown('''
+<style>
+.normal {
+    font-size:18px !important;
+}
+</style>
+''', unsafe_allow_html=True)
+
 # Create stacked bar chart - with seperate charts if required
 if chosen_variable in multiple_charts:
     var_list = multiple_charts[chosen_variable]
@@ -100,7 +114,17 @@ if chosen_variable in multiple_charts:
         to_plot = chosen_result[chosen_result['measure'].isin(var)]
         details_stacked_bar(to_plot)
 else:
+    if chosen_variable in stacked_descrip:
+        st.markdown(
+            f'''<p class='normal'>{stacked_descrip[chosen_variable]}</p>''',
+            unsafe_allow_html=True)
     details_stacked_bar(chosen_result)
+
+###############################################################################
+# Blank space
+st.text('')
+st.text('')
+st.text('')
 
 ###############################################################################
 # Initial basic example of doing the comparator chart between schools...
@@ -127,45 +151,6 @@ with cols[0]:
     elif devon_rag == 'above':
         st.success('↑ Above average')
 
-# Add colour for bar based on school
-between_schools['colour'] = np.where(
-    between_schools['school_lab']==school, '#2A52BE', '#9BAEE0')
-
-# Plot the results
-fig = px.bar(between_schools, x='school_lab', y='mean',
-             color='colour', color_discrete_map='identity')
-
-# Reorder x axis so in ascending order
-fig.update_layout(xaxis={'categoryorder':'total ascending'})
-
-# Set y axis limits so the first and last bars of the chart a consistent height
-# between different plots - find 15% of range and adj min and max by that
-min = between_schools['mean'].min()
-max = between_schools['mean'].max()
-adj_axis = (max - min)*0.15
-ymin = min - adj_axis
-ymax = max + adj_axis
-fig.update_layout(yaxis_range=[ymin, ymax])
-
-# Extract lower and upper rag boundaries amd shade the RAG areas
-# (Colours used were matched to those from the summary page)
-lower = between_schools['lower'].to_list()[0]
-upper = between_schools['upper'].to_list()[0]
-fig.add_hrect(y0=ymin, y1=lower, fillcolor='#F8DCDC', layer='below',
-              line={'color': '#9A505B'}, line_width=0.5,
-              annotation_text='Below average', annotation_position='top left')
-fig.add_hrect(y0=lower, y1=upper, fillcolor='#F8ECD4', layer='below',
-              line={'color': '#B3852A'}, line_width=0.5,
-              annotation_text='Average', annotation_position='top left')
-fig.add_hrect(y0=upper, y1=ymax, fillcolor='#E0ECDC', layer='below',
-              line={'color': '#3A8461'}, line_width=0.5,
-              annotation_text='Above average', annotation_position='top left')
-
-# Prevent zooming and panning, remove grid, and hide plotly toolbar
-fig.layout.xaxis.fixedrange = True
-fig.layout.yaxis.fixedrange = True
-fig.update_yaxes(showgrid=False)
-
 # Show figure within column
 with cols[1]:
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+    details_ordered_bar(between_schools, school)
