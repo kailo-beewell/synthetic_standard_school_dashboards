@@ -98,23 +98,13 @@ fig.for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + ' %'))
 # Remove x and y axes as they are redundant
 fig.update_layout(yaxis_title=None, xaxis_title='Percentage')
 
-# Find number of variables being plot, then set height of figure based on that
-# so the bars appear to be fairly consistent height between different charts
+# Find number of variables being plot, and set bar size based on that,
+# so it is fairly consistent between different charts
 n_var = chosen_result['measure_lab'].drop_duplicates().size
-height = 100 * n_var
-if height <= 200:
-    height += 100
-elif height >=700:
-    height -= 100
-fig.update_layout(autosize=True, height=height)
-
-# Make legend horizontal and center on 0.5, and lower on y so not overlapping
-# with the title
-fig.update_layout(legend=dict(
-    orientation='h',
-    x=0.5,
-    xanchor='center',
-    y=-0.15))
+bar_width = n_var*0.1
+if bar_width == 1:
+    bar_width = 0.9
+fig.update_traces(width=bar_width)
 
 # Disable zooming and panning
 fig.layout.xaxis.fixedrange = True
