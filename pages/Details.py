@@ -23,13 +23,26 @@ df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
 # Basic example
 # TO DO: how deal with multiple questions with different responses categories
 
-# Create selectbox with available topics (excluding demographic)
-topics = df_prop['group'].drop_duplicates().to_list()
-topics.remove('demographic')
-chosen_variable = st.sidebar.radio('Topic', topics)
+# Get the unique topics
+topic_df = df_scores[['variable', 'variable_lab']].drop_duplicates()
+
+# Drop those we don't create detailed pages about
+topic_df = topic_df[~topic_df['variable'].isin([
+    'birth_you_age_score', 'staff_talk_score', 'home_talk_score',
+    'peer_talk_score', 'overall_count'])]
+
+# Remove '_score'
+topic_df['variable'] = topic_df['variable'].str.replace('_score', '')
+
+# Convert to dictionary
+topic_dict = pd.Series(topic_df.variable.values, index=topic_df.variable_lab).to_dict()
+
+# Create selectbox with available topics (excluding demographic) using label
+chosen_variable_lab = st.sidebar.radio('Topic', topic_dict.keys())
+chosen_variable = topic_dict[chosen_variable_lab]
 
 # Title and header
-st.title(chosen_variable)
+st.title(chosen_variable_lab)
 st.header('Breakdown of responses for your school')
 
 # Filter to chosen variable and school
