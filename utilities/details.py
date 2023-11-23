@@ -1,6 +1,7 @@
 '''
 Functions used for the streamlit page Details.py
 '''
+import numpy as np
 import plotly.express as px
 import streamlit as st
 import textwrap as tr
@@ -126,4 +127,54 @@ def details_stacked_bar(df):
     fig.layout.yaxis.fixedrange = True
 
     # Create plot on streamlit app
+    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+
+
+def details_ordered_bar(df, school_name):
+    '''
+    Created ordered bar chart with the results from each school, with the
+    chosen school highlighted
+    Inputs:
+    - df, dataframe with mean score at each school (e.g. between_schools)
+    - school_name, string, name of school (matching name in 'school_lab' col)
+    '''
+    # Add colour for bar based on school
+    df['colour'] = np.where(
+        df['school_lab']==school_name, '#2A52BE', '#9BAEE0')
+
+    # Plot the results
+    fig = px.bar(df, x='school_lab', y='mean',
+                color='colour', color_discrete_map='identity')
+
+    # Reorder x axis so in ascending order
+    fig.update_layout(xaxis={'categoryorder':'total ascending'})
+
+    # Set y axis limits so the first and last bars of the chart a consistent height
+    # between different plots - find 15% of range and adj min and max by that
+    min = df['mean'].min()
+    max = df['mean'].max()
+    adj_axis = (max - min)*0.15
+    ymin = min - adj_axis
+    ymax = max + adj_axis
+    fig.update_layout(yaxis_range=[ymin, ymax])
+
+    # Extract lower and upper rag boundaries amd shade the RAG areas
+    # (Colours used were matched to those from the summary page)
+    lower = df['lower'].to_list()[0]
+    upper = df['upper'].to_list()[0]
+    fig.add_hrect(y0=ymin, y1=lower, fillcolor='#F8DCDC', layer='below',
+                line={'color': '#9A505B'}, line_width=0.5,
+                annotation_text='Below average', annotation_position='top left')
+    fig.add_hrect(y0=lower, y1=upper, fillcolor='#F8ECD4', layer='below',
+                line={'color': '#B3852A'}, line_width=0.5,
+                annotation_text='Average', annotation_position='top left')
+    fig.add_hrect(y0=upper, y1=ymax, fillcolor='#E0ECDC', layer='below',
+                line={'color': '#3A8461'}, line_width=0.5,
+                annotation_text='Above average', annotation_position='top left')
+
+    # Prevent zooming and panning, remove grid, and hide plotly toolbar
+    fig.layout.xaxis.fixedrange = True
+    fig.layout.yaxis.fixedrange = True
+    fig.update_yaxes(showgrid=False)
+
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
