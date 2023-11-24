@@ -4,14 +4,38 @@ import streamlit as st
 from utilities.fixed_params import page_setup
 
 # Set page configuration
-page_setup()
+page_setup('centered')
 
-# Need to change to globally set school depending on login
-school = st.selectbox(
-    'School', ['School A', 'School B', 'School C', 'School D',
-               'School E', 'School F', 'School G'])
+# Manually set school (will need to change to set globally on login)
+school = 'School B'
 
-st.title('''Your school's results''')
+st.title('''Summary of your school's results''')
+st.subheader('Introduction')
+st.markdown('This shows how the answers of pupils at your school compare with pupils from other schools. You can choose to compare against either the other schools in Northern Devon, or to matched schools from across the country.')
+
+cols = st.columns([0.333, 0.666])
+with cols[0]:
+    st.error('↓ Below average')
+with cols[1]:
+    st.markdown('This means that average scores for students in your school are **worse** than average scores for pupils at other schools')
+
+cols = st.columns([0.333, 0.666])
+with cols[0]:
+    st.warning('~ Average')
+with cols[1]:
+    st.markdown('This means that average scores for students in your school are **similar** to average scores for pupils at other schools')
+
+cols = st.columns([0.333, 0.666])
+with cols[0]:
+    st.success('↑ Above average')
+with cols[1]:
+    st.markdown('This means that average scores for students in your school are **better** than average scores for pupils at other schools')
+
+cols = st.columns([0.333, 0.666])
+with cols[0]:
+    st.info('n<10')
+with cols[1]:
+    st.markdown('This means that **less than ten** students in your school completed questions for this topic, so the results cannot be shown.')
 
 ##########################################################
 
@@ -19,8 +43,10 @@ st.title('''Your school's results''')
 data = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
 
 # Choose what to show
+st.markdown('#')
+st.subheader('Choose what results to view')
 chosen_group = st.selectbox('Results:', ['All pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
-comparator = st.selectbox('Compared against:', ['Other schools in Northern Devon'])
+comparator = st.selectbox('Compared against:', ['Other schools in Northern Devon', 'Matched schools from across the country'])
 
 # Filter data depending on choice
 year_group = ['All']
@@ -68,16 +94,11 @@ if chosen_group != 'All pupils':
 else:
     chosen = chosen[['variable_lab', 'rag', 'description']]
 
-##########################################################
-
-# Show the detail pages on the sidebar when on summary or a detail page
-page = st.sidebar.radio(
-    '''Your school's results''',
-    options=['All results'] + chosen['variable_lab'].to_list())
 
 ##########################################################
 
 st.markdown('#')
+st.subheader('Results')
 
 description = chosen['description']
 chosen = chosen.drop('description', axis=1)
