@@ -1,52 +1,57 @@
 import pandas as pd
 import streamlit as st
 from PIL import Image
-from utilities.switch_page_button import switch_page
+#from utilities.switch_page_button import switch_page
 from utilities.fixed_params import page_setup
 
 # Set page configuration
-page_setup()
+page_setup('centered')
 
 # Import data and images used on this page
 data = pd.read_csv('data/survey_data/aggregate_scores.csv')
-illustration = Image.open('images/levelling-the-ground.jpg')
+# illustration = Image.open('images/levelling-the-ground.jpg')
 
-# Need to change to globally set school depending on login
-school_name = st.selectbox('School', ['School A', 'School B', 'School C', 'School D',
-                             'School E', 'School F', 'School G'])
+# Manually set school (will need to change to set globally on login)
+school = 'School B'
 
-# Find school size
-school_size = data.loc[
-    (data['school_lab'] == school_name) &
-    (data['variable'] == 'overall_count') &
-    (data['year_group_lab'] == 'All') &
-    (data['gender_lab'] == 'All') &
-    (data['fsm_lab'] == 'All') &
-    (data['sen_lab'] == 'All'), 'count'].values[0].astype(int)
+st.title(school)
 
-st.title(school_name)
-
-# Need to move this into a text section
-st.markdown(f'Thank for taking part in the #BeeWell survey. At your school, {school_size} pupils completed the survey.')
 st.markdown('''
-Your survey results are provided, including comparison against:
-* Other schools in Northern Devon
-* Matched schools from across the country (based on having similar ethnicity, FSM, size and rurality)
-
-Use the sidebar or the buttons below…
+Thank you for taking part in the #BeeWell survey. This dashboard contains results from pupils at your school, compared with other schools in Northern Devon, and matched schools from across the country.
 ''')
 
-if st.button('View survey results'):
-    switch_page('summary')
+st.subheader('Guide to the dashboard')
+st.markdown('Use the sidebar on the left to navigate to different pages of the dashboard.')
 
-if st.button('Characteristics of pupils who took the survey'):
-    switch_page('pupils')
+cols = st.columns([0.3, 0.7])
+with cols[0]:
+    st.info('Summary')
+with cols[1]:
+    st.markdown('This page gives an overview of how the average results at your school compare with other school, for all pupils and by pupil groups (year group, gender, FSM, SEN).')
 
-if st.button('About the survey'):
-    switch_page('about')
+cols = st.columns([0.3, 0.7])
+with cols[0]:
+    st.info('Details')
+with cols[1]:
+    st.markdown('This page provides a breakdown of responses to each question.')
 
-st.image(illustration)
+cols = st.columns([0.3, 0.7])
+with cols[0]:
+    st.info('Pupils')
+with cols[1]:
+    st.markdown('This page shows the characteristics of pupils who completed the survey at your school, compared with other schools.')
 
+cols = st.columns([0.3, 0.7])
+with cols[0]:
+    st.info('About')
+with cols[1]:
+    st.markdown('This page contains background information about the survey.')
+
+#if st.button('Summary'):
+#    switch_page('summary')
+
+# st.image(illustration)
+st.subheader('FAQs')
 with st.expander('How do I use this dashboard?'):
     st.write('Explanation')
 
