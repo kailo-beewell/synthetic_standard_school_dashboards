@@ -9,17 +9,14 @@ from utilities.details import details_stacked_bar, details_ordered_bar
 # Set page configuration
 page_setup('wide')
 
-# Need to change to globally set school depending on login
-school = st.selectbox(
-    'School', ['School A', 'School B', 'School C', 'School D',
-               'School E', 'School F', 'School G'])
+# Manually set school (will need to change to set globally on login)
+school = 'School B'
 
 # Import the scores and the proportion each response
 df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
 df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
 
 ###############################################################################
-# Breakdown of question responses chart
 
 # Get the unique topics
 topic_df = df_scores[['variable', 'variable_lab']].drop_duplicates()
@@ -39,8 +36,13 @@ topic_dict = pd.Series(topic_df.variable.values, index=topic_df.variable_lab).to
 chosen_variable_lab = st.sidebar.radio('Topic', topic_dict.keys())
 chosen_variable = topic_dict[chosen_variable_lab]
 
+###############################################################################
+# Breakdown of question responses chart
+
 # Title and header
 st.title(chosen_variable_lab)
+
+st.selectbox('Results', ['All pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
 
 # Filter to chosen variable and school
 chosen = df_prop[
@@ -129,9 +131,6 @@ st.text('')
 ###############################################################################
 # Initial basic example of doing the comparator chart between schools...
 
-# Set up columns
-cols = st.columns(2)
-
 # Create dataframe based on chosen variable
 between_schools = df_scores[
     (df_scores['variable'].str.replace('_score', '') == chosen_variable) &
@@ -142,8 +141,10 @@ between_schools = df_scores[
 
 # Add box with RAG rating
 devon_rag = between_schools.loc[between_schools['school_lab'] == school, 'rag'].to_list()[0]
+st.header('Comparison to other schools in Northern Devon')
+cols = st.columns(2)
 with cols[0]:
-    st.header('Comparison to other schools in Northern Devon')
+    st.markdown('Your school:')
     if devon_rag == 'below':
         st.error('↓ Below average')
     elif devon_rag == 'average':
@@ -154,3 +155,25 @@ with cols[0]:
 # Show figure within column
 with cols[1]:
     details_ordered_bar(between_schools, school)
+
+# Note schools that don't have a match (might be able to do that based on
+# what variables are present in their data v.s. not)
+no_match = ['support', 'places', 'talk', 'accept', 'belong_local', 'wealth', 'future', 'climate']
+
+# Create duplicate to show example of what having matched schools as well looks like
+st.header('Comparison to matched schools from across the country')
+cols = st.columns(2)
+if chosen_variable in no_match:
+    st.markdown('This question was unique to Northern Devon and cannot be compared to other schools.')
+else:
+    with cols[0]:
+        st.markdown('Your school:')
+        if devon_rag == 'below':
+            st.error('↓ Below average')
+        elif devon_rag == 'average':
+            st.warning('~ Average')
+        elif devon_rag == 'above':
+            st.success('↑ Above average')
+        st.markdown('Note: Just a duplicate of the above')
+    with cols[1]:
+        details_ordered_bar(between_schools, school)
