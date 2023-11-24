@@ -140,11 +140,18 @@ def details_ordered_bar(df, school_name):
     '''
     # Add colour for bar based on school
     df['colour'] = np.where(
-        df['school_lab']==school_name, '#2A52BE', '#9BAEE0')
+        df['school_lab']==school_name, 'Your school', 'Other schools')
 
-    # Plot the results
-    fig = px.bar(df, x='school_lab', y='mean',
-                color='colour', color_discrete_map='identity')
+    # Create column with mean rounded to 2 d.p.
+    df['Mean score'] = round(df['mean'], 2)
+
+    # Plot the results, specifying colours and hover data
+    fig = px.bar(
+        df, x='school_lab', y='mean', color='colour',
+        color_discrete_map={'Your school': '#3054BC', 'Other schools': '#B0BCE4'},
+        category_orders={'colour': ['Your school', 'Other schools']},
+        hover_data={'school_lab': False, 'colour': False,
+                    'mean': False, 'Mean score': True})
 
     # Reorder x axis so in ascending order
     fig.update_layout(xaxis={'categoryorder':'total ascending'})
@@ -171,6 +178,23 @@ def details_ordered_bar(df, school_name):
     fig.add_hrect(y0=upper, y1=ymax, fillcolor='#E0ECDC', layer='below',
                 line={'color': '#3A8461'}, line_width=0.5,
                 annotation_text='Above average', annotation_position='top left')
+
+    # Set font size and hide x axis tick labels (but seems to be a bug that
+    # means the axis label is then above the plot, so had to use a work around
+    # of replacing the axis labels with spaces
+    font_size = 18
+    fig.update_layout(
+        font = dict(size=font_size),
+        xaxis = dict(title='Northern Devon schools (ordered by mean score)',
+                     title_font_size=font_size,
+                     tickvals=df['school_lab'],
+                     ticktext=[' ']*len(df['school_lab'])),
+        yaxis = dict(title='Mean score',
+                     title_font_size=font_size,
+                     tickfont=dict(size=font_size)),
+        legend = dict(font_size=font_size),
+        legend_title_text=''
+    )
 
     # Prevent zooming and panning, remove grid, and hide plotly toolbar
     fig.layout.xaxis.fixedrange = True
