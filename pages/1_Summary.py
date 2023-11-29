@@ -50,25 +50,9 @@ st.markdown('#')
 st.subheader('Choose what results to view')
 
 # Set label style using components API
-def change_label_style(label, font_size='12px', font_color='black', font_family='sans-serif'):
-    html = f"""
-    <script>
-        var elems = window.parent.document.querySelectorAll('p');
-        var elem = Array.from(elems).find(x => x.innerText == '{label}');
-        elem.style.fontSize = '{font_size}';
-        elem.style.color = '{font_color}';
-        elem.style.fontFamily = '{font_family}';
-    </script>
-    """
-    st.components.v1.html(html)
-
 # Choose variable and comparator
-label = 'Results:'
-chosen_group = st.selectbox(label, ['All pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
-change_label_style(label, '18px')
-label = 'Compared against:'
-comparator = st.selectbox(label, ['Other schools in Northern Devon', 'Matched schools from across the country'])
-change_label_style(label, '18px')
+chosen_group = st.selectbox(r'$\textsf{\normalsize Results}$', ['All pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
+comparator = st.selectbox('Compared against:', ['Other schools in Northern Devon', 'Matched schools from across the country'])
 
 # Filter data depending on choice
 year_group = ['All']
@@ -164,5 +148,6 @@ for index, row in chosen.iterrows():
                 st.info('n<10')
             else:
                 st.markdown('')
-                st.markdown('**' + row[i] + '**', help=description[index])
+                st.markdown('[**' + row[i] + '**](http://localhost:8501/Details)', help=description[index])
+                #st.button('**' + row[i] + '**', help=description[index])
 
