@@ -99,16 +99,6 @@ stacked_descrip = {
     'life_satisfaction': '''This question is about how satisfied young people feel with their life.'''
 }
 
-# Setting up markdown style so I can increase the font size (safer alternative
-# using streamlit headings but that forces text to be bold)
-st.markdown('''
-<style>
-.normal {
-    font-size:18px !important;
-}
-</style>
-''', unsafe_allow_html=True)
-
 # Create stacked bar chart - with seperate charts if required
 if chosen_variable in multiple_charts:
     var_list = multiple_charts[chosen_variable]
@@ -117,9 +107,7 @@ if chosen_variable in multiple_charts:
         details_stacked_bar(to_plot)
 else:
     if chosen_variable in stacked_descrip:
-        st.markdown(
-            f'''<p class='normal'>{stacked_descrip[chosen_variable]}</p>''',
-            unsafe_allow_html=True)
+        st.markdown(stacked_descrip[chosen_variable])
     details_stacked_bar(chosen_result)
 
 ###############################################################################
