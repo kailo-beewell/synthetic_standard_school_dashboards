@@ -1,9 +1,15 @@
 /* CSS Style Sheet for Streamlit App */
 
-/* Sidebar - this targets element with DATA-TESTID as given */
+/* Sidebar font size */
 [data-testid=stSidebarNavItems]
 {
     font-size: 25px;
+}
+
+/* Sidebar font color (as default is to set non-selected to more transparent */
+[data-testid=stSidebarNavItems] > li > div > a > span
+{
+    color: #05291F;
 }
 
 /* Title */
@@ -50,4 +56,10 @@ div.stButton > button:first-child
     border-color: #F5F0ED;
     width: 100%;
     font-weight: bold;
+}
+
+/* Expander */
+div[data-testid=stExpander] > details > summary > span > div > p
+{
+    font-size: 20px;
 }
