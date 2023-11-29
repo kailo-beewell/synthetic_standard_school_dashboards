@@ -1,0 +1,65 @@
+/* CSS Style Sheet for Streamlit App */
+
+/* Sidebar font size */
+[data-testid=stSidebarNavItems]
+{
+    font-size: 25px;
+}
+
+/* Sidebar font color (as default is to set non-selected to more transparent */
+[data-testid=stSidebarNavItems] > li > div > a > span
+{
+    color: #05291F;
+}
+
+/* Title */
+h1
+{
+    text-align: center;
+    font-size: 60px;
+}
+
+/* Subheader */
+h3
+{
+    font-size: 30px;
+}
+
+/* Markdown */
+p
+{
+    font-size: 20px;
+}
+
+/* Selectbox title */
+div[class*='stSelectbox'] > label > div[data-testid='stMarkdownContainer'] > p 
+{
+    font-size: 20px;
+}
+
+/* Selectbox chosen option - this targets element with CLASS name as given*/
+.stSelectbox > div[data-baseweb='select'] > div
+{
+    font-size: 20px;
+}
+
+/* Selectbox other options */
+ul[data-testid=stVirtualDropdown] > div > div > li[role='option']
+{
+    font-size: 20px;
+}
+
+/* Button */
+div.stButton > button:first-child
+{
+    background-color: #F5F0ED;
+    border-color: #F5F0ED;
+    width: 100%;
+    font-weight: bold;
+}
+
+/* Expander */
+div[data-testid=stExpander] > details > summary > span > div > p
+{
+    font-size: 20px;
+}

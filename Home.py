@@ -5,50 +5,64 @@ from utilities.switch_page_button import switch_page
 from utilities.fixed_params import page_setup
 
 # Set page configuration
-page_setup()
+page_setup('wide')
 
-# Import data and images used on this page
+# Import data used on this page
 data = pd.read_csv('data/survey_data/aggregate_scores.csv')
-illustration = Image.open('images/levelling-the-ground.jpg')
 
-# Need to change to globally set school depending on login
-school_name = st.selectbox('School', ['School A', 'School B', 'School C', 'School D',
-                             'School E', 'School F', 'School G'])
+# Manually set school (will need to change to set globally on login)
+school = 'School B'
 
-# Find school size
-school_size = data.loc[
-    (data['school_lab'] == school_name) &
-    (data['variable'] == 'overall_count') &
-    (data['year_group_lab'] == 'All') &
-    (data['gender_lab'] == 'All') &
-    (data['fsm_lab'] == 'All') &
-    (data['sen_lab'] == 'All'), 'count'].values[0].astype(int)
+###############################################################################
 
-st.title(school_name)
+st.title('The #BeeWell Survey')
+st.markdown('''<p style='text-align: center;'>This dashboard summarises your schools results from the #BeeWell survey.</p>''', unsafe_allow_html=True)
 
-# Need to move this into a text section
-st.markdown(f'Thank for taking part in the #BeeWell survey. At your school, {school_size} pupils completed the survey.')
-st.markdown('''
-Your survey results are provided, including comparison against:
-* Other schools in Northern Devon
-* Matched schools from across the country (based on having similar ethnicity, FSM, size and rurality)
+page_cols = st.columns(2)
 
-Use the sidebar or the buttons below…
+# Guide to the dashboard
+with page_cols[0]:
+    st.subheader('Dashboard guide')
+    st.markdown('Use the sidebar on the left to navigate to different pages of the dashboard.')
+
+    cols = st.columns([0.3, 0.7])
+    with cols[0]:
+        if st.button('Summary'):
+            switch_page('summary')
+    with cols[1]:
+        st.markdown('This page gives an overview of how the average results at your school compare with other school, for all pupils and by pupil groups (year group, gender, FSM, SEN).')
+
+    cols = st.columns([0.3, 0.7])
+    with cols[0]:
+        if st.button('Details'):
+            switch_page('details')
+    with cols[1]:
+        st.markdown('This page provides a breakdown of responses to each question.')
+
+    cols = st.columns([0.3, 0.7])
+    with cols[0]:
+        if st.button('Pupils'):
+            switch_page('pupils')
+    with cols[1]:
+        st.markdown('This page shows the characteristics of pupils who completed the survey at your school, compared with other schools.')
+
+    cols = st.columns([0.3, 0.7])
+    with cols[0]:
+        if st.button('About'):
+            switch_page('about')
+    with cols[1]:
+        st.markdown('This page contains background information about the survey.')
+
+# Background information
+with page_cols[1]:
+    st.subheader('FAQs')
+    with st.expander('Who completed the #BeeWell survey?'):
+        st.markdown('''
+This year, pupils in Years 8 and 10 at 7 secondary schools from across North Devon and Torridge completed the standard version of the #BeeWell survey.
+The survey contained questions to measure wellbeing and the factors that might impact it.
+#BeeWell surveys were also completed by pupils at schools in Hampshire, Greater Manchester and Havering.
 ''')
-
-if st.button('View survey results'):
-    switch_page('summary')
-
-if st.button('Characteristics of pupils who took the survey'):
-    switch_page('pupils')
-
-if st.button('About the survey'):
-    switch_page('about')
-
-st.image(illustration)
-
-with st.expander('How do I use this dashboard?'):
-    st.write('Explanation')
-
-with st.expander('How do I print or save a page as a PDF?'):
-    st.write('There are several options...')
+    with st.expander('What is the purpose of the survey?'):
+        st.markdown('Question answer')
+    with st.expander('How should we use these results?'):
+        st.markdown('Question answer')
