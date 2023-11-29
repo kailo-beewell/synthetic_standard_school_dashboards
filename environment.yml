@@ -20,3 +20,4 @@ dependencies:
     - nbqa==1.6.4
     - statsmodels==0.14.0
     - odfpy==1.4.1
+    - st-pages==0.4.5
