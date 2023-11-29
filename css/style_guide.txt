@@ -16,7 +16,9 @@ Example: <p style='color:red;'>This is a red paragraph.</p>
 
 ## What is CSS?
 
-CSS is a style sheet language used to format HTML documents. It controls the layout, appearance and style of multiple HTML elements at once. It allows for seperation of content (HTML) and style (CSS) of webpages.
+CSS is a style sheet language used to format HTML documents.
+It controls the layout, appearance and style of multiple HTML elements at once.
+It allows for seperation of content (HTML) and style (CSS) of webpages.
 
 There are three ways to add CSS to a HTML document:
 * Inline - inside element - e.g. <h1 style='color:blue;'>A Blue Heading</h1>
@@ -33,6 +35,9 @@ There are three ways to add CSS to a HTML document:
 * ul (<ul></ul>) = creates an unordered list
 * li (<li></li>) = encompasses each item in a list
 * label (<label></label>) = used to define a label for an <input> element
+* details (<details></details>) = creates disclosure widget where information is  only visible when widgit is "open"
+* summary (<summary></summary>) = label for details widgit
+* span (<span></span>) = used to group elements for styling purposes
 
 ## Glossary of some of the less obvious attributes in the style.css file
 
