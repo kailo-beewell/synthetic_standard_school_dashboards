@@ -1,4 +1,6 @@
-/* Sidebar */
+/* CSS Style Sheet for Streamlit App */
+
+/* Sidebar - this targets element with DATA-TESTID as given */
 [data-testid=stSidebarNavItems]
 {
     font-size: 25px;
@@ -11,18 +13,32 @@ h1
     font-size: 60px;
 }
 
-/* Define markdown text styles */
-.body
+/* Subheader */
+h3
 {
-    font-size: 20px;
+    font-size: 30px;
 }
+
+/* Markdown */
 p
 {
     font-size: 20px;
 }
 
-/* Subheader */
-h3
+/* Selectbox title */
+div[class*='stSelectbox'] > label > div[data-testid='stMarkdownContainer'] > p 
 {
-    font-size: 30px;
+    font-size: 20px;
+}
+
+/* Selectbox chosen option - this targets element with CLASS name as given*/
+.stSelectbox > div[data-baseweb='select'] > div
+{
+    font-size: 20px;
+}
+
+/* Selectbox other options */
+ul[data-testid=stVirtualDropdown] > div > div > li[role='option']
+{
+    font-size: 20px;
 }
