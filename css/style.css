@@ -63,3 +63,9 @@ div[data-testid=stExpander] > details > summary > span > div > p
 {
     font-size: 20px;
 }
+
+/* Radio in sidebar */
+div[class*='row-widget stRadio'] > label > div > p
+{
+    font-size: 20px;
+}
