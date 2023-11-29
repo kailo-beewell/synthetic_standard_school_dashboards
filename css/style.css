@@ -1,0 +1,85 @@
+/* Select Box */
+.stSelectbox>label{
+    background-color: #00B7C2;
+    position: absolute;
+    left: 0%;
+    padding: 0.31rem;
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+    z-index:1;
+    min-width: 5.5rem;
+    height: 100%;
+    text-align: center;
+    font-size: 14px;;
+}
+
+.stSelectbox>div>div>div>div{
+    padding: 0rem;
+    max-width: 80%;
+}
+
+.stSelectbox>div>div>div:first-child{
+    padding: 0rem;
+    max-width: 80%;
+    margin-left: 6rem;
+}
+.stSelectbox>div>div{
+    padding: 0rem;
+}
+
+.stSelectbox>div>div:hover{
+    border: 2px solid #00B7C2;
+}
+
+.sidebar-content {
+    font-size: 50px !important;
+}
+
+/* Title */
+span.css-10trblm.e1nzilvr1
+{
+    background-color:blueviolet;
+    color:white
+}
+
+.stMarkdown
+{
+    background-color:blueviolet;
+    color:white
+}
+
+.stButton
+{
+    background-color:grey;
+    color:red
+}
+
+.stAlert
+{
+    background-color:brown;
+    color:white
+}
+
+.stSidebarContent
+{
+    background-color:red;
+    color:white
+}
+
+.stSidebarNav
+{
+    background-color:yellow;
+    color:white
+}
+
+.stSidebarNavItems
+{
+    background-color:green;
+    color:white
+}
+
+.stSidebarNavLink
+{
+    background-color:blue;
+    color:white
+}
