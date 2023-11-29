@@ -7,10 +7,6 @@ from utilities.fixed_params import page_setup
 # Set page configuration
 page_setup('wide')
 
-# Import CSS style
-with open('css/style.css') as css:
-    st.markdown(f'<style>{css.read()}</style>', unsafe_allow_html=True)
-
 # Manually set school (will need to change to set globally on login)
 school = 'School B'
 
@@ -49,8 +45,10 @@ with cols[1]:
 # Import data
 data = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
 
-# Space and header
-st.markdown('#')
+# Blank space and header
+st.markdown('')
+st.markdown('')
+st.markdown('')
 st.subheader('Choose what results to view')
 
 # Set label style using components API
@@ -106,8 +104,10 @@ else:
 
 
 ##########################################################
-
-st.markdown('#')
+# Blank space and header
+st.markdown('')
+st.markdown('')
+st.markdown('')
 st.subheader('Results')
 
 description = chosen['description']
