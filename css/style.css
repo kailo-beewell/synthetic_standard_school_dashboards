@@ -42,3 +42,12 @@ ul[data-testid=stVirtualDropdown] > div > div > li[role='option']
 {
     font-size: 20px;
 }
+
+/* Button */
+div.stButton > button:first-child
+{
+    background-color: #F5F0ED;
+    border-color: #F5F0ED;
+    width: 100%;
+    font-weight: bold;
+}

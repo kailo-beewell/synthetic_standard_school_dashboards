@@ -1,16 +1,20 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
+from utilities.switch_page_button import switch_page
 from utilities.fixed_params import page_setup
 
 # Set page configuration
-page_setup('centered')
+page_setup('wide')
+
+# Import CSS style
+with open('css/style.css') as css:
+    st.markdown(f'<style>{css.read()}</style>', unsafe_allow_html=True)
 
 # Manually set school (will need to change to set globally on login)
 school = 'School B'
 
-# Set font size
-font_size = 18
+###############################################################################
 
 st.title('''Summary of your school's results''')
 st.subheader('Introduction')
@@ -51,7 +55,7 @@ st.subheader('Choose what results to view')
 
 # Set label style using components API
 # Choose variable and comparator
-chosen_group = st.selectbox(r'$\textsf{\normalsize Results}$', ['All pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
+chosen_group = st.selectbox('Results:', ['All pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
 comparator = st.selectbox('Compared against:', ['Other schools in Northern Devon', 'Matched schools from across the country'])
 
 # Filter data depending on choice
@@ -147,7 +151,11 @@ for index, row in chosen.iterrows():
             elif pd.isnull(row[i]):
                 st.info('n<10')
             else:
-                st.markdown('')
-                st.markdown('[**' + row[i] + '**](http://localhost:8501/Details)', help=description[index])
-                #st.button('**' + row[i] + '**', help=description[index])
+                # st.markdown('')
+                #st.markdown(row[i], help=description[index])
+                #st.markdown(
+                #    f'''<a style='text-align: center;' href='http://localhost:8501/Details'>{row[i]}</a>''',
+                #    help=description[index], unsafe_allow_html=True)
+                if st.button(row[i]):
+                    switch_page('details')
 
