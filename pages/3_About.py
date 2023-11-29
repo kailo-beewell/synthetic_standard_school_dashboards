@@ -4,7 +4,7 @@ import base64
 from pathlib import Path
 
 # Set page configuration
-page_setup()
+page_setup('wide')
 
 st.title('About')
 
@@ -13,6 +13,7 @@ st.markdown('''
     data used within the dashboard, but likely finer details not necessary, and
     could instead be in a seperate document within the GitHub itself.''')
 
+st.markdown('Also might want to link to other sites? https://kailo.community/. https://beewellprogramme.org/. Other dashboard.')
 
 # Not working anymore - appears to be issue with iframe now as from - https://discuss.streamlit.io/t/using-st-markdown-to-show-embedded-pdf-file-gets-page-not-found/35527/6
 # Think it's because I have interactive links and stuff
