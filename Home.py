@@ -4,40 +4,29 @@ from PIL import Image
 from utilities.switch_page_button import switch_page
 from utilities.fixed_params import page_setup
 
+def text(text, style='body'):
+    '''
+    Use st.markdown to print text, with the chosen css style
+    '''
+    if style=='body':
+        st.markdown(f'''<p class='body'>{text}</p>''', unsafe_allow_html=True)
+
 # Set page configuration
 page_setup('centered')
 
-# Change font size for sidebar
-st.markdown('''
-<style>
-    /* Change text size */
-    [data-testid=stSidebarNavItems] {
-        font-size: 20px;
-    }
-</style>
-''', unsafe_allow_html=True)
-
-# Centre title
-st.markdown('''
-<style>
-    h1 {
-        text-align: center
-    }
-''', unsafe_allow_html=True)
+# Import CSS style
+with open('css/style.css') as css:
+    st.markdown(f'<style>{css.read()}</style>', unsafe_allow_html=True)
 
 # Import data used on this page
 data = pd.read_csv('data/survey_data/aggregate_scores.csv')
 
 # Manually set school (will need to change to set globally on login)
 school = 'School B'
-
-#with open('css/style.css') as css:
-#    st.markdown(f'<style>{css.read()}</style>', unsafe_allow_html=True)
-#st.markdown('''<h1 style='text-align: center;'>School</h1>''', unsafe_allow_html=True)
 st.title(school)
 
-st.markdown('''
-Thank you for taking part in the #BeeWell survey. This dashboard contains results from pupils at your school, compared with other schools in Northern Devon, and matched schools from across the country.
+text('''
+Thank you for taking part in the #BeeWell survey. This dashboard contains results from pupils at your school, compared with other schools in Northern Devon, and matched schools from across the country.</p>
 ''')
 
 st.subheader('Guide to the dashboard')
