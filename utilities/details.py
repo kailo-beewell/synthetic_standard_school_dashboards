@@ -45,8 +45,8 @@ def details_stacked_bar(df):
     '''
     # Get colour spectrum between the provided colours, for all except one category
     # Use 'cat_lab' rather than 'cat' as sometimes cat is 0-indexed or 1-indexed
-    start_colour = '#2A52BE'
-    end_colour = '#D4DCF2'
+    start_colour = '#5D98AB'
+    end_colour = '#CFE7F0'
     n_cat = df['cat_lab'].drop_duplicates().size
     colours = linear_gradient(start_colour, end_colour, n_cat-1)['hex']
     # Add final colour of grey for the last category, which will be "missing"
@@ -100,27 +100,15 @@ def details_stacked_bar(df):
     }
     fig.update_layout(autosize=True, height=height[n_var])
 
-    # Make legend horizontal and center on 0.5, and lower on y so not overlapping
-    # with the title (which have to adjust depending on nvar, with values
-    # identified manually through trial and error)
-    y_pos = {
-        1: -2,
-        2: -0.3,
-        3: -0.2,
-        4: -0.17,
-        5: -0.15,
-        6: -0.13,
-        7: -0.1,
-        8: -0.1,
-        9: -0.1,
-        10: -0.1
-    }
-    fig.update_layout(legend=dict(
-        orientation='h',
-        x=0.5,
-        xanchor='center',
-        y=y_pos[n_var],
-        title=''))
+    # Make legend horizontal, above axis and centered
+    fig.update_layout(
+        legend=dict(
+            orientation='h',
+            xanchor='center',
+            x=0.4,
+            yanchor='bottom',
+            y=1,
+            title=''))
 
     # Disable zooming and panning
     fig.layout.xaxis.fixedrange = True
@@ -148,7 +136,7 @@ def details_ordered_bar(df, school_name):
     # Plot the results, specifying colours and hover data
     fig = px.bar(
         df, x='school_lab', y='mean', color='colour',
-        color_discrete_map={'Your school': '#3054BC', 'Other schools': '#B0BCE4'},
+        color_discrete_map={'Your school': '#5D98AB', 'Other schools': '#BFD8E0'},
         category_orders={'colour': ['Your school', 'Other schools']},
         hover_data={'school_lab': False, 'colour': False,
                     'mean': False, 'Mean score': True})
