@@ -9,9 +9,6 @@ from utilities.details import details_stacked_bar, details_ordered_bar
 # Set page configuration
 page_setup('wide')
 
-# Manually set school (will need to change to set globally on login)
-school = 'School B'
-
 # Import the scores and the proportion each response
 df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
 df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
@@ -52,11 +49,11 @@ chosen_variable = topic_dict[chosen_variable_lab]
 # Title 
 st.title(chosen_variable_lab)
 
-# Introduction
-st.markdown(f'''
-This page shows you how pupils at your school answered questions relating to the topic of {chosen_variable_lab.lower()}.
-You can view answers from all pupils or by year group, gender, free school meals (FSM) or special education needs (SEN). 
-An average score for this topic has been calculated and, as on the summary page, you can see how the score compares to other schools.''')
+# Create table of descriptions, where index is the variable
+description = df_scores[['variable', 'description']].drop_duplicates().set_index('variable').to_dict()['description']
+
+# Write the short topic description (centred and bold)
+st.markdown(f'''<p style='text-align: center;'><b>These questions are about {description[f'{chosen_variable}_score'].lower()}</b></p>''', unsafe_allow_html=True)
 
 # Blank space
 st.markdown('')
@@ -76,7 +73,7 @@ st.header('Responses from pupils at your school')
 # Filter to chosen variable and school
 chosen = df_prop[
     (df_prop['group'] == chosen_variable) &
-    (df_prop['school_lab'] == school) &
+    (df_prop['school_lab'] == st.session_state.school) &
     (df_prop['year_group_lab'] == 'All') &
     (df_prop['gender_lab'] == 'All') &
     (df_prop['fsm_lab'] == 'All') &
@@ -128,12 +125,46 @@ multiple_charts = {
 
 # EXAMPLE: Description above stacked barchart
 stacked_descrip = {
-    'autonomy': '''These questions are about how 'in control' young people feel about their lives. Pupils were asked how true they felt the following statements to be for themselves. From left &rarr; right, responses are sorted as negative &rarr; positive. Here, less in control &rarr; more in control.''',
-    'life_satisfaction': '''This question is about how satisfied young people feel with their life.''',
-    'home_happy': '''This question is about how happy young people are with the home they live in.  \nYoung people were ask to rate their response on a scale of 0 to 10, where 0 is very unhappy, 5 is neither happy or unhappy, and 10 is very happy''',
-    'optimism_future': 'These questions are about how optimistic young people feel about the future.  \nFor all four questions, answers on the left indicate pupils feel **less** optimistic, whilst answers on the right indicate pupils feel **more** optimistic.  \nFor this first question, young people were asked how often they feel optimistic about the future.',
-    'optimism_other': 'For these three questions, young people were asked how well they felt the following statements described themselves.',
-    'bully': 'These questions are about the frequency with which young people experience different types of bullying. They were asked about three types of bullying, and given the following definitions for each:  \n* Being physically bullied at school - by this we mean getting hit, pushed around, threatened, or having belongings stolen.  \n* Being bullied in other ways at school - by this we mean insults, slurs, name calling, threats, getting left out or excluded by others, or having rumours spread about you on purpose  \n* Being cyber-bullied - by this we mean someone sending mean text or online messages about you, creating a website making fun of you, posting pictures that make you look bad online, or sharing them with others.'
+
+    'autonomy': '''
+**Question:** Pupils were asked to think about how each statement relates to their life, and then indicate how true it is for them.  
+**Interpretation:** From left to right, responses range from feeling **less** in control ('1 - Completely not true') to **more** in control ('5 - Completely true').''',
+
+    'life_satisfaction': '''
+**Interpretation:** From left to right, responses range from feeling **less** satisfied ('0 - not at all') to **more** satisfied ('10 - completely').''',
+
+    'optimism_future': '''
+**Question:** How often pupils feel optimistic about the future.  
+**Interpretation:** From left to right, responses range from feeling **less** optimistic ('Almost never') to **more** optimistic ('Always').''',
+
+    'optimism_other': '''
+**Question:** How much pupils feel the following statements to describe themselves.  
+**Interpretation:** From left to right, responses range from feeling **less** optimistic ('Not at all like me') to **more** optimistic ('Very much like me').''',
+
+    'wellbeing': '''
+**Question:** Pupils were asked to choose the response that best describes their experience of the following statements over the last 2 weeks.  \n
+**Interpretation:** From left to right, responses range from:  
+* 'None of the time' = **lower** wellbeing levels, to  
+* 'All of the time' = **higher** wellbeing levels''',
+
+    'stress': '''
+**Question:** Pupils were asked how often the felt the following statements in the last month.  \n
+**Interpretation:** From left to right, responses range from:  
+* 'Never' - Feeling **more stressed** and struggling to cope, to  
+* 'Very Often' - Feeling **less stressed** and better able to cope''',
+
+    'home_happy': '''
+This question is about how happy young people are with the home they live in.  
+Young people were ask to rate their response on a scale of 0 to 10, where 0 is very unhappy, 5 is neither happy or unhappy, and 10 is very happy''',
+
+    'bully': '''
+These questions are about the frequency with which young people experience different types of bullying. \
+They were asked about three types of bullying, and given the following definitions for each:  
+* Being physically bullied at school - by this we mean getting hit, pushed around, threatened, or having belongings stolen.  
+* Being bullied in other ways at school - by this we mean insults, slurs, name \
+calling, threats, getting left out or excluded by others, or having rumours spread about you on purpose  
+* Being cyber-bullied - by this we mean someone sending mean text or online \
+messages about you, creating a website making fun of you, posting pictures that make you look bad online, or sharing them with others.'''
 }
 
 # Categories to reverse
@@ -194,7 +225,7 @@ between_schools = df_scores[
     (df_scores['sen_lab'] == 'All')]
 
 # Add box with RAG rating
-devon_rag = between_schools.loc[between_schools['school_lab'] == school, 'rag'].to_list()[0]
+devon_rag = between_schools.loc[between_schools['school_lab'] == st.session_state.school, 'rag'].to_list()[0]
 cols = st.columns(2)
 with cols[0]:
     st.subheader('Comparison to other schools in Northern Devon')
@@ -208,7 +239,7 @@ with cols[0]:
 
 # Show figure within column
 with cols[1]:
-    details_ordered_bar(between_schools, school)
+    details_ordered_bar(between_schools, st.session_state.school)
 
 # Note schools that don't have a match (might be able to do that based on
 # what variables are present in their data v.s. not)
@@ -230,4 +261,4 @@ else:
             st.success('↑ Above average')
         st.markdown('Note: Just a duplicate of the above')
     with cols[1]:
-        details_ordered_bar(between_schools, school)
+        details_ordered_bar(between_schools, st.session_state.school)
