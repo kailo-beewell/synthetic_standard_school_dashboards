@@ -71,7 +71,7 @@ with cols[0]:
 st.markdown('')
 st.markdown('')
 
-st.header('Breakdown of responses from pupils at your school')
+st.header('Responses from pupils at your school')
 
 # Filter to chosen variable and school
 chosen = df_prop[
@@ -104,46 +104,74 @@ chosen_result = pd.concat(df_list)
 multiple_charts = {
     'optimism': {'optimism_future': ['optimism_future'],
                  'optimism_other': ['optimism_best', 'optimism_good', 'optimism_work']},
-    'appearance': [['appearance_happy'], ['appearance_feel']],
-    'physical': [['physical_days'], ['physical_hours']],
-    'places': [['places_freq'],
-               ['places_barriers___1', 'places_barriers___2',
-                'places_barriers___3', 'places_barriers___4',
-                'places_barriers___5', 'places_barriers___6',
-                'places_barriers___7', 'places_barriers___8',
-                'places_barriers___9']],
-    'talk': [['staff_talk', 'home_talk', 'peer_talk'],
-             ['staff_talk_listen', 'home_talk_listen', 'peer_talk_listen'],
-             ['staff_talk_helpful', 'home_talk_helpful', 'peer_talk_helpful'],
-             ['staff_talk_if', 'home_talk_if', 'peer_talk_if']],
-    'local_env': [['local_safe'],
-                  ['local_support', 'local_trust',
-                   'local_neighbours', 'local_places']],
-    'future': [['future_options'], ['future_interest'], ['future_support']]
+    'appearance': {'appearance_happy': ['appearance_happy'],
+                   'appearance_feel': ['appearance_feel']},
+    'physical': {'physical_days': ['physical_days'],
+                 'physical_hours': ['physical_hours']},
+    'places': {'places_freq': ['places_freq'],
+               'places_barriers': ['places_barriers___1', 'places_barriers___2',
+                                   'places_barriers___3', 'places_barriers___4',
+                                   'places_barriers___5', 'places_barriers___6',
+                                   'places_barriers___7', 'places_barriers___8',
+                                   'places_barriers___9']},
+    'talk': {'talk_yesno': ['staff_talk', 'home_talk', 'peer_talk'],
+             'talk_listen': ['staff_talk_listen', 'home_talk_listen', 'peer_talk_listen'],
+             'talk_helpful': ['staff_talk_helpful', 'home_talk_helpful', 'peer_talk_helpful'],
+             'talk_if': ['staff_talk_if', 'home_talk_if', 'peer_talk_if']},
+    'local_env': {'local_safe': ['local_safe'],
+                  'local_other': ['local_support', 'local_trust',
+                                  'local_neighbours', 'local_places']},
+    'future': {'future_options': ['future_options'],
+               'future_interest': ['future_interest'],
+               'future_support': ['future_support']}
 }
 
 # EXAMPLE: Description above stacked barchart
 stacked_descrip = {
-    'autonomy': '''These questions are about how 'in control' young people feel about their lives.  \nPupils were asked how true they felt the following statements to be for themselves.  \nAnswers on the left indicate pupils feel **less** 'in control'  whilst answers on the right indicate pupils feel **more** 'in control'.''',
+    'autonomy': '''These questions are about how 'in control' young people feel about their lives. Pupils were asked how true they felt the following statements to be for themselves. From left &rarr; right, responses are sorted as negative &rarr; positive. Here, less in control &rarr; more in control.''',
     'life_satisfaction': '''This question is about how satisfied young people feel with their life.''',
     'home_happy': '''This question is about how happy young people are with the home they live in.  \nYoung people were ask to rate their response on a scale of 0 to 10, where 0 is very unhappy, 5 is neither happy or unhappy, and 10 is very happy''',
     'optimism_future': 'These questions are about how optimistic young people feel about the future.  \nFor all four questions, answers on the left indicate pupils feel **less** optimistic, whilst answers on the right indicate pupils feel **more** optimistic.  \nFor this first question, young people were asked how often they feel optimistic about the future.',
-    'optimism_other': 'For these three questions, young people were asked how well they felt the following statements described themselves.'
+    'optimism_other': 'For these three questions, young people were asked how well they felt the following statements described themselves.',
+    'bully': 'These questions are about the frequency with which young people experience different types of bullying. They were asked about three types of bullying, and given the following definitions for each:  \n* Being physically bullied at school - by this we mean getting hit, pushed around, threatened, or having belongings stolen.  \n* Being bullied in other ways at school - by this we mean insults, slurs, name calling, threats, getting left out or excluded by others, or having rumours spread about you on purpose  \n* Being cyber-bullied - by this we mean someone sending mean text or online messages about you, creating a website making fun of you, posting pictures that make you look bad online, or sharing them with others.'
 }
+
+# Categories to reverse
+reverse = ['esteem', 'negative', 'support', 'media', 'free_like', 'local_safe',
+           'local_other', 'belong_local', 'bully']
+
+def reverse_categories(df):
+    '''
+    Resorts dataframe so categories are in reverse order, but missing is still
+    at the end (despite being max value).
+    Inputs:
+    df - dataframe to sort
+    '''
+    # Resort everything except for the "Missing" responses
+    new_df = df[df['cat'] != df['cat'].max()].sort_values(by=['cat'], ascending=False)
+    # Append missing back to the end
+    new_df = pd.concat([new_df, df[df['cat'] == df['cat'].max()]])
+    # Return the resorted dataframe
+    return(new_df)
 
 # Create stacked bar chart with seperate charts if required
 if chosen_variable in multiple_charts:
     var_dict = multiple_charts[chosen_variable]
     for key, value in var_dict.items():
         # Add description
-        st.markdown(stacked_descrip[key])
+        if key in stacked_descrip:
+            st.markdown(stacked_descrip[key])
         # Create plot
         to_plot = chosen_result[chosen_result['measure'].isin(value)]
+        if key in reverse:
+            to_plot = reverse_categories(to_plot)
         details_stacked_bar(to_plot)
 # Otherwise create a single stacked bar chart
 else:
     if chosen_variable in stacked_descrip:
         st.markdown(stacked_descrip[chosen_variable])
+    if chosen_variable in reverse:
+        chosen_result = reverse_categories(chosen_result)
     details_stacked_bar(chosen_result)
 
 ###############################################################################
