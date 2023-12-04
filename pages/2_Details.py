@@ -32,17 +32,46 @@ topic_df['variable'] = topic_df['variable'].str.replace('_score', '')
 # Convert to dictionary
 topic_dict = pd.Series(topic_df.variable.values, index=topic_df.variable_lab).to_dict()
 
+# If session state doesn't contain chosen variable, default to Autonomy
+# If it does (i.e. set from Summary page), use that
+if 'chosen_variable_lab' not in st.session_state:
+    st.session_state['chosen_variable_lab'] = 'Autonomy'
+
+# Convert topics to list and find index of the session state variable
+topic_list = list(topic_dict.keys())
+default = topic_list.index(st.session_state['chosen_variable_lab'])
+
 # Create selectbox with available topics (excluding demographic) using label
-chosen_variable_lab = st.sidebar.radio('Topic', topic_dict.keys())
+chosen_variable_lab = st.sidebar.radio(
+    'Topic', topic_dict.keys(), index=default)
 chosen_variable = topic_dict[chosen_variable_lab]
 
 ###############################################################################
 # Breakdown of question responses chart
 
-# Title and header
+# Title 
 st.title(chosen_variable_lab)
 
-st.selectbox('Results', ['All pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
+# Introduction
+st.markdown(f'''
+This page shows you how pupils at your school answered questions relating to the topic of {chosen_variable_lab.lower()}.
+You can view answers from all pupils or by year group, gender, free school meals (FSM) or special education needs (SEN). 
+An average score for this topic has been calculated and, as on the summary page, you can see how the score compares to other schools.''')
+
+# Blank space
+st.markdown('')
+st.markdown('')
+
+# Select pupils to view results for
+cols = st.columns([0.3, 0.7])
+with cols[0]:
+    st.selectbox('**View results:**', ['For all pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
+
+# Blank space
+st.markdown('')
+st.markdown('')
+
+st.header('Breakdown of responses from pupils at your school')
 
 # Filter to chosen variable and school
 chosen = df_prop[
@@ -73,8 +102,8 @@ chosen_result = pd.concat(df_list)
 
 # For categories with multiple charts, list the variables for each chart
 multiple_charts = {
-    'optimism': [['optimism_future'],
-                 ['optimism_best', 'optimism_good', 'optimism_work']],
+    'optimism': {'optimism_future': ['optimism_future'],
+                 'optimism_other': ['optimism_best', 'optimism_good', 'optimism_work']},
     'appearance': [['appearance_happy'], ['appearance_feel']],
     'physical': [['physical_days'], ['physical_hours']],
     'places': [['places_freq'],
@@ -95,16 +124,23 @@ multiple_charts = {
 
 # EXAMPLE: Description above stacked barchart
 stacked_descrip = {
-    'autonomy': '''These questions are about how 'in control' young people feel about their lives. They were asked how true they felt the following statements to be for themselves.''',
-    'life_satisfaction': '''This question is about how satisfied young people feel with their life.'''
+    'autonomy': '''These questions are about how 'in control' young people feel about their lives.  \nPupils were asked how true they felt the following statements to be for themselves.  \nAnswers on the left indicate pupils feel **less** 'in control'  whilst answers on the right indicate pupils feel **more** 'in control'.''',
+    'life_satisfaction': '''This question is about how satisfied young people feel with their life.''',
+    'home_happy': '''This question is about how happy young people are with the home they live in.  \nYoung people were ask to rate their response on a scale of 0 to 10, where 0 is very unhappy, 5 is neither happy or unhappy, and 10 is very happy''',
+    'optimism_future': 'These questions are about how optimistic young people feel about the future.  \nFor all four questions, answers on the left indicate pupils feel **less** optimistic, whilst answers on the right indicate pupils feel **more** optimistic.  \nFor this first question, young people were asked how often they feel optimistic about the future.',
+    'optimism_other': 'For these three questions, young people were asked how well they felt the following statements described themselves.'
 }
 
-# Create stacked bar chart - with seperate charts if required
+# Create stacked bar chart with seperate charts if required
 if chosen_variable in multiple_charts:
-    var_list = multiple_charts[chosen_variable]
-    for var in var_list:
-        to_plot = chosen_result[chosen_result['measure'].isin(var)]
+    var_dict = multiple_charts[chosen_variable]
+    for key, value in var_dict.items():
+        # Add description
+        st.markdown(stacked_descrip[key])
+        # Create plot
+        to_plot = chosen_result[chosen_result['measure'].isin(value)]
         details_stacked_bar(to_plot)
+# Otherwise create a single stacked bar chart
 else:
     if chosen_variable in stacked_descrip:
         st.markdown(stacked_descrip[chosen_variable])
@@ -119,6 +155,8 @@ st.text('')
 ###############################################################################
 # Initial basic example of doing the comparator chart between schools...
 
+st.header('Comparison of overall mean score to other schools')
+
 # Create dataframe based on chosen variable
 between_schools = df_scores[
     (df_scores['variable'].str.replace('_score', '') == chosen_variable) &
@@ -129,10 +167,10 @@ between_schools = df_scores[
 
 # Add box with RAG rating
 devon_rag = between_schools.loc[between_schools['school_lab'] == school, 'rag'].to_list()[0]
-st.header('Comparison to other schools in Northern Devon')
 cols = st.columns(2)
 with cols[0]:
-    st.markdown('Your school:')
+    st.subheader('Comparison to other schools in Northern Devon')
+    st.markdown(f'The average score for {chosen_variable_lab.lower()} at your school, compared to other schools in Northern Devon, was:')
     if devon_rag == 'below':
         st.error('↓ Below average')
     elif devon_rag == 'average':
@@ -149,12 +187,12 @@ with cols[1]:
 no_match = ['support', 'places', 'talk', 'accept', 'belong_local', 'wealth', 'future', 'climate']
 
 # Create duplicate to show example of what having matched schools as well looks like
-st.header('Comparison to matched schools from across the country')
 cols = st.columns(2)
 if chosen_variable in no_match:
     st.markdown('This question was unique to Northern Devon and cannot be compared to other schools.')
 else:
     with cols[0]:
+        st.subheader('Comparison to matched schools from across the country')
         st.markdown('Your school:')
         if devon_rag == 'below':
             st.error('↓ Below average')
