@@ -96,3 +96,12 @@ div[data-testid='stNotificationContentInfo'] > div
 {
     justify-content: center;
 }
+
+/* Horizontal line */
+div[class='stMarkdown'] > div[data-testid='stMarkdownContainer'] > hr
+{
+    height: 2px;
+    background-color: #E4E4E4;
+    border: none;
+    margin: 10px;
+}
