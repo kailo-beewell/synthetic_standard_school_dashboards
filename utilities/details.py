@@ -45,8 +45,8 @@ def details_stacked_bar(df):
     '''
     # Get colour spectrum between the provided colours, for all except one category
     # Use 'cat_lab' rather than 'cat' as sometimes cat is 0-indexed or 1-indexed
-    start_colour = '#5D98AB'
-    end_colour = '#CFE7F0'
+    start_colour = '#CFE7F0'
+    end_colour = '#5D98AB'
     n_cat = df['cat_lab'].drop_duplicates().size
     colours = linear_gradient(start_colour, end_colour, n_cat-1)['hex']
     # Add final colour of grey for the last category, which will be "missing"
@@ -73,6 +73,9 @@ def details_stacked_bar(df):
         ticktext=['0%', '20%', '40%', '60%', '80%', '100%'],
         title=''))
     fig.update_layout(yaxis_title=None)
+
+    # Set y axis label colour (as defaults to going pale grey)
+    fig.update_yaxes(tickfont=dict(color='#05291F'))
 
     # Set font size
     font_size = 18
