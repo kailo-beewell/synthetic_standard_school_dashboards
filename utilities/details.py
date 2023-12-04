@@ -48,9 +48,13 @@ def details_stacked_bar(df):
     start_colour = '#CFE7F0'
     end_colour = '#5D98AB'
     n_cat = df['cat_lab'].drop_duplicates().size
-    colours = linear_gradient(start_colour, end_colour, n_cat-1)['hex']
-    # Add final colour of grey for the last category, which will be "missing"
-    colours += ['#DDDDDD']
+    # If there is a missing category, create n-1 colours and set last as grey
+    if df['cat_lab'].eq('Missing').any():
+        colours = linear_gradient(start_colour, end_colour, n_cat-1)['hex']
+        colours += ['#DDDDDD']
+    # Otherwise, just create colour spectrum using all categories
+    else:
+        colours = linear_gradient(start_colour, end_colour, n_cat)['hex']
 
     # Wrap the labels for each measure
     df['measure_lab_wrap'] = df['measure_lab'].apply(
@@ -60,6 +64,10 @@ def details_stacked_bar(df):
     fig = px.bar(
         df, x='percentage', y='measure_lab_wrap', color='cat_lab',
         text_auto=True, orientation='h', color_discrete_sequence=colours,
+        # Resort y axis order to match order of questions in survey
+        category_orders={'measure_lab_wrap': 
+                         df['measure_lab_wrap'].drop_duplicates().to_list()},
+        # Specify what is shown when hover over the chart barts
         hover_data={'cat_lab': True, 'percentage': True,
                     'measure_lab_wrap': False, 'count': True},)
 
