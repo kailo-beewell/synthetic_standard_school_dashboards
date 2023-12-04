@@ -51,9 +51,8 @@ st.markdown('')
 st.markdown('')
 st.subheader('Choose what results to view')
 
-# Set label style using components API
 # Choose variable and comparator
-chosen_group = st.selectbox('Results:', ['All pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
+chosen_group = st.selectbox(label='Results:', options=['All pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
 comparator = st.selectbox('Compared against:', ['Other schools in Northern Devon', 'Matched schools from across the country'])
 
 # Filter data depending on choice
@@ -123,24 +122,24 @@ colnames = {
 }
 chosen = chosen.rename(columns=colnames)
 
-# Set up columns with custom dimensions if just 2
-if ncol == 2:
-    cols = st.columns([0.333, 0.333, 0.333])
-else:
-    cols = st.columns(ncol)
+# Set up columns
+cols = st.columns([0.3, 0.35, 0.35])
 
 # Add column names
 for i in range(ncol):
     with cols[i]:
-        st.markdown('**' + chosen.columns[i] + '**')
+        st.markdown(f'''
+<p style='text-align: center; font-weight: bold; font-size: 22px;'>
+{chosen.columns[i]}</p>
+''', unsafe_allow_html=True)
 
 # For each row of dataframe, create streamlit columns and write data from cell
+st.divider()
 for index, row in chosen.iterrows():
-    if ncol == 2:
-        cols = st.columns([0.333, 0.333, 0.333])
-    else:
-        cols = st.columns(ncol)
+    cols = st.columns([0.3, 0.35, 0.35])
+    st.divider()
     for i in range(ncol):
+        # Create topic button or score
         with cols[i]:
             if row[i] == 'below':
                 st.error('↓ Below average')
@@ -151,11 +150,8 @@ for index, row in chosen.iterrows():
             elif pd.isnull(row[i]):
                 st.info('n<10')
             else:
-                # st.markdown('')
-                #st.markdown(row[i], help=description[index])
-                #st.markdown(
-                #    f'''<a style='text-align: center;' href='http://localhost:8501/Details'>{row[i]}</a>''',
-                #    help=description[index], unsafe_allow_html=True)
+                # Create button that, if clicked, changes to details
                 if st.button(row[i]):
+                    st.session_state['chosen_variable_lab'] = row[i]
                     switch_page('details')
 
