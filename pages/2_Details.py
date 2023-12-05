@@ -150,17 +150,17 @@ if chosen_variable in multiple_charts:
     var_dict = multiple_charts[chosen_variable]
     for key, value in var_dict.items():
         # Add description
-        if key in stacked_descrip:
-            st.markdown(stacked_descrip[key])
-        # Create plot
+        st.markdown(stacked_descrip[key])
+        # Create plot (reversing the categories if required)
         to_plot = chosen_result[chosen_result['measure'].isin(value)]
         if key in reverse:
             to_plot = reverse_categories(to_plot)
         details_stacked_bar(to_plot)
 # Otherwise create a single stacked bar chart
 else:
-    if chosen_variable in stacked_descrip:
-        st.markdown(stacked_descrip[chosen_variable])
+    # Add description
+    st.markdown(stacked_descrip[chosen_variable])
+    # Create plot (reversing the categories if required)
     if chosen_variable in reverse:
         chosen_result = reverse_categories(chosen_result)
     details_stacked_bar(chosen_result)
