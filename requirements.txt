@@ -1,0 +1,12 @@
+geopandas0.9.0
+matplotlib==3.8.0
+numpy==1.26.0
+odfpy==1.4.1
+pandas==2.1.1
+pip==23.3
+plotly==5.9.0
+python==3.10.6
+statsmodels==0.14.0
+st-pages==0.4.5
+# Don't give streamlit version to ensure app has latest security updates
+streamlit
