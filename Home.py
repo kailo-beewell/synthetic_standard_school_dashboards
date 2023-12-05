@@ -11,7 +11,10 @@ page_setup('wide')
 data = pd.read_csv('data/survey_data/aggregate_scores.csv')
 
 # Manually set school (will need to change to set globally on login)
-school = 'School B'
+st.session_state.school = st.selectbox(
+    label='School (for testing)',
+    options=['School A', 'School B', 'School C', 'School D', 'School E', 'School F', 'School G'],
+    index=1)
 
 ###############################################################################
 
@@ -58,7 +61,7 @@ with page_cols[1]:
     st.subheader('FAQs')
     with st.expander('Who completed the #BeeWell survey?'):
         st.markdown('''
-This year, pupils in Years 8 and 10 at 7 secondary schools from across North Devon and Torridge completed the standard version of the #BeeWell survey.
+This year, pupils in Years 8 and 10 at seven secondary schools from across North Devon and Torridge completed the standard version of the #BeeWell survey.
 The survey contained questions to measure wellbeing and the factors that might impact it.
 #BeeWell surveys were also completed by pupils at schools in Hampshire, Greater Manchester and Havering.
 ''')
@@ -66,3 +69,8 @@ The survey contained questions to measure wellbeing and the factors that might i
         st.markdown('Question answer')
     with st.expander('How should we use these results?'):
         st.markdown('Question answer')
+    with st.expander('Can I access this dashboard on different devices?'):
+        st.markdown('''
+Yes - although it has been designed to view full screen on a computer/laptop, 
+it is possible to view on other devices like a mobile phone. It will resize the 
+page to your screen, but if the figures appear cramped/difficult to read, you may want to zoom out.''')

@@ -45,12 +45,16 @@ def details_stacked_bar(df):
     '''
     # Get colour spectrum between the provided colours, for all except one category
     # Use 'cat_lab' rather than 'cat' as sometimes cat is 0-indexed or 1-indexed
-    start_colour = '#2A52BE'
-    end_colour = '#D4DCF2'
+    start_colour = '#CFE7F0'
+    end_colour = '#5D98AB'
     n_cat = df['cat_lab'].drop_duplicates().size
-    colours = linear_gradient(start_colour, end_colour, n_cat-1)['hex']
-    # Add final colour of grey for the last category, which will be "missing"
-    colours += ['#DDDDDD']
+    # If there is a missing category, create n-1 colours and set last as grey
+    if df['cat_lab'].eq('Missing').any():
+        colours = linear_gradient(start_colour, end_colour, n_cat-1)['hex']
+        colours += ['#DDDDDD']
+    # Otherwise, just create colour spectrum using all categories
+    else:
+        colours = linear_gradient(start_colour, end_colour, n_cat)['hex']
 
     # Wrap the labels for each measure
     df['measure_lab_wrap'] = df['measure_lab'].apply(
@@ -60,6 +64,10 @@ def details_stacked_bar(df):
     fig = px.bar(
         df, x='percentage', y='measure_lab_wrap', color='cat_lab',
         text_auto=True, orientation='h', color_discrete_sequence=colours,
+        # Resort y axis order to match order of questions in survey
+        category_orders={'measure_lab_wrap': 
+                         df['measure_lab_wrap'].drop_duplicates().to_list()},
+        # Specify what is shown when hover over the chart barts
         hover_data={'cat_lab': True, 'percentage': True,
                     'measure_lab_wrap': False, 'count': True},)
 
@@ -73,6 +81,9 @@ def details_stacked_bar(df):
         ticktext=['0%', '20%', '40%', '60%', '80%', '100%'],
         title=''))
     fig.update_layout(yaxis_title=None)
+
+    # Set y axis label colour (as defaults to going pale grey)
+    fig.update_yaxes(tickfont=dict(color='#05291F'))
 
     # Set font size
     font_size = 18
@@ -100,27 +111,15 @@ def details_stacked_bar(df):
     }
     fig.update_layout(autosize=True, height=height[n_var])
 
-    # Make legend horizontal and center on 0.5, and lower on y so not overlapping
-    # with the title (which have to adjust depending on nvar, with values
-    # identified manually through trial and error)
-    y_pos = {
-        1: -2,
-        2: -0.3,
-        3: -0.2,
-        4: -0.17,
-        5: -0.15,
-        6: -0.13,
-        7: -0.1,
-        8: -0.1,
-        9: -0.1,
-        10: -0.1
-    }
-    fig.update_layout(legend=dict(
-        orientation='h',
-        x=0.5,
-        xanchor='center',
-        y=y_pos[n_var],
-        title=''))
+    # Make legend horizontal, above axis and centered
+    fig.update_layout(
+        legend=dict(
+            orientation='h',
+            xanchor='center',
+            x=0.4,
+            yanchor='bottom',
+            y=1,
+            title=''))
 
     # Disable zooming and panning
     fig.layout.xaxis.fixedrange = True
@@ -148,7 +147,7 @@ def details_ordered_bar(df, school_name):
     # Plot the results, specifying colours and hover data
     fig = px.bar(
         df, x='school_lab', y='mean', color='colour',
-        color_discrete_map={'Your school': '#3054BC', 'Other schools': '#B0BCE4'},
+        color_discrete_map={'Your school': '#5D98AB', 'Other schools': '#BFD8E0'},
         category_orders={'colour': ['Your school', 'Other schools']},
         hover_data={'school_lab': False, 'colour': False,
                     'mean': False, 'Mean score': True})

@@ -25,8 +25,14 @@ h3
     font-size: 30px;
 }
 
-/* Markdown */
+/* Markdown p */
 p
+{
+    font-size: 20px;
+}
+
+/* Markdown lists */
+div[class='stMarkdown'] > div[data-testid='stMarkdownContainer'] > ul > li
 {
     font-size: 20px;
 }
@@ -41,6 +47,7 @@ div[class*='stSelectbox'] > label > div[data-testid='stMarkdownContainer'] > p
 .stSelectbox > div[data-baseweb='select'] > div
 {
     font-size: 20px;
+    background-color: #F5F0ED;
 }
 
 /* Selectbox other options */
@@ -50,16 +57,55 @@ ul[data-testid=stVirtualDropdown] > div > div > li[role='option']
 }
 
 /* Button */
+/* Set padding to match status elements, which are 16px but 14px matches */
 div.stButton > button:first-child
 {
     background-color: #F5F0ED;
     border-color: #F5F0ED;
     width: 100%;
     font-weight: bold;
+    height: auto;
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
 }
 
 /* Expander */
 div[data-testid=stExpander] > details > summary > span > div > p
 {
     font-size: 20px;
+}
+
+/* Radio in sidebar */
+div[class*='row-widget stRadio'] > label > div > p
+{
+    font-size: 20px;
+}
+
+/* Status elements */
+div[data-testid='stNotificationContentError'] > div
+{
+    justify-content: center;
+}
+div[data-testid='stNotificationContentWarning'] > div
+{
+    justify-content: center;
+}
+div[data-testid='stNotificationContentError'] > div
+{
+    justify-content: center;
+}
+div[data-testid='stNotificationContentSuccess'] > div
+{
+    justify-content: center;
+}
+div[data-testid='stNotificationContentInfo'] > div
+{
+    justify-content: center;
+}
+
+/* Horizontal line */
+div[class='stMarkdown'] > div[data-testid='stMarkdownContainer'] > hr
+{
+    border-color: #E4E4E4;
+    margin: 0;
 }
