@@ -7,9 +7,6 @@ from utilities.fixed_params import page_setup
 # Set page configuration
 page_setup('wide')
 
-# Manually set school (will need to change to set globally on login)
-school = 'School B'
-
 ###############################################################################
 
 st.title('''Summary of your school's results''')
@@ -81,7 +78,7 @@ elif chosen_group == 'By SEN':
 
 # Filter data
 chosen = data[
-    (data['school_lab'] == school) &
+    (data['school_lab'] == st.session_state.school) &
     (data['year_group_lab'].isin(year_group)) &
     (data['gender_lab'].isin(gender)) &
     (data['fsm_lab'].isin(fsm)) &
