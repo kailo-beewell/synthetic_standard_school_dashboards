@@ -106,9 +106,75 @@ from doing activities or going to places that they want to in their free time. \
 They were asked to select all that apply.
 ''',
 
+        'talk_yesno': '''
+**Question:** Pupils were asked if they had ever talked with the following people about feeling down (e.g. stressed, sad, anxious)
+''',
+
+        'talk_listen': '''
+**Question:** For pupils who responded yes, they were then asked if they felt listened to.
+''',
+
+        'talk_helpful': '''
+**Question:** For pupils who responded yes, they were then asked if the person provided advice that they found helpful.
+''',
+
+        'talk_if': '''
+**Question:** For pupils who responded no, they were asked how they would feel about speaking with that person when feeling down.
+''',
+
+        'accept': '''
+**Question:** Pupils were asked "do you feel accepted as you are" by the following people.  
+**Interpretation:** From left to right, responses range from:
+* 'Not at all' = **don't** feel accepted
+* 'Fully' = **do** feel accepted
+''',
+
+        'school_belong': '''
+'Not at all' (**low** levels of belonging) to 'A lot' (**high** levels of belonging).
+''',
+
+        'staff_relationship': '''
+From left to right, responses range from '1 - Never' (feel **unsupported**) to '5 - Always' (feel **well supported**).  
+  
+At school there is an adult who...
+''',
+
+        'home_relationship': '''
+From left to right, responses range from '1 - Never' (feel **unsupported**) to '5 - Always' (feel **well supported**).  
+  
+At home there is an adult who...
+''',
+
         'home_happy': '''
 This question is about how happy young people are with the home they live in.  
 Young people were ask to rate their response on a scale of 0 to 10, where 0 is very unhappy, 5 is neither happy or unhappy, and 10 is very happy''',
+
+        'local_safe': '''''',
+        'local_other': '''''',
+
+        'discrim': '''How often do people make you feel bad because of:''',
+
+        'belong_local': '''''',
+
+        'wealth': '''''',
+
+        'future_options': '''
+This section asks about future options for work, education and training. This might include:
+* Jobs
+* Apprenticeships
+* College courses
+* University courses  
+
+Thinking about the options in your local area:
+''',
+
+        'future_interest': '''''',
+
+        'future_support': '''''',
+
+        'climate': '''''',
+
+        'social': '''''',
 
         'bully': '''
 These questions are about the frequency with which young people experience different types of bullying. \
