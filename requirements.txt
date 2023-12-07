@@ -1,6 +1,7 @@
 geopandas==0.9.0
 ipykernel==6.27.1
 matplotlib==3.8.0
+nbformat==5.9.2
 numpy==1.26.0
 odfpy==1.4.1
 pandas==2.1.1
