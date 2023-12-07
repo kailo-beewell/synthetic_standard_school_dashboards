@@ -159,13 +159,9 @@ Young people were ask to rate their response on a scale of 0 to 10, where 0 is v
         'wealth': '''''',
 
         'future_options': '''
-This section asks about future options for work, education and training. This might include:
-* Jobs
-* Apprenticeships
-* College courses
-* University courses  
-
-Thinking about the options in your local area:
+Pupils were told that these questions are about future options for work, education and training.
+We explained that this might include jobs, apprenticeships, college courses, university courses.
+They were asked to think about the options in their local area when answering the following questions.
 ''',
 
         'future_interest': '''''',
