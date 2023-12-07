@@ -138,17 +138,17 @@ for index, row in chosen.iterrows():
     for i in range(ncol):
         # Create topic button or score
         with cols[i]:
-            if row[i] == 'below':
+            if row.iloc[i] == 'below':
                 st.error('↓ Below average')
-            elif row[i] == 'average':
+            elif row.iloc[i] == 'average':
                 st.warning('~ Average')
-            elif row[i] == 'above':
+            elif row.iloc[i] == 'above':
                 st.success('↑ Above average')
-            elif pd.isnull(row[i]):
+            elif pd.isnull(row.iloc[i]):
                 st.info('n<10')
             else:
                 # Create button that, if clicked, changes to details
-                if st.button(row[i]):
-                    st.session_state['chosen_variable_lab'] = row[i]
+                if st.button(row.iloc[i]):
+                    st.session_state['chosen_variable_lab'] = row.iloc[i]
                     switch_page('details')
 

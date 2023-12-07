@@ -3,6 +3,7 @@ Functions used for the streamlit page Details.py
 '''
 import numpy as np
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 import textwrap as tr
 from utilities.colours import linear_gradient
@@ -35,13 +36,14 @@ def wrap_text(string, width):
     return(wrap)
 
 
-def details_stacked_bar(df):
+def details_stacked_bar(df, chosen_group='For all pupils'):
     '''
     Create stacked bar chart for detail page using the provided dataframe,
     which should contain results for one/a set of variables with the same
     response options
     Inputs:
     - df, dataframe - e.g. chosen_result
+    - chosen_group, string - group by 'group' col unless this = 'For all pupils'
     '''
     # Get colour spectrum between the provided colours, for all except one category
     # Use 'cat_lab' rather than 'cat' as sometimes cat is 0-indexed or 1-indexed
@@ -60,16 +62,61 @@ def details_stacked_bar(df):
     df['measure_lab_wrap'] = df['measure_lab'].apply(
         lambda x: wrap_text(x, 50))
 
-    # Create plot
-    fig = px.bar(
-        df, x='percentage', y='measure_lab_wrap', color='cat_lab',
-        text_auto=True, orientation='h', color_discrete_sequence=colours,
-        # Resort y axis order to match order of questions in survey
-        category_orders={'measure_lab_wrap': 
-                         df['measure_lab_wrap'].drop_duplicates().to_list()},
-        # Specify what is shown when hover over the chart barts
-        hover_data={'cat_lab': True, 'percentage': True,
-                    'measure_lab_wrap': False, 'count': True},)
+    # Standard stacked bar
+    if chosen_group=='For all pupils':
+        # Create plot
+        fig = px.bar(
+            df, x='percentage', y='measure_lab_wrap', color='cat_lab',
+            text_auto=True, orientation='h', color_discrete_sequence=colours,
+            # Resort y axis order to match order of questions in survey
+            category_orders={'measure_lab_wrap': 
+                            df['measure_lab_wrap'].drop_duplicates().to_list()},
+            # Specify what is shown when hover over the chart barts
+            hover_data={'cat_lab': True, 'percentage': True,
+                        'measure_lab_wrap': False, 'count': True},)
+        # Remove y axis title
+        fig.update_layout(yaxis_title=None)
+        # Specify figure heights for variable number so consistent bar size
+        height = {
+            1: 200,
+            2: 270,
+            3: 350,
+            4: 400,
+            5: 500,
+            6: 600,
+            7: 600,
+            8: 700,
+            9: 800,
+            10: 750}
+    # Grouped stacked bar
+    else:
+        # Create figure with facet_col to seperate groups
+        fig = px.bar(
+            df, x='percentage', y='group',
+            facet_col='measure_lab', facet_col_wrap=1,
+            color='cat_lab', orientation='h', text_auto=True,
+             color_discrete_sequence=colours,
+             hover_data={'cat_lab': True, 'percentage': True, 'count': True,
+                         'measure_lab': False, 'group': False})
+        # Remove 'measure_lab=' from figure titles
+        fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
+        # Remove y axis title from each
+        for axis in fig.layout:
+            if type(fig.layout[axis]) == go.layout.YAxis:
+                fig.layout[axis].title.text = ''
+        # Specify figure heights for variable number so consistent bar size
+        height = {
+            1: 500,
+            2: 500,
+            3: 500,
+            4: 500,
+            5: 500,
+            6: 1000,
+            7: 500,
+            8: 500,
+            9: 500,
+            10: 500}
+        
 
     # Add percent sign to the numbers labelling the bars
     fig.for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + ' %'))
@@ -80,7 +127,6 @@ def details_stacked_bar(df):
         tickvals=[0, 20, 40, 60, 80, 100],
         ticktext=['0%', '20%', '40%', '60%', '80%', '100%'],
         title=''))
-    fig.update_layout(yaxis_title=None)
 
     # Set y axis label colour (as defaults to going pale grey)
     fig.update_yaxes(tickfont=dict(color='#05291F'))
@@ -94,21 +140,8 @@ def details_stacked_bar(df):
         legend = dict(font_size=font_size)
     )
 
-    # Find number of variables being plot, then set height of figure based on that
-    # so the bars appear to be fairly consistent height between different charts
+    # Resize plot based on variable number and heights defined above
     n_var = df['measure_lab'].drop_duplicates().size
-    height = {
-        1: 200,
-        2: 270,
-        3: 350,
-        4: 400,
-        5: 500,
-        6: 600,
-        7: 600,
-        8: 700,
-        9: 800,
-        10: 750
-    }
     fig.update_layout(autosize=True, height=height[n_var])
 
     # Make legend horizontal, above axis and centered
@@ -129,14 +162,17 @@ def details_stacked_bar(df):
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
 
-def details_ordered_bar(df, school_name):
+def details_ordered_bar(school_scores, school_name):
     '''
     Created ordered bar chart with the results from each school, with the
     chosen school highlighted
     Inputs:
-    - df, dataframe with mean score at each school (e.g. between_schools)
+    - school_scores, dataframe with mean score at each school (e.g. between_schools)
     - school_name, string, name of school (matching name in 'school_lab' col)
     '''
+    # Make a copy of the school_scores df to work on (avoid SettingCopyWarning)
+    df = school_scores.copy()
+
     # Add colour for bar based on school
     df['colour'] = np.where(
         df['school_lab']==school_name, 'Your school', 'Other schools')
