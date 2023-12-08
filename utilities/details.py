@@ -47,8 +47,8 @@ def details_stacked_bar(df, chosen_group='For all pupils'):
     '''
     # Get colour spectrum between the provided colours, for all except one category
     # Use 'cat_lab' rather than 'cat' as sometimes cat is 0-indexed or 1-indexed
-    start_colour = '#CFE7F0'
-    end_colour = '#5D98AB'
+    start_colour = '#5D98AB'
+    end_colour = '#FFD700'
     n_cat = df['cat_lab'].drop_duplicates().size
     # If there is a missing category, create n-1 colours and set last as grey
     if df['cat_lab'].eq('Missing').any():
@@ -67,13 +67,15 @@ def details_stacked_bar(df, chosen_group='For all pupils'):
         # Create plot
         fig = px.bar(
             df, x='percentage', y='measure_lab_wrap', color='cat_lab',
-            text_auto=True, orientation='h', color_discrete_sequence=colours,
+            text_auto='.1f', orientation='h', color_discrete_sequence=colours,
             # Resort y axis order to match order of questions in survey
             category_orders={'measure_lab_wrap': 
                             df['measure_lab_wrap'].drop_duplicates().to_list()},
             # Specify what is shown when hover over the chart barts
-            hover_data={'cat_lab': True, 'percentage': True,
-                        'measure_lab_wrap': False, 'count': True},)
+            hover_data={'cat_lab': True,
+                        'percentage': ':.1f',
+                        'measure_lab_wrap': False,
+                        'count': True},)
         # Remove y axis title
         fig.update_layout(yaxis_title=None)
         # Specify figure heights for variable number so consistent bar size
@@ -94,10 +96,13 @@ def details_stacked_bar(df, chosen_group='For all pupils'):
         fig = px.bar(
             df, x='percentage', y='group',
             facet_col='measure_lab', facet_col_wrap=1,
-            color='cat_lab', orientation='h', text_auto=True,
+            color='cat_lab', orientation='h', text_auto='.1f',
              color_discrete_sequence=colours,
-             hover_data={'cat_lab': True, 'percentage': True, 'count': True,
-                         'measure_lab': False, 'group': False})
+             hover_data={'cat_lab': True,
+                         'percentage': ':.1f',
+                         'count': True,
+                         'measure_lab': False,
+                         'group': False})
         # Remove 'measure_lab=' from figure titles
         fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
         # Remove y axis title from each
@@ -204,13 +209,13 @@ def details_ordered_bar(school_scores, school_name):
     # (Colours used were matched to those from the summary page)
     lower = df['lower'].to_list()[0]
     upper = df['upper'].to_list()[0]
-    fig.add_hrect(y0=ymin, y1=lower, fillcolor='#F8DCDC', layer='below',
+    fig.add_hrect(y0=ymin, y1=lower, fillcolor='#FFCCCC', layer='below',
                 line={'color': '#9A505B'}, line_width=0.5,
                 annotation_text='Below average', annotation_position='top left')
-    fig.add_hrect(y0=lower, y1=upper, fillcolor='#F8ECD4', layer='below',
+    fig.add_hrect(y0=lower, y1=upper, fillcolor='#FFE8BF', layer='below',
                 line={'color': '#B3852A'}, line_width=0.5,
                 annotation_text='Average', annotation_position='top left')
-    fig.add_hrect(y0=upper, y1=ymax, fillcolor='#E0ECDC', layer='below',
+    fig.add_hrect(y0=upper, y1=ymax, fillcolor='#B6E6B6', layer='below',
                 line={'color': '#3A8461'}, line_width=0.5,
                 annotation_text='Above average', annotation_position='top left')
 
