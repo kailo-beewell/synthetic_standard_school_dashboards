@@ -81,16 +81,12 @@ div[class*='row-widget stRadio'] > label > div > p
     font-size: 20px;
 }
 
-/* Status elements */
+/* Text in status elements */
 div[data-testid='stNotificationContentError'] > div
 {
     justify-content: center;
 }
 div[data-testid='stNotificationContentWarning'] > div
-{
-    justify-content: center;
-}
-div[data-testid='stNotificationContentError'] > div
 {
     justify-content: center;
 }
@@ -101,6 +97,26 @@ div[data-testid='stNotificationContentSuccess'] > div
 div[data-testid='stNotificationContentInfo'] > div
 {
     justify-content: center;
+}
+
+/* Box of the status elements */
+div[role='alert']:has(> div > div[data-testid='stNotificationContentError'])
+{
+    background-color: #FFCCCC;
+}
+div[role='alert']:has(> div > div[data-testid='stNotificationContentWarning'])
+{
+    /*background-color: #FFF5E1;*/
+    background-color: #FFE8BF;
+}
+div[role='alert']:has(> div > div[data-testid='stNotificationContentSuccess'])
+{
+    /*background-color: #D1EECC;*/
+    background-color: #D9FFD4
+}
+div[role='alert']:has(> div > div[data-testid='stNotificationContentInfo'])
+{
+    background-color: #DCE4FF;
 }
 
 /* Horizontal line */
