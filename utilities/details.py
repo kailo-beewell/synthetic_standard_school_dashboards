@@ -45,6 +45,7 @@ def details_stacked_bar(df, chosen_group='For all pupils'):
     - df, dataframe - e.g. chosen_result
     - chosen_group, string - group by 'group' col unless this = 'For all pupils'
     '''
+
     # Get colour spectrum between the provided colours, for all except one category
     # Use 'cat_lab' rather than 'cat' as sometimes cat is 0-indexed or 1-indexed
     start_colour = '#5D98AB'
@@ -62,66 +63,51 @@ def details_stacked_bar(df, chosen_group='For all pupils'):
     df['measure_lab_wrap'] = df['measure_lab'].apply(
         lambda x: wrap_text(x, 50))
 
-    # Standard stacked bar
+    # Create figure with facet_col to seperate questions
+    fig = px.bar(
+        df, x='percentage', y='group',
+        facet_col='measure_lab', facet_col_wrap=1,
+        color='cat_lab', orientation='h', text_auto='.1f',
+        color_discrete_sequence=colours,
+        hover_data={'cat_lab': True,
+                    'percentage': ':.1f',
+                    'count': True,
+                    'measure_lab': False,
+                    'group': False})
+    # Remove 'measure_lab=' from figure titles
+    fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
+
+    # Remove y axis title from each
+    for axis in fig.layout:
+        if type(fig.layout[axis]) == go.layout.YAxis:
+            fig.layout[axis].title.text = ''
+
+    # Specify figure heights for variable number so consistent bar size
+    # Different when no filters as then it's 1 bar per Q rather than 2
     if chosen_group=='For all pupils':
-        # Create plot
-        fig = px.bar(
-            df, x='percentage', y='measure_lab_wrap', color='cat_lab',
-            text_auto='.1f', orientation='h', color_discrete_sequence=colours,
-            # Resort y axis order to match order of questions in survey
-            category_orders={'measure_lab_wrap': 
-                            df['measure_lab_wrap'].drop_duplicates().to_list()},
-            # Specify what is shown when hover over the chart barts
-            hover_data={'cat_lab': True,
-                        'percentage': ':.1f',
-                        'measure_lab_wrap': False,
-                        'count': True},)
-        # Remove y axis title
-        fig.update_layout(yaxis_title=None)
-        # Specify figure heights for variable number so consistent bar size
         height = {
-            1: 200,
-            2: 270,
-            3: 350,
-            4: 400,
-            5: 500,
-            6: 600,
-            7: 600,
-            8: 700,
-            9: 800,
-            10: 750}
-    # Grouped stacked bar
+            1: 190, # fine-tuned
+            2: 245,
+            3: 300, # fine-tuned
+            4: 400, # fine-tuned
+            5: 480, # fine-tuned
+            6: 600, # fine-tuned
+            7: 700, # fine-tuned
+            8: 932,
+            9: 1368,
+            10: 1500} # fine-tuned
     else:
-        # Create figure with facet_col to seperate groups
-        fig = px.bar(
-            df, x='percentage', y='group',
-            facet_col='measure_lab', facet_col_wrap=1,
-            color='cat_lab', orientation='h', text_auto='.1f',
-             color_discrete_sequence=colours,
-             hover_data={'cat_lab': True,
-                         'percentage': ':.1f',
-                         'count': True,
-                         'measure_lab': False,
-                         'group': False})
-        # Remove 'measure_lab=' from figure titles
-        fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
-        # Remove y axis title from each
-        for axis in fig.layout:
-            if type(fig.layout[axis]) == go.layout.YAxis:
-                fig.layout[axis].title.text = ''
-        # Specify figure heights for variable number so consistent bar size
         height = {
-            1: 500,
-            2: 500,
-            3: 500,
-            4: 500,
-            5: 500,
-            6: 1000,
-            7: 500,
-            8: 500,
-            9: 500,
-            10: 500}
-        
+            1: 240, # fine-tuned
+            2: 400,
+            3: 500, # fine-tuned
+            4: 670, # fine-tuned
+            5: 820, # fine-tuned
+            6: 1000, # fine-tuned
+            7: 1300, # fine-tuned
+            8: 1800,
+            9: 2400,
+            10: 2900} # fine-tuned
 
     # Add percent sign to the numbers labelling the bars
     fig.for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + ' %'))
