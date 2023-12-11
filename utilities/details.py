@@ -5,161 +5,139 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-import textwrap as tr
 from utilities.colours import linear_gradient
 
-def wrap_text(string, width):
-    '''
-    Wrap the provided string to the specified width, producing a single string
-    with new lines indicated by '<br>'. If string length is less than the
-    specified width, add blank space to the start of the string (so it will
-    still occupy the same amount of space on the chart)
-    Inputs:
-    - string: str, to wrap
-    - width: int, maximum length per line
-    '''
-    # Wrap string with new lines indicated by <br>
-    wrap = '<br>'.join(tr.wrap(string, width=width))
-    # If the whole string is less than the chosen width, at blank spaces to
-    # the start to it reaches that width
-    if len(wrap) < width:
-        blank = width - len(wrap)
-        wrap=(' '*blank) + wrap
-    # If string is greater than width (will therefore have breaks), at blank
-    # space to the beginning of the first line so that it reaches the 
-    # maximum width
-    elif len(wrap) > width:
-        first_line = wrap.split('<br>')[0]
-        if len(first_line) < width:
-            blank = width - len(first_line)
-            wrap=(' '*blank) + wrap
-    return(wrap)
 
-
-def details_stacked_bar(df, chosen_group='For all pupils'):
+def details_stacked_bar(dataset, chosen_group='For all pupils'):
     '''
-    Create stacked bar chart for detail page using the provided dataframe,
-    which should contain results for one/a set of variables with the same
-    response options
+    Creates a series of seperate stacked bar charts using the provided
+    dataframe, which should contain results for one/a set of variables with the
+    same response options. Each plot represents a different question.
     Inputs:
     - df, dataframe - e.g. chosen_result
-    - chosen_group, string - group by 'group' col unless this = 'For all pupils'
+    - chosen_group, string - determines whether it will be 2 bars or 1 per plot
     '''
-    # Get colour spectrum between the provided colours, for all except one category
-    # Use 'cat_lab' rather than 'cat' as sometimes cat is 0-indexed or 1-indexed
-    start_colour = '#CFE7F0'
-    end_colour = '#5D98AB'
-    n_cat = df['cat_lab'].drop_duplicates().size
-    # If there is a missing category, create n-1 colours and set last as grey
-    if df['cat_lab'].eq('Missing').any():
-        colours = linear_gradient(start_colour, end_colour, n_cat-1)['hex']
-        colours += ['#DDDDDD']
-    # Otherwise, just create colour spectrum using all categories
-    else:
-        colours = linear_gradient(start_colour, end_colour, n_cat)['hex']
-
-    # Wrap the labels for each measure
-    df['measure_lab_wrap'] = df['measure_lab'].apply(
-        lambda x: wrap_text(x, 50))
-
-    # Standard stacked bar
-    if chosen_group=='For all pupils':
-        # Create plot
-        fig = px.bar(
-            df, x='percentage', y='measure_lab_wrap', color='cat_lab',
-            text_auto=True, orientation='h', color_discrete_sequence=colours,
-            # Resort y axis order to match order of questions in survey
-            category_orders={'measure_lab_wrap': 
-                            df['measure_lab_wrap'].drop_duplicates().to_list()},
-            # Specify what is shown when hover over the chart barts
-            hover_data={'cat_lab': True, 'percentage': True,
-                        'measure_lab_wrap': False, 'count': True},)
-        # Remove y axis title
-        fig.update_layout(yaxis_title=None)
-        # Specify figure heights for variable number so consistent bar size
-        height = {
-            1: 200,
-            2: 270,
-            3: 350,
-            4: 400,
-            5: 500,
-            6: 600,
-            7: 600,
-            8: 700,
-            9: 800,
-            10: 750}
-    # Grouped stacked bar
-    else:
-        # Create figure with facet_col to seperate groups
-        fig = px.bar(
-            df, x='percentage', y='group',
-            facet_col='measure_lab', facet_col_wrap=1,
-            color='cat_lab', orientation='h', text_auto=True,
-             color_discrete_sequence=colours,
-             hover_data={'cat_lab': True, 'percentage': True, 'count': True,
-                         'measure_lab': False, 'group': False})
-        # Remove 'measure_lab=' from figure titles
-        fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
-        # Remove y axis title from each
-        for axis in fig.layout:
-            if type(fig.layout[axis]) == go.layout.YAxis:
-                fig.layout[axis].title.text = ''
-        # Specify figure heights for variable number so consistent bar size
-        height = {
-            1: 500,
-            2: 500,
-            3: 500,
-            4: 500,
-            5: 500,
-            6: 1000,
-            7: 500,
-            8: 500,
-            9: 500,
-            10: 500}
-        
-
-    # Add percent sign to the numbers labelling the bars
-    fig.for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + ' %'))
-
-    # Set x axis ticks to include % sign, and remove the axis titles
-    fig.update_layout(xaxis = dict(
-        tickmode='array',
-        tickvals=[0, 20, 40, 60, 80, 100],
-        ticktext=['0%', '20%', '40%', '60%', '80%', '100%'],
-        title=''))
-
-    # Set y axis label colour (as defaults to going pale grey)
-    fig.update_yaxes(tickfont=dict(color='#05291F'))
-
-    # Set font size
+    # Specify font size
     font_size = 18
-    fig.update_layout(
-        font = dict(size=font_size),
-        xaxis = dict(tickfont=dict(size=font_size)),
-        yaxis = dict(tickfont=dict(size=font_size)),
-        legend = dict(font_size=font_size)
-    )
 
-    # Resize plot based on variable number and heights defined above
-    n_var = df['measure_lab'].drop_duplicates().size
-    fig.update_layout(autosize=True, height=height[n_var])
+    # Create seperate figures for each of the measures
+    for measure in dataset['measure_lab'].drop_duplicates():
 
-    # Make legend horizontal, above axis and centered
-    fig.update_layout(
-        legend=dict(
-            orientation='h',
-            xanchor='center',
-            x=0.4,
-            yanchor='bottom',
-            y=1,
-            title=''))
+        # Create line to help visually seperate out the plots
+        st.divider()
 
-    # Disable zooming and panning
-    fig.layout.xaxis.fixedrange = True
-    fig.layout.yaxis.fixedrange = True
+        # Create header for plot (use markdown instead of plotly title as the
+        # plotly title overlaps the legend if it spans over 2 lines)
+        st.markdown(f'**{measure}**')
 
-    # Create plot on streamlit app
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+        # Filter to the relevant measure
+        df = dataset[dataset['measure_lab'] == measure]
+
+        # Get colour spectrum between the provided colours, for all except one category
+        # Use 'cat_lab' rather than 'cat' as sometimes cat is 0-indexed or 1-indexed
+        start_colour = '#5D98AB'
+        end_colour = '#FFD700'
+        n_cat = df['cat_lab'].drop_duplicates().size
+
+        # Create colour map and pattern map
+        # If there is a "less than 10 responses" category, create n-2 colours
+        # and set last two as shades of grey, with <10 responses having hashing
+        if df['cat_lab'].eq('Less than 10 responses').any():
+            colours = linear_gradient(start_colour, end_colour, n_cat-2)['hex']
+            colours += ['#DDDDDD']
+            colours += ['#DDDDDD']
+            pattern_map = ['']*(n_cat-1) + ['/']
+        # Do spectrum for all except final colour, which is Missing so set as grey
+        # And no patterns to map to
+        else:
+            colours = linear_gradient(start_colour, end_colour, n_cat-1)['hex']
+            colours += ['#DDDDDD']
+            pattern_map = False
+
+        if pattern_map:
+            # Create the figure
+            fig = px.bar(
+                # Specify data to plot
+                df, x='percentage', y='group',
+                # Set colours
+                color='cat_lab', color_discrete_sequence=colours,
+                # Set hashing
+                pattern_shape='cat_lab', pattern_shape_sequence = pattern_map,
+                # Label bars with the percentage to 1 decimal place
+                text_auto='.1f',
+                # Specify what to show when hover over the bars
+                hover_data={
+                    'cat_lab': True,
+                    'percentage': ':.1f',
+                    'count': True,
+                    'measure_lab': False,
+                    'group': False},
+                # Remove the title
+                title='')
+        else:
+            # Create the figure
+            fig = px.bar(
+                # Specify data to plot
+                df, x='percentage', y='group',
+                # Set colours
+                color='cat_lab', color_discrete_sequence=colours,
+                # Label bars with the percentage to 1 decimal place
+                text_auto='.1f',
+                # Specify what to show when hover over the bars
+                hover_data={
+                    'cat_lab': True,
+                    'percentage': ':.1f',
+                    'count': True,
+                    'measure_lab': False,
+                    'group': False},
+                # Remove the title
+                title='')
+
+        # Add percent sign to the numbers labelling the bars
+        fig.for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + ' %'))
+
+        # Set figure height depending on bar number
+        if chosen_group=='For all pupils':
+            height=240
+        else:
+            height=300
+
+        # Make changes to figure design...
+        fig.update_layout(
+            # Set font size of bar labels
+            font = dict(size=font_size),
+            # titlefont = dict(size=font_size),
+            # Set x axis ticks colour and size and to have percentage sign
+            xaxis = dict(
+                tickmode='array',
+                tickvals=[0, 20, 40, 60, 80, 100],
+                ticktext=['0%', '20%', '40%', '60%', '80%', '100%'],
+                tickfont=dict(color='#05291F', size=font_size),
+                title='Percentage of students who gave response',
+                titlefont=dict(color='#05291F', size=font_size)),
+            # Set y axis font color and size and remove title
+            yaxis = dict(
+                title='',
+                tickfont=dict(color='#05291F', size=font_size)),
+            # Customise legend...
+            legend = dict(
+                # Set tick font size and remove axis title
+                font_size=font_size,
+                title='',
+                # Make legend horizontal and centered above figure
+                orientation='h',
+                xanchor='center', yanchor='bottom', x=0.5, y=1,
+                # Remove legend click interactivity
+                itemclick=False, itemdoubleclick=False),
+            # Set figure height
+            height=height)
+
+        # Disable zooming and panning
+        fig.layout.xaxis.fixedrange = True
+        fig.layout.yaxis.fixedrange = True
+
+        # Create plot on streamlit app, hiding the plotly settings bar
+        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
 
 def details_ordered_bar(school_scores, school_name):
@@ -204,13 +182,13 @@ def details_ordered_bar(school_scores, school_name):
     # (Colours used were matched to those from the summary page)
     lower = df['lower'].to_list()[0]
     upper = df['upper'].to_list()[0]
-    fig.add_hrect(y0=ymin, y1=lower, fillcolor='#F8DCDC', layer='below',
+    fig.add_hrect(y0=ymin, y1=lower, fillcolor='#FFCCCC', layer='below',
                 line={'color': '#9A505B'}, line_width=0.5,
                 annotation_text='Below average', annotation_position='top left')
-    fig.add_hrect(y0=lower, y1=upper, fillcolor='#F8ECD4', layer='below',
+    fig.add_hrect(y0=lower, y1=upper, fillcolor='#FFE8BF', layer='below',
                 line={'color': '#B3852A'}, line_width=0.5,
                 annotation_text='Average', annotation_position='top left')
-    fig.add_hrect(y0=upper, y1=ymax, fillcolor='#E0ECDC', layer='below',
+    fig.add_hrect(y0=upper, y1=ymax, fillcolor='#B6E6B6', layer='below',
                 line={'color': '#3A8461'}, line_width=0.5,
                 annotation_text='Above average', annotation_position='top left')
 

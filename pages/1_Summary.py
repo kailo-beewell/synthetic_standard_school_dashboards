@@ -7,6 +7,12 @@ from utilities.fixed_params import page_setup
 # Set page configuration
 page_setup('wide')
 
+# Manually set school (will need to change to set globally on login)
+st.session_state.school = st.selectbox(
+    label='School (for testing)',
+    options=['School A', 'School B', 'School C', 'School D', 'School E', 'School F', 'School G'],
+    index=1)
+
 ###############################################################################
 
 st.title('''Summary of your school's results''')
