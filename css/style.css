@@ -112,7 +112,7 @@ div[role='alert']:has(> div > div[data-testid='stNotificationContentWarning'])
 div[role='alert']:has(> div > div[data-testid='stNotificationContentSuccess'])
 {
     /*background-color: #D1EECC;*/
-    background-color: #D9FFD4
+    background-color: #B6E6B6
 }
 div[role='alert']:has(> div > div[data-testid='stNotificationContentInfo'])
 {
@@ -122,6 +122,6 @@ div[role='alert']:has(> div > div[data-testid='stNotificationContentInfo'])
 /* Horizontal line */
 div[class='stMarkdown'] > div[data-testid='stMarkdownContainer'] > hr
 {
-    border-color: #E4E4E4;
+    border-color: #D7D7D7;
     margin: 0;
 }
