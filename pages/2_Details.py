@@ -15,6 +15,12 @@ page_setup('wide')
 df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
 df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
 
+# Manually set school (will need to change to set globally on login)
+st.session_state.school = st.selectbox(
+    label='School (for testing)',
+    options=['School A', 'School B', 'School C', 'School D', 'School E', 'School F', 'School G'],
+    index=1)
+
 ###############################################################################
 
 # Get the unique topics
@@ -189,20 +195,24 @@ if chosen_variable in multiple_charts:
     var_dict = multiple_charts[chosen_variable]
     for key, value in var_dict.items():
         # Add description
-        st.markdown(stacked_descrip[key])
+        # st.markdown(stacked_descrip[key])
         # Create plot (reversing the categories if required)
         to_plot = chosen_result[chosen_result['measure'].isin(value)]
         if key in reverse:
             to_plot = reverse_categories(to_plot)
         details_stacked_bar(to_plot, chosen_group)
+    # Create line to mark end of plots
+    st.divider()
 # Otherwise create a single stacked bar chart
 else:
     # Add description
-    st.markdown(stacked_descrip[chosen_variable])
+    # st.markdown(stacked_descrip[chosen_variable])
     # Create plot (reversing the categories if required)
     if chosen_variable in reverse:
         chosen_result = reverse_categories(chosen_result)
     details_stacked_bar(chosen_result, chosen_group)
+    # Create line to mark end of plots
+    st.divider()
 
 ###############################################################################
 # Blank space
