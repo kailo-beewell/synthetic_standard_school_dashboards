@@ -8,14 +8,13 @@ import streamlit as st
 from utilities.colours import linear_gradient
 
 
-def survey_responses(dataset, chosen_group='For all pupils'):
+def survey_responses(dataset):
     '''
     Create bar charts for each of the quetsions in the provided dataframe.
     The dataframe should contain questions which all have the same set
     of possible responses.
     Inputs:
     - df, dataframe - e.g. chosen_result
-    - chosen_group, string - determines whether it will be 2 bars or 1 per plot
     '''
     font_size=18
 
@@ -32,12 +31,28 @@ def survey_responses(dataset, chosen_group='For all pupils'):
             # Filter to the relevant measure
             df = dataset[dataset['measure_lab'] == measure]
 
+            # Check if there are any groups where n<10
+            mask = df['cat_lab'] == 'Less than 10 responses'
+            under_10 = df[mask]
+            # If one of the groups are n<10, remove from the dataframe and print
+            # explanation
+            if len(under_10.index) == 1:
+                # Remove group from dataframe
+                df = df[~mask]
+                # Print explanation
+                dropped = np.unique(under_10['group'])[0]
+                kept = np.unique(df['group'])[0]
+                st.markdown(f'''
+There were less than 10 responses from {dropped} pupils so results are just 
+shown for {kept} pupils.''')
+
             # Create colour map
-            if chosen_group=='For all pupils':
-                colour_map = {'All': '#FF6E4A'}
+            unique_groups = np.unique(df['group'])
+            if (len(unique_groups) == 1):
+                colour_map = {unique_groups[0]: '#FF6E4A'}
             else:
-                colour_map = {np.unique(df['group'])[0]: '#ffb49a',
-                            np.unique(df['group'])[1]: '#e05a38'}
+                colour_map = {unique_groups[0]: '#ffb49a',
+                              unique_groups[1]: '#e05a38'}
 
             # Create figure
             fig = px.bar(
@@ -67,12 +82,12 @@ def survey_responses(dataset, chosen_group='For all pupils'):
                 font = dict(size=font_size),
                 # Set x axis title, labels, colour and size
                 xaxis = dict(
-                    title='Question response',
+                    title='Response',
                     tickfont=dict(color='#05291F', size=font_size),
                     titlefont=dict(color='#05291F', size=font_size)),
                 # Set y axis title, labels, colour and size
                 yaxis = dict(
-                    title='Percentage of pupils providing response',
+                    title='Percentage of pupils<br>providing response',
                     titlefont=dict(color='#05291F', size=font_size),
                     tickfont=dict(color='#05291F', size=font_size),
                     ticksuffix='%'
@@ -159,7 +174,8 @@ def details_ordered_bar(school_scores, school_name):
         yaxis = dict(title='Mean score',
                      title_font_size=font_size,
                      tickfont=dict(size=font_size)),
-        legend = dict(font_size=font_size),
+        legend = dict(font_size=font_size,
+                      itemclick=False, itemdoubleclick=False),
         legend_title_text=''
     )
 
