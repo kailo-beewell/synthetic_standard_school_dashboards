@@ -86,22 +86,22 @@ asked to select all that apply.
 ''',
 
         'talk_yesno': '''
-Pupils were asked if they had ever **talked with the following people about 
-feeling down (e.g. stressed, sad, anxious)**.
+Pupils were asked if they had ever talked with the following people about 
+feeling down (e.g. stressed, sad, anxious).
 ''',
 
         'talk_listen': '''
-For pupils who responded yes, they were then asked if they **felt listened to**.
+For pupils who responded yes, they were then asked if they felt listened to.
 ''',
 
         'talk_helpful': '''
-For pupils who responded yes, they were also asked if the person **provided 
-advice that they found helpful**.
+For pupils who responded yes, they were also asked if the person provided 
+advice that they found helpful.
 ''',
 
         'talk_if': '''
-For pupils who responded no, they were asked **how they would feel about 
-speaking with that person** when feeling down.
+For pupils who responded no, they were asked how they would feel about 
+speaking with that person when feeling down.
 ''',
 
         'accept': '''
