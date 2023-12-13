@@ -246,17 +246,17 @@ def create_response_label_dict():
             4: 'Fully'
         },
         'home_happy': {
-            0: '0',
+            0: '0 - Very unhappy',
             1: '1',
             2: '2',
             3: '3',
             4: '4',
-            5: '5',
+            5: '5 - Not happy or unhappy',
             6: '6',
             7: '7',
             8: '8',
             9: '9',
-            10: '10'
+            10: '10 - Very happy'
         },
         'care_experience': {
             1: 'Yes',
