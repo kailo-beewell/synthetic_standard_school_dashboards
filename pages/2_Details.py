@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 from utilities.fixed_params import page_setup
-from utilities.details import details_stacked_bar, details_ordered_bar
+from utilities.details import survey_responses, details_ordered_bar
 from utilities.details_text import create_stacked_descrip
 
 # Set page configuration
@@ -200,7 +200,7 @@ if chosen_variable in multiple_charts:
         to_plot = chosen_result[chosen_result['measure'].isin(value)]
         if key in reverse:
             to_plot = reverse_categories(to_plot)
-        details_stacked_bar(to_plot, chosen_group)
+        survey_responses(to_plot, chosen_group)
     # Create line to mark end of plots
     st.divider()
 # Otherwise create a single stacked bar chart
@@ -210,7 +210,7 @@ else:
     # Create plot (reversing the categories if required)
     if chosen_variable in reverse:
         chosen_result = reverse_categories(chosen_result)
-    details_stacked_bar(chosen_result, chosen_group)
+    survey_responses(chosen_result, chosen_group)
     # Create line to mark end of plots
     st.divider()
 
