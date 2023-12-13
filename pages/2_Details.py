@@ -15,12 +15,6 @@ page_setup()
 df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
 df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
 
-# Manually set school (will need to change to set globally on login)
-st.session_state.school = st.selectbox(
-    label='School (for testing)',
-    options=['School A', 'School B', 'School C', 'School D', 'School E', 'School F', 'School G'],
-    index=1)
-
 ###############################################################################
 
 # Get the unique topics
@@ -67,16 +61,17 @@ st.markdown(f'''<p style='text-align: center;'><b>These questions are about {des
 st.markdown('')
 
 # Select pupils to view results for
-cols = st.columns([0.3, 0.7])
-with cols[0]:
-    chosen_group = st.selectbox(
-        '**View results:**', ['For all pupils', 'By year group',
-                              'By gender', 'By FSM', 'By SEN'])
+chosen_group = st.selectbox(
+    '**View results:**', ['For all pupils', 'By year group',
+                          'By gender', 'By FSM', 'By SEN'])
+
+# Blank space
+st.markdown('')
 
 st.header('Responses from pupils at your school')
 st.markdown(f'''
-Below, you can see how pupils at you school responded to survey questions \
-that relate to the topic of '{chosen_variable_lab.lower()}'.''')
+In this section, you can see how pupils at you school responded to survey \
+questions that relate to the topic of '{chosen_variable_lab.lower()}'.''')
 
 # Set default values
 year_group = ['All']
@@ -201,7 +196,7 @@ if chosen_variable in multiple_charts:
         to_plot = chosen_result[chosen_result['measure'].isin(value)]
         if key in reverse:
             to_plot = reverse_categories(to_plot)
-        survey_responses(to_plot, chosen_group)
+        survey_responses(to_plot)
 
 # Otherwise create a single stacked bar chart
 else:
@@ -211,7 +206,7 @@ else:
     # Create plot (reversing the categories if required)
     if chosen_variable in reverse:
         chosen_result = reverse_categories(chosen_result)
-    survey_responses(chosen_result, chosen_group)
+    survey_responses(chosen_result)
 
 ###############################################################################
 # Blank space
@@ -222,7 +217,19 @@ st.text('')
 ###############################################################################
 # Initial basic example of doing the comparator chart between schools...
 
+# Header and description of section
 st.header('Comparison of overall mean score to other schools')
+st.markdown(f'''
+In this section, an overall score for the topic of \
+'{chosen_variable_lab.lower()}' has been calculated for each pupil who \
+responded to these questions, and the mean score of the pupils at you school \
+is compared with pupils who completed the same survey questions at other \
+schools. This allows you to see whether the score for pupils at your school is \
+is average, below average or above average. This matches the scores presented \
+on the 'Summary' page.''')
+
+# Blank space
+st.text('')
 
 # Create dataframe based on chosen variable
 between_schools = df_scores[
@@ -243,7 +250,6 @@ elif devon_rag == 'average':
     st.warning('Average')
 elif devon_rag == 'above':
     st.success('Above average')
-
 details_ordered_bar(between_schools, st.session_state.school)
 
 # Note schools that don't have a match (might be able to do that based on
@@ -251,12 +257,13 @@ details_ordered_bar(between_schools, st.session_state.school)
 no_match = ['support', 'places', 'talk', 'accept', 'belong_local', 'wealth', 'future', 'climate']
 
 # Create duplicate to show example of what having matched schools as well looks like
+st.subheader('Comparison to matched schools across the country')
 cols = st.columns(2)
 if chosen_variable in no_match:
-    st.markdown('This question was unique to Northern Devon and cannot be compared to other schools.')
+    st.markdown('This question was unique to Northern Devon and cannot ' + 
+                'currently be compared to schools in other areas of England.')
 else:
     with cols[0]:
-        st.subheader('Comparison to matched schools from across the country')
         st.markdown('Your school:')
         if devon_rag == 'below':
             st.error('Below average')
