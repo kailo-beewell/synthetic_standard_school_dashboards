@@ -4,7 +4,7 @@ import base64
 from pathlib import Path
 
 # Set page configuration
-page_setup('wide')
+page_setup()
 
 st.title('About')
 

@@ -5,7 +5,7 @@ from utilities.switch_page_button import switch_page
 from utilities.fixed_params import page_setup
 
 # Set page configuration
-page_setup('wide')
+page_setup()
 
 # Import data used on this page
 data = pd.read_csv('data/survey_data/aggregate_scores.csv')

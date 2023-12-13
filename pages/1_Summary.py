@@ -5,7 +5,7 @@ from utilities.switch_page_button import switch_page
 from utilities.fixed_params import page_setup
 
 # Set page configuration
-page_setup('wide')
+page_setup()
 
 # Manually set school (will need to change to set globally on login)
 st.session_state.school = st.selectbox(
