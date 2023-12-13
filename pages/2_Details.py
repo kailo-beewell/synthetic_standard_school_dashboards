@@ -75,8 +75,8 @@ with cols[0]:
 
 st.header('Responses from pupils at your school')
 st.markdown(f'''
-Below, you can see how pupils responded to survey questions that relate 
-to {chosen_variable_lab.lower()}.''')
+Below, you can see how pupils at you school responded to survey questions \
+that relate to the topic of '{chosen_variable_lab.lower()}'.''')
 
 # Set default values
 year_group = ['All']
@@ -170,8 +170,9 @@ multiple_charts = {
 # Import descriptions for stacked bar charts
 response_descrip = create_response_description()
 
-# Categories to reverse
-reverse = ['esteem', 'negative', 'support', 'media', 'free_like', 'local_safe',
+# Categories to reverse - exceptions were media and bully, as the order when
+# negative to positive felt counter-intuitive
+reverse = ['esteem', 'negative', 'support', 'free_like', 'local_safe',
            'local_other', 'belong_local', 'bully']
 
 def reverse_categories(df):
@@ -194,7 +195,8 @@ if chosen_variable in multiple_charts:
     var_dict = multiple_charts[chosen_variable]
     for key, value in var_dict.items():
         # Add description
-        st.markdown(response_descrip[key])
+        if key in response_descrip.keys():
+            st.markdown(response_descrip[key])
         # Create plot (reversing the categories if required)
         to_plot = chosen_result[chosen_result['measure'].isin(value)]
         if key in reverse:
@@ -204,7 +206,8 @@ if chosen_variable in multiple_charts:
 # Otherwise create a single stacked bar chart
 else:
     # Add description
-    st.markdown(response_descrip[chosen_variable])
+    if chosen_variable in response_descrip.keys():
+        st.markdown(response_descrip[chosen_variable])
     # Create plot (reversing the categories if required)
     if chosen_variable in reverse:
         chosen_result = reverse_categories(chosen_result)
