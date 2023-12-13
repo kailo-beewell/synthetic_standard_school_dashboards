@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 from utilities.switch_page_button import switch_page
-from utilities.fixed_params import page_setup
+from utilities.fixed_params import page_setup, page_footer
 
 # Set page configuration
 page_setup()
@@ -152,3 +152,4 @@ for index, row in chosen.iterrows():
                     st.session_state['chosen_variable_lab'] = row.iloc[i]
                     switch_page('details')
 
+page_footer()

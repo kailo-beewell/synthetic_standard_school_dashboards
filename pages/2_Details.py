@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from utilities.fixed_params import page_setup
+from utilities.fixed_params import page_setup, page_footer
 from utilities.details import survey_responses, details_ordered_bar
 from utilities.details_text import create_response_description
 
@@ -274,3 +274,5 @@ else:
         st.markdown('Note: Just a duplicate of the above')
     with cols[1]:
         details_ordered_bar(between_schools, st.session_state.school)
+
+page_footer()
