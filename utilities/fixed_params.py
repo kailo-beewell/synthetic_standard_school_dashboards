@@ -16,6 +16,9 @@ def page_setup(layout):
         layout=layout,
         menu_items={'About': 'Dashboard for schools completing the standard version of the #BeeWell survey in North Devon and Torridge in 2023/24.'})
 
+    # Add logo to sidebar
+    st.sidebar.image('images/kailo_beewell_logo.png', output_format='PNG')
+
     # Import CSS style
     with open('css/style.css') as css:
         st.markdown(f'<style>{css.read()}</style>', unsafe_allow_html=True)
