@@ -6,10 +6,10 @@ import plotly.graph_objects as go
 import streamlit as st
 from utilities.fixed_params import page_setup
 from utilities.details import survey_responses, details_ordered_bar
-from utilities.details_text import create_stacked_descrip
+from utilities.details_text import create_response_description
 
 # Set page configuration
-page_setup('wide')
+page_setup()
 
 # Import the scores and the proportion each response
 df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
@@ -65,7 +65,6 @@ st.markdown(f'''<p style='text-align: center;'><b>These questions are about {des
 
 # Blank space
 st.markdown('')
-st.markdown('')
 
 # Select pupils to view results for
 cols = st.columns([0.3, 0.7])
@@ -74,11 +73,10 @@ with cols[0]:
         '**View results:**', ['For all pupils', 'By year group',
                               'By gender', 'By FSM', 'By SEN'])
 
-# Blank space
-st.markdown('')
-st.markdown('')
-
-# st.header('Responses from pupils at your school')
+st.header('Responses from pupils at your school')
+st.markdown(f'''
+Below, you can see how pupils responded to survey questions that relate 
+to {chosen_variable_lab.lower()}.''')
 
 # Set default values
 year_group = ['All']
@@ -170,7 +168,7 @@ multiple_charts = {
 }
 
 # Import descriptions for stacked bar charts
-stacked_descrip = create_stacked_descrip()
+response_descrip = create_response_description()
 
 # Categories to reverse
 reverse = ['esteem', 'negative', 'support', 'media', 'free_like', 'local_safe',
@@ -178,14 +176,15 @@ reverse = ['esteem', 'negative', 'support', 'media', 'free_like', 'local_safe',
 
 def reverse_categories(df):
     '''
-    Resorts dataframe so categories are in reverse order, but missing is still
-    at the end (despite being max value).
+    Resorts dataframe so categories are in reverse order, but non-respones is
+    still at the end (despite being max value).
     Inputs:
     df - dataframe to sort
     '''
-    # Resort everything except for the "Missing" responses
+    # Resort everything except for the pupils who did not respond (which is
+    # always the final category)
     new_df = df[df['cat'] != df['cat'].max()].sort_values(by=['cat'], ascending=False)
-    # Append missing back to the end
+    # Append those non-response counts back to the end
     new_df = pd.concat([new_df, df[df['cat'] == df['cat'].max()]])
     # Return the resorted dataframe
     return(new_df)
@@ -195,24 +194,21 @@ if chosen_variable in multiple_charts:
     var_dict = multiple_charts[chosen_variable]
     for key, value in var_dict.items():
         # Add description
-        # st.markdown(stacked_descrip[key])
+        st.markdown(response_descrip[key])
         # Create plot (reversing the categories if required)
         to_plot = chosen_result[chosen_result['measure'].isin(value)]
         if key in reverse:
             to_plot = reverse_categories(to_plot)
         survey_responses(to_plot, chosen_group)
-    # Create line to mark end of plots
-    st.divider()
+
 # Otherwise create a single stacked bar chart
 else:
     # Add description
-    # st.markdown(stacked_descrip[chosen_variable])
+    st.markdown(response_descrip[chosen_variable])
     # Create plot (reversing the categories if required)
     if chosen_variable in reverse:
         chosen_result = reverse_categories(chosen_result)
     survey_responses(chosen_result, chosen_group)
-    # Create line to mark end of plots
-    st.divider()
 
 ###############################################################################
 # Blank space
@@ -235,20 +231,17 @@ between_schools = df_scores[
 
 # Add box with RAG rating
 devon_rag = between_schools.loc[between_schools['school_lab'] == st.session_state.school, 'rag'].to_list()[0]
-cols = st.columns(2)
-with cols[0]:
-    st.subheader('Comparison to other schools in Northern Devon')
-    st.markdown(f'The average score for {chosen_variable_lab.lower()} at your school, compared to other schools in Northern Devon, was:')
-    if devon_rag == 'below':
-        st.error('↓ Below average')
-    elif devon_rag == 'average':
-        st.warning('~ Average')
-    elif devon_rag == 'above':
-        st.success('↑ Above average')
 
-# Show figure within column
-with cols[1]:
-    details_ordered_bar(between_schools, st.session_state.school)
+st.subheader('Comparison to other schools in Northern Devon')
+st.markdown(f'The average score for {chosen_variable_lab.lower()} at your school, compared to other schools in Northern Devon, was:')
+if devon_rag == 'below':
+    st.error('Below average')
+elif devon_rag == 'average':
+    st.warning('Average')
+elif devon_rag == 'above':
+    st.success('Above average')
+
+details_ordered_bar(between_schools, st.session_state.school)
 
 # Note schools that don't have a match (might be able to do that based on
 # what variables are present in their data v.s. not)
@@ -263,11 +256,11 @@ else:
         st.subheader('Comparison to matched schools from across the country')
         st.markdown('Your school:')
         if devon_rag == 'below':
-            st.error('↓ Below average')
+            st.error('Below average')
         elif devon_rag == 'average':
-            st.warning('~ Average')
+            st.warning('Average')
         elif devon_rag == 'above':
-            st.success('↑ Above average')
+            st.success('Above average')
         st.markdown('Note: Just a duplicate of the above')
     with cols[1]:
         details_ordered_bar(between_schools, st.session_state.school)
