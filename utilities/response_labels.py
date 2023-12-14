@@ -176,16 +176,18 @@ def create_response_label_dict():
             4: 'Not often',
             5: 'Almost never'
         },
+        # These have been simplified from the actual responses, which were
+        # e.g. 1 to less than 2 hours
         'media_hours': {
-            1: '0',
-            2: '<1',
-            3: '1 to <2',
-            4: '2 to <3',
-            5: '3 to <4',
-            6: '4 to <5',
-            7: '5 to <6',
-            8: '6 to <7',
-            9: '7+'
+            1: 'None',
+            2: 'Less than 1 hour',
+            3: '1 to 2 hours',
+            4: '2 to 3 hours',
+            5: '3 to 4 hours',
+            6: '4 to 5 hours',
+            7: '5 to 6 hours',
+            8: '6 to 7 hours',
+            9: '7 hours or more'
         },
         'sleep': {
             0: 'No',
@@ -244,17 +246,17 @@ def create_response_label_dict():
             4: 'Fully'
         },
         'home_happy': {
-            0: '0',
+            0: '0 - Very unhappy',
             1: '1',
             2: '2',
             3: '3',
             4: '4',
-            5: '5',
+            5: '5 - Not happy or unhappy',
             6: '6',
             7: '7',
             8: '8',
             9: '9',
-            10: '10'
+            10: '10 - Very happy'
         },
         'care_experience': {
             1: 'Yes',

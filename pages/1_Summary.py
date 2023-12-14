@@ -2,16 +2,10 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 from utilities.switch_page_button import switch_page
-from utilities.fixed_params import page_setup
+from utilities.fixed_params import page_setup, page_footer
 
 # Set page configuration
-page_setup('wide')
-
-# Manually set school (will need to change to set globally on login)
-st.session_state.school = st.selectbox(
-    label='School (for testing)',
-    options=['School A', 'School B', 'School C', 'School D', 'School E', 'School F', 'School G'],
-    index=1)
+page_setup()
 
 ###############################################################################
 
@@ -158,3 +152,4 @@ for index, row in chosen.iterrows():
                     st.session_state['chosen_variable_lab'] = row.iloc[i]
                     switch_page('details')
 
+page_footer()

@@ -3,183 +3,148 @@ Functions to create and return dictionaries containing text for the Details
 page, to help minimise the amount of information on that .py file
 '''
 
-def create_stacked_descrip():
+def create_response_description():
     '''
-    Creates and returns dictionary with descriptions for the stacked bar charts
+    Creates and returns dictionary with descriptions for the survey responses
     '''
     stacked_descrip = {
         'autonomy': '''
-**Question:** Pupils were asked to think about how each statement relates to their life, and then indicate how true it is for them.  
-**Interpretation:** From left to right, responses range from feeling **less** in control ('1 - Completely not true') to **more** in control ('5 - Completely true').''',
+For these questions, pupils were asked to think about how each statement 
+relates to their life, and then indicate how true it is for them.''',
 
-        'life_satisfaction': '''
-**Interpretation:** From left to right, responses range from feeling **less** satisfied ('0 - not at all') to **more** satisfied ('10 - completely').''',
+        #'life_satisfaction': '''''',
 
         'optimism_future': '''
-**Question:** How often pupils feel optimistic about the future.  
-**Interpretation:** From left to right, responses range from feeling **less** optimistic ('Almost never') to **more** optimistic ('Always').''',
+In this first question, pupils were asked how often they feel optimistic about 
+their future.''',
 
         'optimism_other': '''
-**Question:** How much pupils feel the following statements to describe themselves.  
-**Interpretation:** From left to right, responses range from feeling **less** optimistic ('Not at all like me') to **more** optimistic ('Very much like me').''',
+In the following questions, pupils were asked to choose how much they feel each 
+statement describes themselves.''',
 
         'wellbeing': '''
-**Question:** Pupils were asked to choose the response that best describes their experience of the following statements over the last 2 weeks.  \n
-**Interpretation:** From left to right, responses range from:
-* 'None of the time' = **lower** wellbeing levels, to  
-* 'All of the time' = **higher** wellbeing levels''',
+For these questions, some statements about feelings and thoughts were provided. 
+Pupils were asked to choose the response that best describes their experience 
+of each over the last 2 weeks.''',
 
         'esteem': '''
-**Question:** Pupils were asked how strongly they agreed or disagreed with the following statements about themselves now.  \n
-**Interpretation:** From left to right, responses range from:
-* 'Strongly disagree' = **lower** levels of self-esteem
-* 'Strongly agree' = **higher** levels of self-esteem''',
+Pupils were told that these questions ask about their current feelings about 
+themselves. They were asked to choose the answers that best describe how 
+strongly they agree or disagree with each of the statements about themselves
+now.''',
 
         'stress': '''
-**Question:** Pupils were asked how often they felt/thought the following statements during the last month.  \n
-**Interpretation:** From left to right, responses range from:
-* 'Never' = Feeling **more** stressed and struggling to cope, to  
-* 'Very Often' = Feeling **less** stressed and better able to cope''',
+Pupils were told that these questions about about their feelings and thoughts 
+during the last month. In each case, they were asked to choose how often they 
+felt or thought a certain way.''',
 
-        'appearance_happy': '''
-**Interpretation:** From left to right, responses range from:
-* '0 - Very unhappy'
-* '10 - Very happy'  \n
-Pupils were also able to respond 'prefer not to say'.''',
+        #'appearance_happy': '''''',
 
-        'appearance_feel': '''
-**Interpretation:** From left to right, responses range from:
-* 'Strongly agree' = appearance **absolutely** affects how feel about self
-* 'Strongly disagree' = appearance **does not** affect how feel about self''',
+        #'appearance_feel': '''''',
 
         'negative': '''
-**Question:** Pupils were asked which answer was best for them for the following statements about how they feel.  \n
-**Interpretation:** From left to right, responses range from:
-* 'Always' = **more** experience of emotional difficulties
-* 'Never' = **less** experience of emotional difficulties''',
+For these questions, there were statements about how pupils feel. They were 
+asked to choose the answer that was best for them.''',
 
-        'lonely': '''
-**Interpretation:** From left to right, responses range from:
-* 'Often or always' = **more** lonely
-* 'Never' = **less** lonely''',
+        #'lonely': '''''',
 
         'support': '''
-**Question:** Pupils were asked how strongly they agree or disagree with the following statements.  \n
-**Interpretation:** From left to right, responses range from:
-* 'Strongly disagree' = **less** knowledge on supporting themselves and finding advice
-* 'Strongly agree' = **more** knowledge on supporting themselves and finding advice''',
+Pupils were asked how strongly they agree or disagree with the following 
+statements.''',
 
-        'sleep': '''''',
+        #'sleep': '''''',
 
         'physical_days': '''
-**Question:** Young people were told that this question was about their physical \
-activity. It stated that we were 'particularly interested in activity that \
-increases your heart rate and makes you get out of breath some of the time. \
-Physical activity can be done in sports, school activities, playing with \
-friends, or walking and cycling to school or other places.'  
-**Interpretation:** From left to right, responses range from **less** to **more** days of physical activity per week.
+Young people were told that this question was about their physical
+activity. It stated that we were 'particularly interested in activity that
+increases your heart rate and makes you get out of breath some of the time.
+Physical activity can be done in sports, school activities, playing with
+friends, or walking and cycling to school or other places.' They were then
+asked how often they do physical activity.
 ''',
 
         'physical_hours': '''
-**Question:** Young people were asked to think about the days when they are \
-physically active, and to think about all the different activities they \
-typically do over the course of the day - and were then asked the following question.  
-**Interpretation:** From left to right, responses range from **shorter** to **longer** amounts of time spend doing physical activity.
+Young people were asked to think about the days when they are physically 
+active, and to think about all the different activities they typically do over 
+the course of the day. They were then asked how long they normally spend doing 
+physical activity
 ''',
 
-        'free_like': '''
-**Interpretation:** From left to right, responses range from:
-* 'Almost never' = **less** able to do things they like in their free time
-* 'Almost always' = **more** able to do things they like in their free time
-''',
+        #'free_like': '''''',
 
         'media': '''
-**Question:** Young people were asked how many hours they would normally spend \
-on social media per day, with examples of sites or apps like TikTok, Instagram, and Snapchat.  
-**Interpretation:** Responses range from **7+ hours** per day to **0 hours** per day.''',
+For this question, young people were asked how many hours they would normally 
+spend on social media per day, with examples of sites or apps like TikTok, 
+Instagram, and Snapchat.''',
 
-        'places_freq': '''''',
+        #'places_freq': '''''',
 
         'places_barriers': '''
-**Question:** Pupils were asked if there are any reasons that prevent them \
-from doing activities or going to places that they want to in their free time. \
-They were asked to select all that apply.
+Pupils were asked if there are any reasons that prevent them from doing 
+activities or going to places that they want to in their free time. They were 
+asked to select all that apply.
 ''',
 
         'talk_yesno': '''
-**Question:** Pupils were asked if they had ever talked with the following people about feeling down (e.g. stressed, sad, anxious)
+Pupils were asked if they had ever talked with the following people about 
+feeling down (e.g. stressed, sad, anxious).
 ''',
 
         'talk_listen': '''
-**Question:** For pupils who responded yes, they were then asked if they felt listened to.
+For pupils who responded yes, they were then asked if they felt listened to.
 ''',
 
         'talk_helpful': '''
-**Question:** For pupils who responded yes, they were then asked if the person provided advice that they found helpful.
+For pupils who responded yes, they were also asked if the person provided 
+advice that they found helpful.
 ''',
 
         'talk_if': '''
-**Question:** For pupils who responded no, they were asked how they would feel about speaking with that person when feeling down.
+For pupils who responded no, they were asked how they would feel about 
+speaking with that person when feeling down.
 ''',
 
         'accept': '''
-**Question:** Pupils were asked "do you feel accepted as you are" by the following people.  
-**Interpretation:** From left to right, responses range from:
-* 'Not at all' = **don't** feel accepted
-* 'Fully' = **do** feel accepted
+Pupils were asked "**do you feel accepted as you are**" by the following people.
 ''',
 
-        'school_belong': '''
-'Not at all' (**low** levels of belonging) to 'A lot' (**high** levels of belonging).
+        #'school_belong': '''''',
+
+        #'staff_relationship': '''''',
+
+        #'home_relationship': '''''',
+
+        #'home_happy': '''''',
+
+        #'local_safe': '''''',
+
+        'local_other': '''
+For these questions, pupils were asked to choose the answer that best 
+describes how strongly they agree or disagree with the statements about where 
+they live.
 ''',
 
-        'staff_relationship': '''
-From left to right, responses range from '1 - Never' (feel **unsupported**) to '5 - Always' (feel **well supported**).  
-  
-At school there is an adult who...
-''',
+        #'discrim': '''''',
 
-        'home_relationship': '''
-From left to right, responses range from '1 - Never' (feel **unsupported**) to '5 - Always' (feel **well supported**).  
-  
-At home there is an adult who...
-''',
+        #'belong_local': '''''',
 
-        'home_happy': '''
-This question is about how happy young people are with the home they live in.  
-Young people were ask to rate their response on a scale of 0 to 10, where 0 is very unhappy, 5 is neither happy or unhappy, and 10 is very happy''',
-
-        'local_safe': '''''',
-        'local_other': '''''',
-
-        'discrim': '''How often do people make you feel bad because of:''',
-
-        'belong_local': '''''',
-
-        'wealth': '''''',
+        #'wealth': '''''',
 
         'future_options': '''
-Pupils were told that these questions are about future options for work, education and training.
-We explained that this might include jobs, apprenticeships, college courses, university courses.
-They were asked to think about the options in their local area when answering the following questions.
+Pupils were told that these questions are about **future options for work, 
+education and training in their local area.** We explained that this might 
+include jobs, apprenticeships, college courses, university courses.
 ''',
 
-        'future_interest': '''''',
+        #'future_interest': '''''',
 
-        'future_support': '''''',
+        #'future_support': '''''',
 
-        'climate': '''''',
+        #'climate': '''''',
 
-        'social': '''''',
+        #'social': '''''',
 
-        'bully': '''
-These questions are about the frequency with which young people experience different types of bullying. \
-They were asked about three types of bullying, and given the following definitions for each:  
-* Being physically bullied at school - by this we mean getting hit, pushed around, threatened, or having belongings stolen.  
-* Being bullied in other ways at school - by this we mean insults, slurs, name \
-calling, threats, getting left out or excluded by others, or having rumours spread about you on purpose  
-* Being cyber-bullied - by this we mean someone sending mean text or online \
-messages about you, creating a website making fun of you, posting pictures that make you look bad online, or sharing them with others.'''
+        #'bully': ''''''
         }
     
     return(stacked_descrip)
