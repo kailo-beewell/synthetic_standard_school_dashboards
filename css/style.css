@@ -125,3 +125,22 @@ div[class='stMarkdown'] > div[data-testid='stMarkdownContainer'] > hr
     border-color: #D7D7D7;
     margin: 0;
 }
+
+/* Font */
+/* Start with desired font, then give similar font in generic font, as fallback
+if first doesnt work */
+/* Commercial font, can't upload, so can't use */
+/*
+@font-face
+{
+    font-family: 'Founders Grotesk';
+    src: url([URL TO FONT ON GITHUB]) format('woff2');
+}
+p
+{
+    font-family: 'Founders Grotesk', sans-serif;
+}
+h1, h2, h3 
+{
+    font-family: 'Founders Grotesk', sans-serif;
+} */
