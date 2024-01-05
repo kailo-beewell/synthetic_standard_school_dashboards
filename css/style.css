@@ -47,7 +47,7 @@ div[class*='stSelectbox'] > label > div[data-testid='stMarkdownContainer'] > p
 .stSelectbox > div[data-baseweb='select'] > div
 {
     font-size: 20px;
-    background-color: #F5F0ED;
+    /* background-color: #F5F0ED; */
 }
 
 /* Selectbox other options */
