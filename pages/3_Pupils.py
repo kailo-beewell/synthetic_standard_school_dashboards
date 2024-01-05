@@ -9,7 +9,7 @@ from utilities.details import survey_responses
 page_setup()
 
 # Import data
-df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
+dem_prop = pd.read_csv('data/survey_data/aggregate_demographic.csv')
 counts = pd.read_csv('data/survey_data/overall_counts.csv')
 
 ###############################################################################
@@ -34,42 +34,27 @@ There were {school_size} pupils at your school who took part in the #BeeWell sur
 This page describes the sample of pupils who completed the survey.  
 ''')
 
-st.markdown('''
-**To fix:**
-* Here it's not about pupil response always and sometimes about whether it was in council data.
-* Pupils should say your school rather than All''')
-
-###############################################################################
-# Figures
+# Blank space
+st.text('')
 
 # Select whether to view results alongside other schools or not
 chosen_group = st.selectbox(
     '**View results:**', ['For your school',
-                          'Compared with other schools in Northern Devon',
-                          'Compared with matched schools across the country'])
+                          'Compared with other schools in Northern Devon'])
 
-# SAME AS DETAILS
-# Set default values
-year_group = ['All']
-gender = ['All']
-fsm = ['All']
-sen = ['All']
-group_lab = 'year_group_lab' # set as default group but not used, prevents error
+# Blank space
+st.text('')
 
-# DIFFERENT TO DETAILS
-chosen_variable = 'demographic'
+###############################################################################
+# Figures
 
-# SAME AS DETAILS
-# Filter to chosen variable and school
-chosen = df_prop[
-    (df_prop['group'] == chosen_variable) &
-    (df_prop['school_lab'] == st.session_state.school) &
-    (df_prop['year_group_lab'].isin(year_group)) &
-    (df_prop['gender_lab'].isin(gender)) &
-    (df_prop['fsm_lab'].isin(fsm)) &
-    (df_prop['sen_lab'].isin(sen))]
+# Filter to results from current school
+chosen = dem_prop[dem_prop['school_lab'] == st.session_state.school]
 
-# SAME AS DETAILS
+# If only looking at that school, drop the comparator school group data
+if chosen_group == 'For your school':
+    chosen = chosen[chosen['school_group'] == 1]
+
 # Extract the lists with results stored in the dataframe
 # e.g. ['Yes', 'No'], [20, 80], [2, 8] in the original data will become
 # seperate columns with [Yes, 20, 2] and [No, 80, 8]
@@ -87,12 +72,12 @@ for index, row in chosen.iterrows():
         # Add measure (don't need to extract as string rather than list in df)
         df['measure'] = row['measure']
         df['measure_lab'] = row['measure_lab']
-        df['group'] = row[group_lab]
+        df['group'] = row['school_group_lab']
         df_list.append(df)
     # As we still want a bar when n<10, we create a record still but label as such
     else:
         df = row.to_frame().T[['measure', 'measure_lab']]
-        df['group'] = row[group_lab]
+        df['group'] = row['school_group_lab']
         df['cat'] = 0
         df['cat_lab'] = 'Less than 10 responses'
         df['count'] = np.nan
@@ -101,8 +86,6 @@ for index, row in chosen.iterrows():
 
 chosen_result = pd.concat(df_list)
 
-# DIFFERENT TO DETAILS (as no descriptions or reversing)
-# Create plot
 survey_responses(chosen_result)
 
 page_footer()
