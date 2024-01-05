@@ -258,21 +258,29 @@ no_match = ['support', 'places', 'talk', 'accept', 'belong_local', 'wealth', 'fu
 
 # Create duplicate to show example of what having matched schools as well looks like
 st.subheader('Comparison to matched schools across the country')
-cols = st.columns(2)
+
 if chosen_variable in no_match:
     st.markdown('This question was unique to Northern Devon and cannot ' + 
                 'currently be compared to schools in other areas of England.')
 else:
-    with cols[0]:
-        st.markdown('Your school:')
-        if devon_rag == 'below':
-            st.error('Below average')
-        elif devon_rag == 'average':
-            st.warning('Average')
-        elif devon_rag == 'above':
-            st.success('Above average')
-        st.markdown('Note: Just a duplicate of the above')
-    with cols[1]:
-        details_ordered_bar(between_schools, st.session_state.school)
+    st.markdown(f'The average score for {chosen_variable_lab.lower()} at your school, compared to matched schools from across the country, was:')
+    if devon_rag == 'below':
+        st.error('Below average')
+    elif devon_rag == 'average':
+        st.warning('Average')
+    elif devon_rag == 'above':
+        st.success('Above average')
+    st.markdown('Note: Just a duplicate of the above')
+    st.markdown('Caveats to bear in mind...')
+    details_ordered_bar(between_schools, st.session_state.school)
+
+# Create section explaining how the score was calculated
+st.subheader('Further details')
+with st.expander('How was this score calculated?'):
+    st.markdown(f'The score for {chosen_variable_lab.lower()} was calculated...')
+with st.expander('How was the rating compared to other schools produced?'):
+    st.markdown('The average (mean) score for pupils at your school was compared to other shcools...')
+with st.expander('How were matched schools identified?'):
+    st.markdown('For Northern Devon all other schools... for other sites matched... explain why...')
 
 page_footer()

@@ -9,6 +9,35 @@ def create_response_label_dict():
     '''
     # Define the labels to use for different columns
     labels = {
+        'year_group': {
+            8: 'Year 8',
+            10: 'Year 10'
+        },
+        'fsm': {
+            0: 'Non-FSM',
+            1: 'FSM'
+        },
+        'sen': {
+            0: 'Non-SEN',
+            1: 'SEN'
+        },
+        'ethnicity': {
+            1: 'Ethnic minority',
+            2: 'White British'
+        },
+        'english_additional': {
+            0: 'No',
+            1: 'Yes'
+        },
+        'school': {
+            1: 'School A',
+            2: 'School B',
+            3: 'School C',
+            4: 'School D',
+            5: 'School E',
+            6: 'School F',
+            7: 'School G'
+        },
         'gender': {
             1: 'Girl',
             2: 'Boy',
