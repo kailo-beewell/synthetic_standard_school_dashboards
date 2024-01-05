@@ -145,6 +145,50 @@ include jobs, apprenticeships, college courses, university courses.
         #'social': '''''',
 
         #'bully': ''''''
+
+        # Several demographic question have no description provided
+
+        'year_group': '''
+This section contains data on the pupils who completed the survey as provided 
+by Devon County Council.
+''',
+
+        'transgender': '''
+For this question, pupils were told that some young people are transgender, 
+and that this means  that their gender is different to the one they were 
+assigned at birth (e.g.,  someone who was assigned male at birth but is a girl, 
+or someone who is non-binary and is not a girl or a boy). They were then asked 
+whether they consider themselves to be transgender.
+''',
+
+        'sen': '''
+Provide description of the SEN data once I am aware of exactly what it is based 
+on (e.g. EHCP). This information is provided by Devon County Council.
+''',
+
+        'neurodivergent': '''
+Pupils were told that this question is about identifying as neurodivergent. 
+They were told that being neurodivergent can mean being:
+* Dyslexic
+* Dyspraxic
+* Dyscalculic
+* Autistic
+Or having:
+* ADHD or ADD
+* A tic disorder such as Tourette’s
+* A speech, language or communication disorder
+* An intellectual disability or learning disability
+* Dysgraphia
+* Foetal alcohol spectrum disorder
+It stated that they might describe themselves as neurodivergent if they 
+identify with one or more of the conditions above, or they may be waiting for 
+or have a diagnosis. They were then asked if they identify as neurodivergent.
+''',
+
+        'birth_parent1': '''
+These questions were about the background of pupils and their parents 
+(specifically, if they were born in or came to the UK).
+'''
         }
     
     return(stacked_descrip)
