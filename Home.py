@@ -12,80 +12,35 @@ data = pd.read_csv('data/survey_data/aggregate_scores.csv')
 
 ###############################################################################
 
+# Title and introduction
 st.title('The #BeeWell Survey')
-st.markdown('''<p style='text-align: center;'>This dashboard summarises your schools results from the #BeeWell survey.</p>''', unsafe_allow_html=True)
-st.image('images/dashboard_home_section.png', output_format='PNG')
-
-st.text('')
-st.subheader('Dashboard guide')
-st.markdown('Use the sidebar on the left to navigate to different pages of the dashboard.')
-
-# Replace CSS styling of the buttons on this page
 st.markdown('''
-<style>
-div.stButton > button:first-child
-{
-    background-color: #D4ED6B;
-    border-color: #B0C74A;
-}
-</style>''', unsafe_allow_html=True)
+<p style='text-align: center;'>
+Thank you for taking part in the #BeeWell survey delivered by Kailo.<br>
+You can use this dashboard to explore results from pupils at your school.</p>
+''', unsafe_allow_html=True)
 
-cols = st.columns([0.3, 0.7])
-with cols[0]:
-    if st.button('Summary'):
-        switch_page('summary')
-with cols[1]:
-    st.markdown('Gives an overview of how the average results at your school compare with other school, for all pupils and by pupil groups (year group, gender, FSM, SEN).')
+# Image
+st.image('images/home_image_3_transparent.png', use_column_width=True)
 
-st.text('')
-cols = st.columns([0.3, 0.7])
-with cols[0]:
-    if st.button('Details'):
-        switch_page('details')
-with cols[1]:
-    st.markdown('Shows you how pupils at your school responded to each of the survey questions. Also allows you to see more detail on the comparison to other schools.')
-
-st.text('')
-cols = st.columns([0.3, 0.7])
-with cols[0]:
-    if st.button('Pupils'):
-        switch_page('pupils')
-with cols[1]:
-    st.markdown('Shows the characteristics of pupils who completed the survey at your school, compared with other schools.')
-
-st.text('')
-cols = st.columns([0.3, 0.7])
-with cols[0]:
-    if st.button('About'):
-        switch_page('about')
-with cols[1]:
-    st.markdown('Contains background information about the survey.')
-
-st.text('')
-st.text('')
-st.subheader('FAQs')
-with st.expander('Who completed the #BeeWell survey?'):
-    st.markdown('''
-This year, pupils in Years 8 and 10 at seven secondary schools from across North Devon and Torridge completed the standard version of the #BeeWell survey.
-The survey contained questions to measure wellbeing and the factors that might impact it.
-#BeeWell surveys were also completed by pupils at schools in Hampshire, Greater Manchester and Havering.
+# Navigation
+st.subheader('Navigation')
+st.markdown('''
+Use the sidebar on the left to navigate to different pages of the dashboard:
+* **About** - Information on the #BeeWell survey, Kailo, and this dashboard
+* **Summary** - Simple overview of your results compared with other schools
+* **Explore results** - Explore how pupils responded to each survey question,
+and see further information on how the summary page's comparison to other
+schools was generated
+* **Who took part** - Characteristics of the pupils who took part in the survey
 ''')
-with st.expander('What is the purpose of the survey?'):
-    st.markdown('Question answer')
-with st.expander('How should we use these results?'):
-    st.markdown('Question answer')
-with st.expander('Can I access this dashboard on different devices?'):
-    st.markdown('''
-Yes - although it has been designed to view full screen on a computer/laptop, 
-it is possible to view on other devices like a mobile phone. It will resize the 
-page to your screen, but if the figures appear cramped/difficult to read, you may want to zoom out.''')
 
-#cols = st.columns(3)
-#with cols[0]:
-#    st.image('images/discovery-looking-researching.jpg')
-#with cols[1]:
-#    st.image('images/levelling-the-ground.jpg')
-#with cols[2]:
-#    st.image('images/young-person-journey.jpg')
+# Blank space
+st.text('')
+
+# Navigation video
+st.subheader('Video guide')
+st.video('https://youtu.be/jmYH7F2Bd4Q')
+st.markdown('*Placeholder survey video - but I could screen record navigating dashboard?*')
 
 page_footer()
