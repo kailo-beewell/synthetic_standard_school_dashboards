@@ -91,16 +91,8 @@ for index, row in chosen.iterrows():
 # Combine into single dataframe
 chosen_result = pd.concat(df_list)
 
-# Resort measures
-new_order = ['year_group', 'fsm', 'ethnicity', 'english_additional',
-             'gender', 'transgender', 'care_experience', 'young_carer', 'sen',
-             'neurodivergent', 'birth_parent1', 'birth_parent2', 'birth_you',
-             'birth_you_age', 'sexual_orientation']
-chosen_result['measure'] = (
-    chosen_result['measure'].astype('category').cat.set_categories(new_order))
-chosen_result = chosen_result.sort_values(['measure'])
-
-# Define headers for each of the plot groups
+# Define headers for each of the plot groups - this will also define the order
+# in which these groups are shown
 header_dict = {
     'most_of_council': 'Demographic data from the council',
     'gender': 'Gender and transgender',
@@ -110,22 +102,27 @@ header_dict = {
     'birth': 'Background',
     'sexual_orientation': 'Sexual orientation'
 }
+
 # Import descriptions for the charts
 response_descrip = create_response_description()
 
 # This plots measures in loops, basing printed text on the measure names and
 # basing the titles of groups on the group names (which differs to the survey
 # responses page, which bases printed text on group names)
-for plot_group in chosen_result['plot_group'].drop_duplicates():
+for plot_group in header_dict.keys():
+
     # Add the title for that group
     st.header(header_dict[plot_group])
+
     # Find the measures in that group and loop through them
     measures = chosen_result.loc[
         chosen_result['plot_group'] == plot_group, 'measure'].drop_duplicates()
     for measure in measures:
+
         # Add descriptive text if there is any
         if measure in response_descrip.keys():
             st.markdown(response_descrip[measure])
+
         # Filter to current measure and plot
         to_plot = chosen_result[chosen_result['measure'] == measure]
         survey_responses(to_plot)
