@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 from PIL import Image
 from utilities.switch_page_button import switch_page
-from utilities.fixed_params import page_setup, page_footer
+from utilities.fixed_params import page_setup
 
 # Set page configuration
 page_setup()
@@ -50,5 +50,3 @@ what pupils could expect from taking part in the survey. For more information,
 see the 'About' page of the dashboard.
 ''')
 st.video('https://youtu.be/jmYH7F2Bd4Q')
-
-page_footer()

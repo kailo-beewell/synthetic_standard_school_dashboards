@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from utilities.fixed_params import page_setup, page_footer
+from utilities.fixed_params import page_setup
 from utilities.details import survey_responses, details_ordered_bar
 from utilities.details_text import create_response_description
 
@@ -282,5 +282,3 @@ with st.expander('How was the rating compared to other schools produced?'):
     st.markdown('The average (mean) score for pupils at your school was compared to other shcools...')
 with st.expander('How were matched schools identified?'):
     st.markdown('For Northern Devon all other schools... for other sites matched... explain why...')
-
-page_footer()

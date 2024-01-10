@@ -2,7 +2,7 @@ from ast import literal_eval
 import numpy as np
 import pandas as pd
 import streamlit as st
-from utilities.fixed_params import page_setup, page_footer
+from utilities.fixed_params import page_setup
 from utilities.details import survey_responses
 from utilities.details_text import create_response_description
 
@@ -17,7 +17,7 @@ counts = pd.read_csv('data/survey_data/overall_counts.csv')
 # Introduction including total pupil number
 
 # Title
-st.title('Pupils')
+st.title('Who took part?')
 
 # Filter to relevant school
 school_counts = counts.loc[counts['school_lab'] == st.session_state.school]
@@ -126,5 +126,3 @@ for plot_group in header_dict.keys():
         # Filter to current measure and plot
         to_plot = chosen_result[chosen_result['measure'] == measure]
         survey_responses(to_plot)
-
-page_footer()
