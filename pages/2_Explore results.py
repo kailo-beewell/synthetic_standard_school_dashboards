@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from utilities.fixed_params import page_setup, page_footer
+from utilities.fixed_params import page_setup
 from utilities.details import survey_responses, details_ordered_bar
 from utilities.details_text import create_response_description
 
@@ -254,25 +254,23 @@ details_ordered_bar(between_schools, st.session_state.school)
 
 # Note schools that don't have a match (might be able to do that based on
 # what variables are present in their data v.s. not)
-no_match = ['support', 'places', 'talk', 'accept', 'belong_local', 'wealth', 'future', 'climate']
+# no_match = ['support', 'places', 'talk', 'accept', 'belong_local', 'wealth', 'future', 'climate']
+# if chosen_variable in no_match:
+#     st.markdown('This question was unique to Northern Devon and cannot ' + 
+#                'currently be compared to schools in other areas of England.')
+# (else continued with producing the figure as above)
 
 # Create duplicate to show example of what having matched schools as well looks like
-st.subheader('Comparison to matched schools across the country')
-
-if chosen_variable in no_match:
-    st.markdown('This question was unique to Northern Devon and cannot ' + 
-                'currently be compared to schools in other areas of England.')
-else:
-    st.markdown(f'The average score for {chosen_variable_lab.lower()} at your school, compared to matched schools from across the country, was:')
-    if devon_rag == 'below':
-        st.error('Below average')
-    elif devon_rag == 'average':
-        st.warning('Average')
-    elif devon_rag == 'above':
-        st.success('Above average')
-    st.markdown('Note: Just a duplicate of the above')
-    st.markdown('Caveats to bear in mind...')
-    details_ordered_bar(between_schools, st.session_state.school)
+st.subheader('Things to bear in mind')
+st.markdown('''
+There are lots of reasons why pupils in different schools may get different
+results, and its important to consider this when comparing between schools. For
+example, schools with fewer respondents are more likely to get more extreme
+results (above or below average) than schools with a large number of respondents
+(which are most likely to get average results). There will also be differences
+in the pupil populations, such as differing proportions of students of each
+gender, year group, free school meal eligibility and special educational needs.
+''')
 
 # Create section explaining how the score was calculated
 st.subheader('Further details')
@@ -280,7 +278,3 @@ with st.expander('How was this score calculated?'):
     st.markdown(f'The score for {chosen_variable_lab.lower()} was calculated...')
 with st.expander('How was the rating compared to other schools produced?'):
     st.markdown('The average (mean) score for pupils at your school was compared to other shcools...')
-with st.expander('How were matched schools identified?'):
-    st.markdown('For Northern Devon all other schools... for other sites matched... explain why...')
-
-page_footer()

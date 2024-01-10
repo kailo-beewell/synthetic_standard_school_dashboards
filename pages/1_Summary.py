@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 from utilities.switch_page_button import switch_page
-from utilities.fixed_params import page_setup, page_footer
+from utilities.fixed_params import page_setup
 
 # Set page configuration
 page_setup()
@@ -50,7 +50,7 @@ st.subheader('Choose what results to view')
 
 # Choose variable and comparator
 chosen_group = st.selectbox(label='Results:', options=['All pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
-comparator = st.selectbox('Compared against:', ['Other schools in Northern Devon', 'Matched schools from across the country'])
+#comparator = st.selectbox('Compared against:', ['Other schools in Northern Devon', 'Matched schools from across the country'])
 
 # Filter data depending on choice
 year_group = ['All']
@@ -105,6 +105,8 @@ st.markdown('')
 st.markdown('')
 st.markdown('')
 st.subheader('Results')
+st.markdown('Click on a topic to view results in more detail.')
+st.markdown('')
 
 description = chosen['description']
 chosen = chosen.drop('description', axis=1)
@@ -151,5 +153,3 @@ for index, row in chosen.iterrows():
                 if st.button(row.iloc[i]):
                     st.session_state['chosen_variable_lab'] = row.iloc[i]
                     switch_page('details')
-
-page_footer()
