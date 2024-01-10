@@ -39,6 +39,7 @@ Our model is formed of three key stages:
 
 To find our more about Kailo, check out our site: https://kailo.community/
 ''')
+    st.image('images/kailo_systems_adapted.png')
 
 header_container('orange_container', '🐝 The #BeeWell survey', '#F7DCC8')
 
@@ -49,6 +50,7 @@ North Devon and Torridge completed the standard version of the #BeeWell survey.
                 
 A symbol version of the survey was also completed by pupils in Years 7 to 11
 from **two non-mainstream schools** in Northern Devon.''')
+    st.image('images/northern_devon.png')
 
 with st.expander('What topics did the survey cover?', expanded=expand):
     st.markdown('''
@@ -103,24 +105,60 @@ https://beewellprogramme.org/.''')
 
 header_container('blue_container', '📊 Dashboard', '#D0C9FF')
 
+with st.expander('What data has been used in this dashboard?', expanded=expand):
+    st.markdown('''
+This dashboard presents the results from pupils at your school who completed
+the survey. To give context to these results, we've added comparisons against
+pupils from schools across Northern Devon.
+
+The survey responses were combined with data shared by the local authority such
+as free school meal eligibility and special education needs to give further 
+insight into responses.
+''')
+
 with st.expander('How should we use these results?', expanded=expand):
-    st.markdown('Question answer')
+    st.markdown('''
+These data can provide a useful starting point for discussions about the needs
+of your school population and priority areas for development and improvement.
+It can also be useful in considering areas of strengths and/or helping pupils
+reflect on their positive qualities.
+
+Data in your #BeeWell report may be useful in indicating progress against
+targets in your School Improvement Plan or help to identify future target areas.
+It may help to identify areas of priority for staff training or be used as
+context when considering academic data for participating year groups. It can
+also be used as independent evidence in the context of an Ofsted inspection.
+                
+Finally, young people consulted during the set-up of #BeeWell in Greater
+Manchester felt strongly that pupils should be included in discussions around
+feedback, particularly to plan activities and approaches to raise awareness of
+strengths or difficulties the #BeeWell survey may highlight. They suggested
+involving a range of students (not just those involved in school councils) in
+planning how to raise awareness about wellbeing and to support the needs of
+young people.
+''')
+    st.image('images/thinking.png')
 
 with st.expander('Can I access this dashboard on different devices?', expanded=expand):
     st.markdown('''
-Yes - although it has been designed to view full screen on a computer/laptop, 
-it is possible to view on other devices like a mobile phone. It will resize the 
-page to your screen, but if the figures appear cramped/difficult to read, you may want to zoom out.''')
+Yes - this dashboard will resize so you should be able to access it on a range
+of devices (computer/laptop, tablet, phone, etc).
+''')
+    st.image('images/devices.png')
 
-with st.expander('eg How was stuff calculated?', expanded=expand):
+with st.expander('Will there be support available for interpreting and ' +
+                 'actioning on the dashboard results?', expanded=expand):
     st.markdown('''
-Data information - will want to provide some details about calculations and
-data used within the dashboard, but likely finer details not necessary, and
-could instead be in a seperate document within the GitHub itself.''')
+Yes - Child Outcomes Research Consortium (CORC) has been funded to provide
+seminars and 1:1 support to schools in Northern Devon, to help you understand
+how to navigate the dashboard, interpret results, and suggest feedback in the
+development of action plans. You should receive information about this via
+email, but if you have not or have any questions, please contact us at
+kailobeewell@dartington.org.uk.''')
 
-header_container('yellow_container', '😌Wellbeing', '#FFF3B3')
+header_container('yellow_container', '😌 Wellbeing', '#FFF3B3')
 
-with st.expander('''Young people's wellbeing: what we already know''', expanded=expand):
+with st.expander('''What do we already know about young people's wellbeing?''', expanded=expand):
     st.markdown('''
 * The peak age of onset of mental health difficulties is 14.5 years.<sup>[1]</sup>
 * Mental health and wellbeing in adolescence predicts adult health, labour
@@ -133,6 +171,17 @@ across nearly 80 countries in terms of life satisfaction.<sup>[5,6]</sup>
 drivers, including their health and routines, hobbies and entertainment,
 relationships, school, environment and society, and how they feel about their
 future.<sup>[7]</sup>
+
+<p style='font-size: 12px;'>
+References:<br>
+[1] Solmi, M. et al (2021). Age at onset of mental disorders worldwide: large-scale meta-analysis of 192 epidemiological studies. Molecular Psychiatry, Online First. Available at: https://www.nature.com/articles/s41380-021-01161-7<br>
+[2] Goodman A, Joshi H, Nasim B, Tyler C (2015). Social and emotional skills in childhood and their long-term effects on adult life. London: EIF. Available at: https://www.eif.org.uk/report/social-and-emotional-skills-in-childhood-and-their-long-term-effects-on-adult-life.<br>
+[3] Children’s Society (2021). The Good Childhood Report 2021. London: Children’s Society. Available at: https://www.childrenssociety.org.uk/information/professionals/resources/good-childhood-report-2021<br>
+[4] NHS Digital (2021). Mental health of children and young people in England, 2021 – wave 2 follow up to the 2017 survey. London: NHS Digital. Available at: https://digital.nhs.uk/data-and-information/publications/statistical/mental-health-of-children-and-young-people-in-england/2021-follow-up-to-the-2017-survey<br>
+[5] Office for Economic Cooperation and Development (2019). Programme for International Student Assessment (PISA) results. Paris: OECD. Available at: https://www.oecd.org/publications/pisa-2018-results-volume-iii-acd78851-en.htm<br>
+[6] Marquez J, Long, E (2021). A Global Decline in Adolescents’ Subjective Well-Being: a Comparative Study Exploring Patterns of Change in the Life Satisfaction of 15-Year-Old Students in 46 Countries. Child Ind Res 14, 1251–1292 (2021). Available at: https://doi.org/10.1007/s12187-020-09788-8<br>
+[7] #BeeWell Programme Team (2021). #BeeWell survey. Manchester: University of Manchester. Available at: https://gmbeewell.org/wp-content/uploads/2021/09/BeeWell-Questionnaires-Booklet.pdf
+</p>
 ''', unsafe_allow_html=True)
 
 #with st.expander('Release Notes', expanded=expand):
