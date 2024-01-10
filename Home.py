@@ -15,7 +15,7 @@ data = pd.read_csv('data/survey_data/aggregate_scores.csv')
 # Title and introduction
 st.title('The #BeeWell Survey')
 st.markdown('''
-<p style='text-align: center;'>
+<p style='text-align: center; font-weight: bold'>
 Thank you for taking part in the #BeeWell survey delivered by Kailo.<br>
 You can use this dashboard to explore results from pupils at your school.</p>
 ''', unsafe_allow_html=True)
@@ -23,24 +23,32 @@ You can use this dashboard to explore results from pupils at your school.</p>
 # Image
 st.image('images/home_image_3_transparent.png', use_column_width=True)
 
-# Navigation
-st.subheader('Navigation')
+# Pages of the dashboard
+st.subheader('What each page of the dashboard can tell you')
 st.markdown('''
-Use the sidebar on the left to navigate to different pages of the dashboard:
-* **About** - Information on the #BeeWell survey, Kailo, and this dashboard
-* **Summary** - Simple overview of your results compared with other schools
-* **Explore results** - Explore how pupils responded to each survey question,
-and see further information on how the summary page's comparison to other
-schools was generated
-* **Who took part** - Characteristics of the pupils who took part in the survey
+There are four pages to see on this dashboard, which you can navigate to using
+the sidebar on the left. These are:
+* **About** - Read information on the #BeeWell survey, Kailo, and this dashboard
+* **Summary** - See a simple overview of results from pupils at your school, compared
+with other schools
+* **Explore results** - Explore how your pupils responded to each survey
+question, and see further information on how the summary page's comparison to
+other schools was generated
+* **Who took part** - See the characteristics of the pupils who took part in the
+survey
 ''')
 
 # Blank space
 st.text('')
 
-# Navigation video
-st.subheader('Video guide')
+# #BeeWell pupil video
+st.subheader('Introduction to the survey')
+st.markdown('''
+If you're unfamiliar with the #BeeWell survey or would like a reminder, you can
+check out the video below. This video (which was designed for pupils) explains
+what pupils could expect from taking part in the survey. For more information,
+see the 'About' page of the dashboard.
+''')
 st.video('https://youtu.be/jmYH7F2Bd4Q')
-st.markdown('*Placeholder survey video - but I could screen record navigating dashboard?*')
 
 page_footer()
