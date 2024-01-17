@@ -33,18 +33,25 @@ def calculate_scores(data):
     # Gender, transgender, sexual orientation, neurodivergence, and yes/no
     # of whether born in UK are not converted to scores
 
-    # Age when moved to UK is not used as a "score" persay, but needs
-    # adjusting to allow you to summarise it. We move age to centre of bucket
-    # e.g. 1 year old = 1.5, 2 year old = 2.5
-    # As they are in dataframe, 1 = Under 1, 2 = 1 year old, so subtract .5
-    # Convert to numeric (can use sum_score()) then subtract .5
-    data['birth_you_age_score'] = (
-        sum_score(pd.DataFrame(data['birth_you_age'])) - 0.5)
-
-    # Autonomy
+    # Autonomy requires reversed scoring for two of the questions which were
+    # worded in the negative direction, whilst the rest were worded in the
+    # positive direction
+    autonomy_rev = {1: 5,
+                    2: 4,
+                    3: 3,
+                    4: 2,
+                    5: 1}
+    data['autonomy_pressure_rev'] = data['autonomy_pressure'].map(autonomy_rev)
+    data['autonomy_told_rev'] = data['autonomy_told'].map(autonomy_rev)
     data['autonomy_score'] = sum_score(
-        data[['autonomy_pressure', 'autonomy_express', 'autonomy_decide',
-            'autonomy_told', 'autonomy_myself', 'autonomy_choice']])
+        data[['autonomy_pressure_rev',
+              'autonomy_express',
+              'autonomy_decide',
+              'autonomy_told_rev',
+              'autonomy_myself',
+              'autonomy_choice']])
+    # Drop the temporary columns created to support score calculation
+    data = data.drop(['autonomy_pressure_rev', 'autonomy_told_rev'], axis=1)
 
     # Life satisfaction requires no changes
     data['life_satisfaction_score'] = data['life_satisfaction']
@@ -68,10 +75,20 @@ def calculate_scores(data):
         3: 2,
         4: 1})))
 
-    # Stress requires numbering to start at 0
+    # Stress requires two questions to be reverse, and for all, for the
+    # numbering to start at 0 (hence -1 below)
+    stress_rev = {1: 5,
+                  2: 4,
+                  3: 3,
+                  4: 2,
+                  5: 1}
+    data['stress_confident_rev'] = data['stress_confident'].map(stress_rev)
+    data['stress_way_rev'] = data['stress_way'].map(stress_rev)
     data['stress_score'] = sum_score(
-        data[['stress_control', 'stress_overcome', 'stress_confident',
-            'stress_way']] - 1)
+        data[['stress_control', 'stress_overcome', 'stress_confident_rev',
+            'stress_way_rev']] - 1)
+    # Drop the temporary columns created to support score calculation
+    data = data.drop(['stress_confident_rev', 'stress_way_rev'], axis=1)
 
     # Appearance uses first question, excluding 'prefer not to say'
     data['appearance_score'] = data['appearance_happy'].replace(11, np.nan)
@@ -99,17 +116,14 @@ def calculate_scores(data):
     # Physical activity multiplies days by average time per day (which is in min)
     data['physical_score'] = data['physical_days']*data['physical_hours']
 
-    # Free time/time use is based on proportion responding almost always or often
-    data['free_like_score'] = data['free_like'].map({1: 1, 2: 1,
-                                                    3: 0, 4: 0, 5: 0})
+    # Free time/time use (unchanged from original as that is simplest)
+    data['free_like_score'] = data['free_like']
         
     # Use of social media requires scores of 0-8 (rather than 1-9)
     data['media_score'] = data['media_hours'] - 1
 
-    # Places to go and things to do is based on proportion responding several or
-    # lots to the first question (second question can't be used as score)
-    data['places_score'] = data['places_freq'].map({1: 0, 2: 0,
-                                                    3: 1, 4: 1})
+    # Places to go and things to do (unchanged as that is simplest)
+    data['places_score'] = data['places_freq']
 
     # Talking with people about feeling down
     # If answer yes, it is the average of their listen (1-4) and helpful (1-3 but 
@@ -117,11 +131,10 @@ def calculate_scores(data):
     # their answer to comfortable (1-4). The scores for staff, home and peer are
     # then summed, creating an overall score of 3-12.
     for prefix in ['staff', 'home', 'peer']:
-        # Create the help/listen scores
+        # Create the help/listen scores (see it takes the average through /2)
         data[f'{prefix}_talk_listen_helpful'] = (
         data[f'{prefix}_talk_listen'] +
         data[f'{prefix}_talk_helpful'].map({1: 1, 2: 2.5, 3: 4})) / 2
-
         # Create score column where choosen "help/listen" or "if" depending on answer to talk
         data[f'{prefix}_talk_score'] = np.where(
             data[f'{prefix}_talk']==1,
@@ -175,13 +188,11 @@ def calculate_scores(data):
     data.loc[data[discrim_col].isnull().all(axis=1), 'discrim_score'] = np.nan
 
     # Belonging
-    # Proportion who respond strongly agree or agree
-    data['belong_local_score'] = data['belong_local'].map({1: 1, 2: 1,
-                                                        3: 0, 4: 0})
+    data['belong_local_score'] = data['belong_local']
 
     # Relative wealth
     # Proportion who feel about the same as friends, excluding "don't know"
-    data['wealth_score'] = data['wealth'].map({1: 0, 2: 1, 3: 0, 4: np.nan})
+    data['wealth_score'] = data['wealth'].map({1: 0, 2: 0, 3: 1, 4: np.nan})
 
     # Work, education and training opportunities
     # Rescale future options so 1-5 (matching future interest and support)
@@ -197,8 +208,7 @@ def calculate_scores(data):
     )
 
     # Climate change
-    # Proportion responding often or sometimes
-    data['climate_score'] = data['climate'].map({1: 1, 2: 1, 3: 0, 4: 0})
+    data['climate_score'] = data['climate']
 
     # Friendships and social support
     data['social_score'] = sum_score(data[['social_along', 'social_time', 'social_support', 'social_hard']])
@@ -207,6 +217,7 @@ def calculate_scores(data):
     data['bully_score'] = sum_score(data[['bully_physical', 'bully_other', 'bully_cyber']])
 
     return (data)
+
 
 def results_by_school_and_group(data, agg_func, no_pupils):
     '''
