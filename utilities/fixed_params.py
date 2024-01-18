@@ -41,12 +41,14 @@ def page_setup():
         layout='centered',
         menu_items={'About': 'Dashboard for schools completing the standard version of the #BeeWell survey in North Devon and Torridge in 2023/24.'})
 
-    # Temporary: manual force School B when open page
-    st.session_state.school = 'School B'
-
     # Import CSS style
     with open('css/style.css') as css:
         st.markdown(f'<style>{css.read()}</style>', unsafe_allow_html=True)
 
     # Add page logo
     page_logo()
+
+    # Choose school
+    st.session_state.school = st.selectbox(
+        'School', ['School A', 'School B', 'School C',
+                   'School D', 'School E', 'School F'])
