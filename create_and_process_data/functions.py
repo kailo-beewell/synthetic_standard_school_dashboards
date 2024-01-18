@@ -40,7 +40,9 @@ def reverse_score(scores, min, max):
 def calculate_scores(data):
     '''
     Creates scores for each pupil in the provided dataframe, for each of the
-    survey topics.
+    survey topics. Note, when referring to where scores are "set to positive"
+    or "in a positive direction" or a "negative directioN", this refers to
+    whether the maximum score is a positive or negative outcome.
 
     Parameters
     ----------
@@ -89,8 +91,9 @@ def calculate_scores(data):
             'esteem_value', 'esteem_good']].apply(
                 lambda x: reverse_score(x, min=1, max=4)))
 
-    # Stress requires two questions to be reverse, and for all, for the
-    # numbering to start at 0 (hence -1 below)
+    # Stress 
+    # First, I calculate score as in GM - that was a negative direction, so
+    # we have to change the two positive direction options to the negative
     data['stress_confident_rev'] = reverse_score(data['stress_confident'], min=1, max=5)
     data['stress_way_rev'] = reverse_score(data['stress_way'], min=1, max=5)
     data['stress_score'] = sum_score(
@@ -98,6 +101,8 @@ def calculate_scores(data):
             'stress_way_rev']] - 1)
     # Drop the temporary columns created to support score calculation
     data = data.drop(['stress_confident_rev', 'stress_way_rev'], axis=1)
+    # We are setting all scores to positive - so reverse the final score
+    data['stress_score'] = reverse_score(data['stress_score'], min=0, max=16)
 
     # Appearance uses first question, excluding 'prefer not to say'
     data['appearance_score'] = data['appearance_happy'].replace(11, np.nan)
@@ -107,12 +112,16 @@ def calculate_scores(data):
         data[['negative_lonely', 'negative_unhappy', 'negative_like',
             'negative_cry', 'negative_school', 'negative_worry', 'negative_sleep',
             'negative_wake', 'negative_shy', 'negative_scared']] - 1)
+    # We are setting all scores to positive - so reverse the final score
+    data['negative_score'] = reverse_score(data['negative_score'], min=0, max=20)
 
     # Loneliness requires reversed scoring (eg. 1 often or always becomes 5)
-    data['lonely_score'] = reverse_score(data['lonely'], min=1, max=5)
+    # to match GM - but we are setting all scores to positive - so leave as is
+    data['lonely_score'] = data['lonely']
 
-    # Supporting your wellbeing
+    # Supporting your wellbeing - reversed so its in the positive direction
     data['support_score'] = sum_score(data[['support_ways', 'support_look']])
+    data['support_score'] = reverse_score(data['support_score'], min=2, max=8)
 
     # Sleep is based on proportion answering 1/Yes so no change required
     data['sleep_score'] = data['sleep']
@@ -120,11 +129,13 @@ def calculate_scores(data):
     # Physical activity multiplies days by average time per day (which is in min)
     data['physical_score'] = data['physical_days']*data['physical_hours']
 
-    # Free time/time use (unchanged from original as that is simplest)
-    data['free_like_score'] = data['free_like']
+    # Free time/time use - reversed so its in the positive direction
+    data['free_like_score'] = reverse_score(data['free_like'], min=1, max=5)
         
     # Use of social media requires scores of 0-8 (rather than 1-9)
+    # Then we reverse it so it's in the positive direction
     data['media_score'] = data['media_hours'] - 1
+    data['media_score'] = reverse_score(data['media_score'], min=0, max=8)
 
     # Places to go and things to do (unchanged as that is simplest)
     data['places_score'] = data['places_freq']
@@ -145,21 +156,28 @@ def calculate_scores(data):
             data[f'{prefix}_talk_listen_helpful'],
             data[f'{prefix}_talk_if'])
     # Create overall score from sum of staff, home and peer scores
-    data['talk_score'] = data['staff_talk_score'] + data['home_talk_score'] + data['peer_talk_score']
+    data['talk_score'] = (data['staff_talk_score'] +
+                          data['home_talk_score'] +
+                          data['peer_talk_score'])
     # Drop columns that were used to calculate scores
-    data = data.drop(['staff_talk_listen_helpful', 'home_talk_listen_helpful', 'peer_talk_listen_helpful'], axis=1)
+    data = data.drop(['staff_talk_listen_helpful',
+                      'home_talk_listen_helpful',
+                      'peer_talk_listen_helpful'], axis=1)
 
     # Acceptance
-    data['accept_score'] = sum_score(data[['accept_staff', 'accept_home', 'accept_local', 'accept_peer']])
+    data['accept_score'] = sum_score(
+        data[['accept_staff', 'accept_home', 'accept_local', 'accept_peer']])
 
     # School connection
     data['school_belong_score'] = data['school_belong']
 
     # Relationships with staff
-    data['staff_relationship_score'] = sum_score(data[['staff_interest', 'staff_believe', 'staff_best', 'staff_listen']])
+    data['staff_relationship_score'] = sum_score(
+        data[['staff_interest', 'staff_believe', 'staff_best', 'staff_listen']])
 
     # Relationship with parents/carers
-    data['home_relationship_score'] = sum_score(data[['home_interest', 'home_believe', 'home_best', 'home_listen']])
+    data['home_relationship_score'] = sum_score(
+        data[['home_interest', 'home_believe', 'home_best', 'home_listen']])
 
     # Home environment
     data['home_happy_score'] = data['home_happy']
@@ -178,6 +196,8 @@ def calculate_scores(data):
     data['local_env_score'] = sum_score(
         data[['local_safe_rescaled', 'local_support', 'local_trust', 'local_neighbours', 'local_places']])
     data = data.drop('local_safe_rescaled', axis=1)
+    # We then reverse the score so it is in the positive direction
+    data['local_env_score'] = reverse_score(data['local_env_score'], min=5, max=25)
 
     # Discrimination
     # Proportion who respond often or always / some of the time / occassionally to any of the five questions
@@ -186,13 +206,15 @@ def calculate_scores(data):
     # Identify relevant columns
     discrim_col = ['discrim_race', 'discrim_gender', 'discrim_orientation', 'discrim_disability', 'discrim_faith']
     # Find if any of them are one of those responses
+    # If true, set to 0. If false, set to 1. This is because true is the
+    # negative outcome whilst false is the positive outcome (so set to higher score).
     data['discrim_score'] = (
-        data[discrim_col].isin([1, 2, 3]).any(axis=1).map({True: 1, False: 0}))
+        data[discrim_col].isin([1, 2, 3]).any(axis=1).map({True: 0, False: 1}))
     # Set to NaN if all responses were NaN
     data.loc[data[discrim_col].isnull().all(axis=1), 'discrim_score'] = np.nan
 
-    # Belonging
-    data['belong_local_score'] = data['belong_local']
+    # Belonging - reverse so its in the positive direction
+    data['belong_local_score'] = reverse_score(data['belong_local'], min=1, max=4)
 
     # Relative wealth
     # Proportion who feel about the same as friends, excluding "don't know"
@@ -219,6 +241,8 @@ def calculate_scores(data):
 
     # Bullying
     data['bully_score'] = sum_score(data[['bully_physical', 'bully_other', 'bully_cyber']])
+    # Reverse so it's in the positive direction
+    data['bully_score'] = reverse_score(data['bully_score'], min=3, max=12)
 
     return (data)
 
