@@ -11,7 +11,10 @@ page_setup()
 
 st.title('''Summary of your school's results''')
 st.subheader('Introduction')
-st.markdown('This shows how the answers of pupils at your school compare with pupils from other schools. You can choose to compare against either the other schools in Northern Devon, or to matched schools from across the country.')
+st.markdown('''
+This page shows how the answers of pupils at your school compare with pupils
+from other schools. You can choose to compare against either the other schools
+in Northern Devon, or to matched schools from across the country.''')
 
 cols = st.columns([0.333, 0.666])
 with cols[0]:
@@ -50,7 +53,6 @@ st.subheader('Choose what results to view')
 
 # Choose variable and comparator
 chosen_group = st.selectbox(label='Results:', options=['All pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
-#comparator = st.selectbox('Compared against:', ['Other schools in Northern Devon', 'Matched schools from across the country'])
 
 # Filter data depending on choice
 year_group = ['All']
@@ -152,4 +154,4 @@ for index, row in chosen.iterrows():
                 # Create button that, if clicked, changes to details
                 if st.button(row.iloc[i]):
                     st.session_state['chosen_variable_lab'] = row.iloc[i]
-                    switch_page('details')
+                    switch_page('explore results')

@@ -1,64 +1,64 @@
 count,school_lab,year_group_lab,gender_lab,fsm_lab,sen_lab
 128.0,School A,All,All,All,All
-68.0,School A,Year 8,All,All,All
-59.0,School A,Year 10,All,All,All
+60.0,School A,Year 8,All,All,All
+55.0,School A,Year 10,All,All,All
 16.0,School A,All,Girl,All,All
-28.0,School A,All,Boy,All,All
-63.0,School A,All,All,FSM,All
-58.0,School A,All,All,Non-FSM,All
-58.0,School A,All,All,All,SEN
-54.0,School A,All,All,All,Non-SEN
+24.0,School A,All,Boy,All,All
+53.0,School A,All,All,FSM,All
+56.0,School A,All,All,Non-FSM,All
+64.0,School A,All,All,All,SEN
+60.0,School A,All,All,All,Non-SEN
 132.0,School B,All,All,All,All
-76.0,School B,Year 8,All,All,All
-54.0,School B,Year 10,All,All,All
-20.0,School B,All,Girl,All,All
-17.0,School B,All,Boy,All,All
-62.0,School B,All,All,FSM,All
-64.0,School B,All,All,Non-FSM,All
+71.0,School B,Year 8,All,All,All
+48.0,School B,Year 10,All,All,All
+22.0,School B,All,Girl,All,All
+16.0,School B,All,Boy,All,All
+56.0,School B,All,All,FSM,All
+63.0,School B,All,All,Non-FSM,All
 ,School B,All,All,All,SEN
-119.0,School B,All,All,All,Non-SEN
+125.0,School B,All,All,All,Non-SEN
 111.0,School C,All,All,All,All
-41.0,School C,Year 8,All,All,All
-69.0,School C,Year 10,All,All,All
-18.0,School C,All,Girl,All,All
-17.0,School C,All,Boy,All,All
-59.0,School C,All,All,FSM,All
-47.0,School C,All,All,Non-FSM,All
-47.0,School C,All,All,All,SEN
-52.0,School C,All,All,All,Non-SEN
+39.0,School C,Year 8,All,All,All
+64.0,School C,Year 10,All,All,All
+19.0,School C,All,Girl,All,All
+14.0,School C,All,Boy,All,All
+56.0,School C,All,All,FSM,All
+42.0,School C,All,All,Non-FSM,All
+46.0,School C,All,All,All,SEN
+56.0,School C,All,All,All,Non-SEN
 107.0,School D,All,All,All,All
-51.0,School D,Year 8,All,All,All
-53.0,School D,Year 10,All,All,All
+48.0,School D,Year 8,All,All,All
+45.0,School D,Year 10,All,All,All
 17.0,School D,All,Girl,All,All
-19.0,School D,All,Boy,All,All
-59.0,School D,All,All,FSM,All
-43.0,School D,All,All,Non-FSM,All
-49.0,School D,All,All,All,SEN
-49.0,School D,All,All,All,Non-SEN
+20.0,School D,All,Boy,All,All
+58.0,School D,All,All,FSM,All
+42.0,School D,All,All,Non-FSM,All
+51.0,School D,All,All,All,SEN
+52.0,School D,All,All,All,Non-SEN
 106.0,School E,All,All,All,All
-50.0,School E,Year 8,All,All,All
-53.0,School E,Year 10,All,All,All
-13.0,School E,All,Girl,All,All
-17.0,School E,All,Boy,All,All
-53.0,School E,All,All,FSM,All
-46.0,School E,All,All,Non-FSM,All
-51.0,School E,All,All,All,SEN
-44.0,School E,All,All,All,Non-SEN
+49.0,School E,Year 8,All,All,All
+52.0,School E,Year 10,All,All,All
+16.0,School E,All,Girl,All,All
+20.0,School E,All,Boy,All,All
+54.0,School E,All,All,FSM,All
+43.0,School E,All,All,Non-FSM,All
+53.0,School E,All,All,All,SEN
+48.0,School E,All,All,All,Non-SEN
 110.0,School F,All,All,All,All
-104.0,School F,Year 8,All,All,All
+102.0,School F,Year 8,All,All,All
 ,School F,Year 10,All,All,All
-15.0,School F,All,Girl,All,All
+14.0,School F,All,Girl,All,All
 20.0,School F,All,Boy,All,All
-56.0,School F,All,All,FSM,All
-47.0,School F,All,All,Non-FSM,All
-50.0,School F,All,All,All,SEN
-48.0,School F,All,All,All,Non-SEN
+53.0,School F,All,All,FSM,All
+42.0,School F,All,All,Non-FSM,All
+49.0,School F,All,All,All,SEN
+55.0,School F,All,All,All,Non-SEN
 106.0,School G,All,All,All,All
-53.0,School G,Year 8,All,All,All
-53.0,School G,Year 10,All,All,All
+47.0,School G,Year 8,All,All,All
+48.0,School G,Year 10,All,All,All
 14.0,School G,All,Girl,All,All
-19.0,School G,All,Boy,All,All
-62.0,School G,All,All,FSM,All
-40.0,School G,All,All,Non-FSM,All
-47.0,School G,All,All,All,SEN
-51.0,School G,All,All,All,Non-SEN
+21.0,School G,All,Boy,All,All
+58.0,School G,All,All,FSM,All
+33.0,School G,All,All,Non-FSM,All
+48.0,School G,All,All,All,SEN
+53.0,School G,All,All,All,Non-SEN

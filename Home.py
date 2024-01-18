@@ -1,16 +1,8 @@
-import pandas as pd
 import streamlit as st
-from PIL import Image
-from utilities.switch_page_button import switch_page
 from utilities.fixed_params import page_setup
 
 # Set page configuration
 page_setup()
-
-# Import data used on this page
-data = pd.read_csv('data/survey_data/aggregate_scores.csv')
-
-###############################################################################
 
 # Title and introduction
 st.title('The #BeeWell Survey')
@@ -37,6 +29,34 @@ other schools was generated
 * **Who took part** - See the characteristics of the pupils who took part in the
 survey
 ''')
+
+# This allows you to download a PDF - currently downloading survey - will need
+# to change to a full version of the report - however, this PDF is stored in
+# GitHub, so will need to look if it can pull the PDF from a database else
+# you'd need to generate on click. Also, if we'd need five reports for each of
+# the filters.
+st.subheader('Download PDF report')
+st.markdown('''
+You can use the interactive dashboard to explore results for your school. We
+also provide the option of downloading a PDF version of your resuts below.
+This section is incomplete - currently downloads survey booklet instead.
+''')
+pdf_report = open('pdfs/survey_v21b.pdf', 'rb')
+st.download_button(
+    label='Download school report (all pupils)', data=pdf_report,
+    file_name='test_streamlit_download.pdf', mime='application/pdf')
+st.download_button(
+    label='Download school report (by gender)', data=pdf_report,
+    file_name='test_streamlit_download.pdf', mime='application/pdf')
+st.download_button(
+    label='Download school report (by year group)', data=pdf_report,
+    file_name='test_streamlit_download.pdf', mime='application/pdf')
+st.download_button(
+    label='Download school report (by FSM)', data=pdf_report,
+    file_name='test_streamlit_download.pdf', mime='application/pdf')
+st.download_button(
+    label='Download school report (by SEN)', data=pdf_report,
+    file_name='test_streamlit_download.pdf', mime='application/pdf')
 
 # Blank space
 st.text('')

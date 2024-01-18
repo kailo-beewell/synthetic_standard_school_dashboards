@@ -7,6 +7,7 @@ import streamlit as st
 from utilities.fixed_params import page_setup
 from utilities.details import survey_responses, details_ordered_bar
 from utilities.details_text import create_response_description
+from utilities.score_descriptions import score_descriptions
 
 # Set page configuration
 page_setup()
@@ -16,14 +17,14 @@ df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
 df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
 
 ###############################################################################
+# Getting topics
 
 # Get the unique topics
 topic_df = df_scores[['variable', 'variable_lab']].drop_duplicates()
 
 # Drop those we don't create detailed pages about
 topic_df = topic_df[~topic_df['variable'].isin([
-    'birth_you_age_score', 'staff_talk_score', 'home_talk_score',
-    'peer_talk_score', 'overall_count'])]
+    'staff_talk_score', 'home_talk_score', 'peer_talk_score'])]
 
 # Remove '_score'
 topic_df['variable'] = topic_df['variable'].str.replace('_score', '')
@@ -40,35 +41,45 @@ if 'chosen_variable_lab' not in st.session_state:
 topic_list = list(topic_dict.keys())
 default = topic_list.index(st.session_state['chosen_variable_lab'])
 
-# Create selectbox with available topics (excluding demographic) using label
-chosen_variable_lab = st.sidebar.radio(
-    'Topic', topic_dict.keys(), index=default)
-chosen_variable = topic_dict[chosen_variable_lab]
-
 ###############################################################################
-# Breakdown of question responses chart
+# Page introduction
 
-# Title 
-st.title(chosen_variable_lab)
+st.title('Explore results')
+st.markdown('''
+This page allows you to explore the results of pupils at your school. For each
+survey topic, you can see (a) a breakdown of how pupils at your school responded
+to each question in that topic, and (b) a chart building on results from the
+'Summary' page that allows you to understand more about the comparison of
+your results with other schools.
+''')
 
-# Create table of descriptions, where index is the variable
-description = df_scores[['variable', 'description']].drop_duplicates().set_index('variable').to_dict()['description']
-
-# Write the short topic description (centred and bold)
-st.markdown(f'''<p style='text-align: center;'><b>These questions are about {description[f'{chosen_variable}_score'].lower()}</b></p>''', unsafe_allow_html=True)
-
-# Blank space
-st.markdown('')
+# Select topic
+chosen_variable_lab = st.selectbox(
+    '**Topic:**', topic_dict.keys(), index=default)
+chosen_variable = topic_dict[chosen_variable_lab]
 
 # Select pupils to view results for
 chosen_group = st.selectbox(
     '**View results:**', ['For all pupils', 'By year group',
                           'By gender', 'By FSM', 'By SEN'])
-
-# Blank space
+st.markdown('')
 st.markdown('')
 
-st.header('Responses from pupils at your school')
+# Header with the name of the topic
+st.divider()
+st.markdown(f'''<h2 style='font-size:55px;text-align:center;'>{chosen_variable_lab}</h2>''', unsafe_allow_html=True)
+
+# Create table of descriptions, where index is the variable
+description = df_scores[['variable', 'description']].drop_duplicates().set_index('variable').to_dict()['description']
+
+# Write the short topic description (centred and bold)
+st.markdown(f'''<p style='text-align:center;'><b>These questions are about {description[f'{chosen_variable}_score'].lower()}</b></p>''', unsafe_allow_html=True)
+st.write('')
+
+###############################################################################
+# Breakdown of question responses chart
+
+st.subheader('Responses from pupils at your school')
 st.markdown(f'''
 In this section, you can see how pupils at you school responded to survey \
 questions that relate to the topic of '{chosen_variable_lab.lower()}'.''')
@@ -208,28 +219,27 @@ else:
         chosen_result = reverse_categories(chosen_result)
     survey_responses(chosen_result)
 
-###############################################################################
 # Blank space
 st.text('')
 st.text('')
 st.text('')
 
 ###############################################################################
-# Initial basic example of doing the comparator chart between schools...
+# Comparator chart between schools...
 
 # Header and description of section
-st.header('Comparison of overall mean score to other schools')
+st.subheader('Comparison with other schools')
 st.markdown(f'''
-In this section, an overall score for the topic of \
-'{chosen_variable_lab.lower()}' has been calculated for each pupil who \
-responded to these questions, and the mean score of the pupils at you school \
-is compared with pupils who completed the same survey questions at other \
-schools. This allows you to see whether the score for pupils at your school is \
-is average, below average or above average. This matches the scores presented \
-on the 'Summary' page.''')
+In this section, an overall score for the topic of
+'{chosen_variable_lab.lower()}' has been calculated for each pupil with complete
+responses on this question. Possible scores ranged from 
+{score_descriptions[chosen_variable][0]} with **higher scores indicating
+{score_descriptions[chosen_variable][1]}** - and vice versa for lower scores.
 
-# Blank space
-st.text('')
+The mean score of the pupils at you school is compared with pupils who completed
+the same survey questions at other schools. This allows you to see whether the 
+score for pupils at your school is average, below average or above average.
+This matches the scores presented on the 'Summary' page.''')
 
 # Create dataframe based on chosen variable
 between_schools = df_scores[
@@ -242,7 +252,6 @@ between_schools = df_scores[
 # Add box with RAG rating
 devon_rag = between_schools.loc[between_schools['school_lab'] == st.session_state.school, 'rag'].to_list()[0]
 
-st.subheader('Comparison to other schools in Northern Devon')
 st.markdown(f'The average score for {chosen_variable_lab.lower()} at your school, compared to other schools in Northern Devon, was:')
 if devon_rag == 'below':
     st.error('Below average')
@@ -252,29 +261,21 @@ elif devon_rag == 'above':
     st.success('Above average')
 details_ordered_bar(between_schools, st.session_state.school)
 
-# Note schools that don't have a match (might be able to do that based on
-# what variables are present in their data v.s. not)
-# no_match = ['support', 'places', 'talk', 'accept', 'belong_local', 'wealth', 'future', 'climate']
-# if chosen_variable in no_match:
-#     st.markdown('This question was unique to Northern Devon and cannot ' + 
-#                'currently be compared to schools in other areas of England.')
-# (else continued with producing the figure as above)
-
 # Create duplicate to show example of what having matched schools as well looks like
-st.subheader('Things to bear in mind')
+st.subheader('A word of caution')
 st.markdown('''
 There are lots of reasons why pupils in different schools may get different
 results, and its important to consider this when comparing between schools. For
-example, schools with fewer respondents are more likely to get more extreme
+example:
+* Schools with fewer respondents are more likely to get more extreme
 results (above or below average) than schools with a large number of respondents
-(which are most likely to get average results). There will also be differences
-in the pupil populations, such as differing proportions of students of each
-gender, year group, free school meal eligibility and special educational needs.
-''')
+(which are most likely to get average results)
+* There will also be differences in the pupil populations, such as differing
+proportions of students of each gender, year group, free school meal eligibility
+and special educational needs.
 
-# Create section explaining how the score was calculated
-st.subheader('Further details')
-with st.expander('How was this score calculated?'):
-    st.markdown(f'The score for {chosen_variable_lab.lower()} was calculated...')
-with st.expander('How was the rating compared to other schools produced?'):
-    st.markdown('The average (mean) score for pupils at your school was compared to other shcools...')
+It's also worth noting that the score will only include results from pupils who
+completed each of the questions used to calculate that topic - so does not
+include any reflection of results from pupils who did not complete some or all
+of the questions for that topic.
+''')
