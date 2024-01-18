@@ -15,6 +15,28 @@ def sum_score(df):
     return(df.sum(axis=1, skipna=False))
 
 
+def reverse_score(scores, min, max):
+    '''
+    Reverse scores in the provided array, based on the known min and max of the
+    scale of the scores. NaN will remain as NaN.
+
+    Parameters
+    ----------
+    scores : array
+        Array with scores to be reversed
+    min : int
+        Minimum possible score
+    max : int
+        Maximum possible score
+    
+
+    Returns
+    -------
+    Array with scores reversed
+    '''
+    return [max + min - x for x in scores]
+
+
 def calculate_scores(data):
     '''
     Creates scores for each pupil in the provided dataframe, for each of the
@@ -33,16 +55,11 @@ def calculate_scores(data):
     # Gender, transgender, sexual orientation, neurodivergence, and yes/no
     # of whether born in UK are not converted to scores
 
-    # Autonomy requires reversed scoring for two of the questions which were
-    # worded in the negative direction, whilst the rest were worded in the
-    # positive direction
-    autonomy_rev = {1: 5,
-                    2: 4,
-                    3: 3,
-                    4: 2,
-                    5: 1}
-    data['autonomy_pressure_rev'] = data['autonomy_pressure'].map(autonomy_rev)
-    data['autonomy_told_rev'] = data['autonomy_told'].map(autonomy_rev)
+    # Autonomy
+    # Reverse score on two questions in negative direction
+    data['autonomy_pressure_rev'] = reverse_score(data['autonomy_pressure'], min=1, max=5)
+    data['autonomy_told_rev'] = reverse_score(data['autonomy_told'], min=1, max=5)
+    # Sum questions
     data['autonomy_score'] = sum_score(
         data[['autonomy_pressure_rev',
               'autonomy_express',
@@ -69,21 +86,13 @@ def calculate_scores(data):
     # Self-esteem requires reversed scoring
     data['esteem_score'] = sum_score(
         data[['esteem_satisfied', 'esteem_qualities', 'esteem_well',
-            'esteem_value', 'esteem_good']].apply(lambda x: x.map(
-        {1: 4,
-        2: 3,
-        3: 2,
-        4: 1})))
+            'esteem_value', 'esteem_good']].apply(
+                lambda x: reverse_score(x, min=1, max=4)))
 
     # Stress requires two questions to be reverse, and for all, for the
     # numbering to start at 0 (hence -1 below)
-    stress_rev = {1: 5,
-                  2: 4,
-                  3: 3,
-                  4: 2,
-                  5: 1}
-    data['stress_confident_rev'] = data['stress_confident'].map(stress_rev)
-    data['stress_way_rev'] = data['stress_way'].map(stress_rev)
+    data['stress_confident_rev'] = reverse_score(data['stress_confident'], min=1, max=5)
+    data['stress_way_rev'] = reverse_score(data['stress_way'], min=1, max=5)
     data['stress_score'] = sum_score(
         data[['stress_control', 'stress_overcome', 'stress_confident_rev',
             'stress_way_rev']] - 1)
@@ -100,12 +109,7 @@ def calculate_scores(data):
             'negative_wake', 'negative_shy', 'negative_scared']] - 1)
 
     # Loneliness requires reversed scoring (eg. 1 often or always becomes 5)
-    data['lonely_score'] = data['lonely'].map({
-        1: 5,
-        2: 4,
-        3: 3,
-        4: 2,
-        5: 1})
+    data['lonely_score'] = reverse_score(data['lonely'], min=1, max=5)
 
     # Supporting your wellbeing
     data['support_score'] = sum_score(data[['support_ways', 'support_look']])
