@@ -112,7 +112,7 @@ div[role='alert']:has(> div > div[data-testid='stNotificationContentWarning'])
 div[role='alert']:has(> div > div[data-testid='stNotificationContentSuccess'])
 {
     /*background-color: #D1EECC;*/
-    background-color: #B6E6B6
+    background-color: #B6E6B6;
 }
 div[role='alert']:has(> div > div[data-testid='stNotificationContentInfo'])
 {
@@ -124,6 +124,12 @@ div[class='stMarkdown'] > div[data-testid='stMarkdownContainer'] > hr
 {
     border-color: #D7D7D7;
     margin: 0;
+}
+
+/* Download button */
+div[data-testid='stDownloadButton']
+{
+    text-align: center;
 }
 
 /* Font */

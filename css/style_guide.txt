@@ -46,3 +46,4 @@ There are three ways to add CSS to a HTML document:
 * data-testid = custom attribute added to HTML elements to identify them for testing purposes
 * data-baseweb = might be utilising frontend framework/library like BaseWeb (which is a UI framework for React)
 * role = describes role of element (e.g. 'option' role identifies selectable choices of a listbox)
+* first-child = first element in a group of sibling elements - i.e. first element immediately inside another element
