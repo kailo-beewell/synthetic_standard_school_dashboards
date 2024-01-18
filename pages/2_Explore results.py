@@ -7,6 +7,7 @@ import streamlit as st
 from utilities.fixed_params import page_setup
 from utilities.details import survey_responses, details_ordered_bar
 from utilities.details_text import create_response_description
+from utilities.score_descriptions import score_descriptions
 
 # Set page configuration
 page_setup()
@@ -218,18 +219,18 @@ st.text('')
 # Initial basic example of doing the comparator chart between schools...
 
 # Header and description of section
-st.header('Comparison of overall mean score to other schools')
+st.header('Comparison with other schools')
 st.markdown(f'''
-In this section, an overall score for the topic of \
-'{chosen_variable_lab.lower()}' has been calculated for each pupil who \
-responded to these questions, and the mean score of the pupils at you school \
-is compared with pupils who completed the same survey questions at other \
-schools. This allows you to see whether the score for pupils at your school is \
-is average, below average or above average. This matches the scores presented \
-on the 'Summary' page.''')
+In this section, an overall score for the topic of
+'{chosen_variable_lab.lower()}' has been calculated for each pupil with complete
+responses on this question. Possible scores ranged from 
+{score_descriptions[chosen_variable][0]} with **higher scores indicating
+{score_descriptions[chosen_variable][1]}** - and vice versa for lower scores.
 
-# Blank space
-st.text('')
+The mean score of the pupils at you school is compared with pupils who completed
+the same survey questions at other schools. This allows you to see whether the 
+score for pupils at your school is average, below average or above average.
+This matches the scores presented on the 'Summary' page.''')
 
 # Create dataframe based on chosen variable
 between_schools = df_scores[
@@ -242,7 +243,6 @@ between_schools = df_scores[
 # Add box with RAG rating
 devon_rag = between_schools.loc[between_schools['school_lab'] == st.session_state.school, 'rag'].to_list()[0]
 
-st.subheader('Comparison to other schools in Northern Devon')
 st.markdown(f'The average score for {chosen_variable_lab.lower()} at your school, compared to other schools in Northern Devon, was:')
 if devon_rag == 'below':
     st.error('Below average')
@@ -252,29 +252,16 @@ elif devon_rag == 'above':
     st.success('Above average')
 details_ordered_bar(between_schools, st.session_state.school)
 
-# Note schools that don't have a match (might be able to do that based on
-# what variables are present in their data v.s. not)
-# no_match = ['support', 'places', 'talk', 'accept', 'belong_local', 'wealth', 'future', 'climate']
-# if chosen_variable in no_match:
-#     st.markdown('This question was unique to Northern Devon and cannot ' + 
-#                'currently be compared to schools in other areas of England.')
-# (else continued with producing the figure as above)
-
 # Create duplicate to show example of what having matched schools as well looks like
-st.subheader('Things to bear in mind')
+st.subheader('A word of caution')
 st.markdown('''
 There are lots of reasons why pupils in different schools may get different
 results, and its important to consider this when comparing between schools. For
-example, schools with fewer respondents are more likely to get more extreme
+example:
+* Schools with fewer respondents are more likely to get more extreme
 results (above or below average) than schools with a large number of respondents
-(which are most likely to get average results). There will also be differences
-in the pupil populations, such as differing proportions of students of each
-gender, year group, free school meal eligibility and special educational needs.
+(which are most likely to get average results)
+* There will also be differences in the pupil populations, such as differing
+proportions of students of each gender, year group, free school meal eligibility
+and special educational needs.
 ''')
-
-# Create section explaining how the score was calculated
-st.subheader('Further details')
-with st.expander('How was this score calculated?'):
-    st.markdown(f'The score for {chosen_variable_lab.lower()} was calculated...')
-with st.expander('How was the rating compared to other schools produced?'):
-    st.markdown('The average (mean) score for pupils at your school was compared to other shcools...')
