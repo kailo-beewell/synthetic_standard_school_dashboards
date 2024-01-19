@@ -1,6 +1,8 @@
-# Guide to the data structures and processing steps used in creation of the synthetic standard survey school dashboard
+# Guide to processing steps used in creation of the synthetic standard survey school dashboard
 
 Please note: This will differ for the symbol survey and public dashboards.
+
+For a **preview of the data columns and types** at key stages in this process, please see `data_structures.ipynb`.
 
 ## Data processing for the synthetic dashboard
 
