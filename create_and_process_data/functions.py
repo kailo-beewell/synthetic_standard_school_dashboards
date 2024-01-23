@@ -247,7 +247,8 @@ def calculate_scores(data):
     return (data)
 
 
-def results_by_school_and_group(data, agg_func, no_pupils):
+def results_by_school_and_group(
+        data, agg_func, no_pupils, response_col=None, labels=None):
     '''
     Aggregate results for all possible schools and groups (setting result to 0 
     or NaN if no pupils from a particular group are present).
@@ -262,6 +263,14 @@ def results_by_school_and_group(data, agg_func, no_pupils):
         Output of agg_func() where all counts are set to 0 and other results set
         to NaN, to be used in cases where there are no pupils of a particular
         group (e.g. no FSM / SEN / Year 8)
+    response_col : list
+        Optional argument used when agg_func is aggregate_proportions(). It is
+        the list of columns that we want to aggregate.
+    labels : dictionary
+        Optional argument used when agg_func is aggregate_proportions(). It is a
+        dictionary with all possible questions as keys, then values are another
+        dictionary where keys are all the possible numeric (or nan) answers to
+        the question, and values are the relevant label for each answer.
 
 
     Returns
@@ -307,7 +316,11 @@ def results_by_school_and_group(data, agg_func, no_pupils):
             if len(to_agg.index) == 0:
                 res = no_pupils.copy()
             else:
-                res = agg_func(to_agg)
+                if response_col is None:
+                    res = agg_func(to_agg)
+                else:
+                    res = agg_func(
+                        data=to_agg, response_col=response_col, labels=labels)
 
             # Specify what school it was
             res['school_lab'] = school
@@ -327,3 +340,78 @@ def results_by_school_and_group(data, agg_func, no_pupils):
     result = pd.concat(result_list)
 
     return(result)
+
+
+def aggregate_proportions(data, response_col, labels):
+    '''
+    Aggregates each of the columns provided by response_col, for the chosen
+    dataset.
+
+    Thie function uses the known possible values for each column, it counts
+    occurences of each (inc. number missing) and makes the answer as a single
+    dataframe row, where counts and percentages and categories are stored as
+    lists within cells of that row. The function returns a dataframe containing
+    all of those rows. It is designed to based on all possible values rather
+    than only on values present - else e.g. if no-one responded 3, you could
+    have a function that just returns counts of responses to 1, 2 and 4, which
+    would then create issues when we try and plot the data.
+
+    Parameters:
+    -----------
+    data : dataframe
+        Dataframe with rows for each pupil and including all the response_col
+    response_col : list
+        List of columns that we want to aggregate
+    labels : dictionary
+        Dictionary with all possible questions as keys, then values are another
+        dictionary where keys are all the possible numeric (or nan) answers to
+        the question, and values are the relevant label for each answer.
+
+    Returns:
+    --------
+    pd.concat(rows): dataframe
+        Dataframe with the aggregate responses to each of the response_col
+    '''
+    # Initialise list to store rows of the dataframe
+    rows = list()
+
+    # Loop through the columns of interest
+    for col_lab in response_col:
+
+        # Find the name of the numeric version of the column
+        col = col_lab.replace('_lab', '')
+
+        # Find value counts
+        value_counts = data[col].value_counts(dropna=False)
+
+        # Get all possible category values and labels from dictionary
+        cat = list(labels[col].keys())
+        cat_lab = list(labels[col].values())
+
+        # Initalise list for storing counts
+        counts = []
+        # For each of the possible values in labels - if the value was present,
+        # extract from the counts series, but if not, set count to 0
+        for value in labels[col].keys():
+            if value in value_counts.index:
+                counts.append(value_counts[value])
+            else:
+                counts.append(0)
+
+        # Convert list of counts to list of percentages, and create rounded version
+        percentages = [(x/sum(counts))*100 for x in counts]
+
+        # Create dataframe row using the calculated data
+        df_row = pd.DataFrame({
+            'cat': [cat],
+            'cat_lab': [cat_lab],
+            'count': [counts],
+            'percentage': [percentages],
+            'measure': col,
+            'n_responses': sum(counts)
+        })
+        # Append to list
+        rows.append(df_row)
+
+    # Combine into a single dataframe and return
+    return(pd.concat(rows))
