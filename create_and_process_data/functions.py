@@ -3,6 +3,7 @@ Helper functions for creating and processing the pupil-level data
 '''
 import numpy as np
 import pandas as pd
+import re
 
 def sum_score(df):
     '''
@@ -347,7 +348,7 @@ def aggregate_proportions(data, response_col, labels):
     Aggregates each of the columns provided by response_col, for the chosen
     dataset.
 
-    Thie function uses the known possible values for each column, it counts
+    This function uses the known possible values for each column, it counts
     occurences of each (inc. number missing) and makes the answer as a single
     dataframe row, where counts and percentages and categories are stored as
     lists within cells of that row. The function returns a dataframe containing
@@ -355,6 +356,11 @@ def aggregate_proportions(data, response_col, labels):
     than only on values present - else e.g. if no-one responded 3, you could
     have a function that just returns counts of responses to 1, 2 and 4, which
     would then create issues when we try and plot the data.
+
+    For the branching question (talking about feelings), the value counts are
+    calculated from a subset of the data (as the no response should only be
+    from those who branched onto that question, and not those who branched onto
+    the other question (or never answered the first branching question)).
 
     Parameters:
     -----------
@@ -381,8 +387,28 @@ def aggregate_proportions(data, response_col, labels):
         # Find the name of the numeric version of the column
         col = col_lab.replace('_lab', '')
 
-        # Find value counts
-        value_counts = data[col].value_counts(dropna=False)
+        # Identify if the column is branching from "yes" to talking with someone
+        if any([substring in col for substring in ['talk_listen', 'talk_helpful']]):
+            # Get the prefix (staff, home or peer)
+            prefix = re.sub('_talk_listen|_talk_helpful', '', col)
+            # Filter the data to only those who said they talked with them (branch)
+            data_subset = data[data[f'{prefix}_talk'] == 1]
+            # Find value counts
+            value_counts = data_subset[col].value_counts(dropna=False)
+
+        # Identify if the column is branching from "no" to talking with someone
+        elif 'talk_if' in col:
+            # Get the prefix (staff, home or peer)
+            prefix = re.sub('_talk_if', '', col)
+            # Filter the data to only those who said they didn't talk to them (branch)
+            data_subset = data[data[f'{prefix}_talk'] == 0]
+            # Find value counts
+            value_counts = data_subset[col].value_counts(dropna=False)
+
+        # For any other columns, no subsetting of the data is required
+        else:
+            # Find value counts
+            value_counts = data[col].value_counts(dropna=False)
 
         # Get all possible category values and labels from dictionary
         cat = list(labels[col].keys())
