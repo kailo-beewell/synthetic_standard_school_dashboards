@@ -7,11 +7,24 @@ from utilities.fixed_params import page_setup
 # Set page configuration
 page_setup()
 
+# Import data used on this page
+data = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
+counts = pd.read_csv('data/survey_data/overall_counts.csv')
+
 ###############################################################################
+
+# Filter to relevant school and get total school size
+school_counts = counts.loc[counts['school_lab'] == st.session_state.school]
+school_size = school_counts.loc[
+    (school_counts['year_group_lab'] == 'All') &
+    (school_counts['gender_lab'] == 'All') &
+    (school_counts['fsm_lab'] == 'All') &
+    (school_counts['sen_lab'] == 'All'), 'count'].values[0].astype(int)
 
 st.title('''Summary of your school's results''')
 st.subheader('Introduction')
-st.markdown('''
+st.markdown(f'''
+At your school, a total of {school_size} pupils took part in the #BeeWell survey.
 This page shows how the answers of pupils at your school compare with pupils
 from other schools. You can choose to compare against either the other schools
 in Northern Devon, or to matched schools from across the country.''')
@@ -40,10 +53,17 @@ with cols[0]:
 with cols[1]:
     st.markdown('This means that **less than ten** students in your school completed questions for this topic, so the results cannot be shown.')
 
-##########################################################
+# Print school size
+st.text('')
+st.markdown(f'''
+*Please note that  although a total of {school_size} pupils took part, the topic
+summaries below are based only on responses from pupils who completed all the
+questions of a given topic. The count of pupils who completed a topic is 
+available on each topic's "Explore results" page. However, the other figures
+on the "Explore results" page present data from all pupils who took part.*
+''')
 
-# Import data
-data = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
+##########################################################
 
 # Blank space and header
 st.markdown('')
