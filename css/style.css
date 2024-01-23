@@ -69,6 +69,14 @@ div.stButton > button:first-child
     padding-bottom: 14px !important;
 }
 
+/* Columns */
+/* Force columns to remain on mobile view - otherwise collapses all columns */
+[data-testid="column"] {
+    width: calc(33.3333% - 1rem) !important;
+    flex: 1 1 calc(33.3333% - 1rem) !important;
+    min-width: calc(33% - 1rem) !important;
+}
+
 /* Expander */
 div[data-testid=stExpander] > details > summary > span > div > p
 {
