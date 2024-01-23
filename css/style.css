@@ -73,6 +73,7 @@ div.stButton > button:first-child
 div[data-testid=stExpander] > details > summary > span > div > p
 {
     font-size: 20px;
+    font-weight: bold;
 }
 
 /* Radio in sidebar */
