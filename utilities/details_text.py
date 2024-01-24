@@ -1,6 +1,5 @@
 '''
-Functions to create and return dictionaries containing text for the Details
-page, to help minimise the amount of information on that .py file
+Function to create dictionaries with text that accompanies figures.
 '''
 
 def create_response_description():

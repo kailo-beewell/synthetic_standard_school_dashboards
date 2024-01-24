@@ -1,5 +1,5 @@
 '''
-Helper function for setting up the page, with the same settings for every page.
+Helper functions for setting up the page, with the same settings for every page.
 '''
 import base64
 import streamlit as st
