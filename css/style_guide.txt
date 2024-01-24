@@ -27,7 +27,7 @@ There are three ways to add CSS to a HTML document:
 
 ###############################################################################
 
-## Glossary of elements in the style.css file
+## Glossary of some of the simpler elements in the style.css file
 
 * h1 h2 h3 h4 h5 h6 (e.g. <h1></h1>) = creates headlines
 * p (<p></p>) = creates a paragraph
@@ -47,3 +47,7 @@ There are three ways to add CSS to a HTML document:
 * data-baseweb = might be utilising frontend framework/library like BaseWeb (which is a UI framework for React)
 * role = describes role of element (e.g. 'option' role identifies selectable choices of a listbox)
 * first-child = first element in a group of sibling elements - i.e. first element immediately inside another element
+* !important = declaration that overrides any other conflicting files
+* rem = root em, a unit of measurement representing the font size of the root element, and 1rem is 1*font size (e.g. if font size is 16px, then 16px)
+* calc() = perform calculation when specifying a value
+* @media = media query, apply style based on characteristics of device or screen (e.g. it's width or height)
