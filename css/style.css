@@ -1,11 +1,5 @@
 /* CSS Style Sheet for Streamlit App */
 
-/* Sidebar font size */
-[data-testid=stSidebarNavItems]
-{
-    font-size: 25px;
-}
-
 /* Sidebar font color (as default is to set non-selected to more transparent */
 [data-testid=stSidebarNavItems] > li > div > a > span
 {
@@ -16,44 +10,6 @@
 h1
 {
     text-align: center;
-    font-size: 60px;
-}
-
-/* Subheader */
-h3
-{
-    font-size: 30px;
-}
-
-/* Markdown p */
-p
-{
-    font-size: 20px;
-}
-
-/* Markdown lists */
-div[class='stMarkdown'] > div[data-testid='stMarkdownContainer'] > ul > li
-{
-    font-size: 20px;
-}
-
-/* Selectbox title */
-div[class*='stSelectbox'] > label > div[data-testid='stMarkdownContainer'] > p 
-{
-    font-size: 20px;
-}
-
-/* Selectbox chosen option - this targets element with CLASS name as given*/
-.stSelectbox > div[data-baseweb='select'] > div
-{
-    font-size: 20px;
-    /* background-color: #F5F0ED; */
-}
-
-/* Selectbox other options */
-ul[data-testid=stVirtualDropdown] > div > div > li[role='option']
-{
-    font-size: 20px;
 }
 
 /* Button */
@@ -71,6 +27,7 @@ div.stButton > button:first-child
 
 /* Columns */
 /* Force columns to remain on mobile view - otherwise collapses all columns */
+/* Note: This is currently based on assumption of wanting 33% col size */
 [data-testid="column"] {
     width: calc(33.3333% - 1rem) !important;
     flex: 1 1 calc(33.3333% - 1rem) !important;
@@ -80,14 +37,20 @@ div.stButton > button:first-child
 /* Expander */
 div[data-testid=stExpander] > details > summary > span > div > p
 {
-    font-size: 20px;
     font-weight: bold;
 }
 
-/* Radio in sidebar */
-div[class*='row-widget stRadio'] > label > div > p
+/* Horizontal line */
+div[class='stMarkdown'] > div[data-testid='stMarkdownContainer'] > hr
 {
-    font-size: 20px;
+    border-color: #D7D7D7;
+    margin: 0;
+}
+
+/* Download button */
+div[data-testid='stDownloadButton']
+{
+    text-align: center;
 }
 
 /* Text in status elements */
@@ -128,17 +91,70 @@ div[role='alert']:has(> div > div[data-testid='stNotificationContentInfo'])
     background-color: #DCE4FF;
 }
 
-/* Horizontal line */
-div[class='stMarkdown'] > div[data-testid='stMarkdownContainer'] > hr
+/* Responsive font size adjustment */
+/* On larger screen sizes (i.e. not mobile or very narrow browser window) */
+@media only screen and (min-width: 600px)
 {
-    border-color: #D7D7D7;
-    margin: 0;
-}
 
-/* Download button */
-div[data-testid='stDownloadButton']
-{
-    text-align: center;
+    /* Title */
+    h1
+    {
+        font-size: 60px;
+    }
+
+    /* Subheader */
+    h3
+    {
+        font-size: 30px;
+    }
+
+    /* Markdown p */
+    p
+    {
+        font-size: 20px;
+    }
+
+    /* Markdown lists */
+    div[class='stMarkdown'] > div[data-testid='stMarkdownContainer'] > ul > li
+    {
+        font-size: 20px;
+    }
+
+    /* Sidebar font size */
+    [data-testid=stSidebarNavItems]
+    {
+        font-size: 25px;
+    }
+
+    /* Selectbox title */
+    div[class*='stSelectbox'] > label > div[data-testid='stMarkdownContainer'] > p 
+    {
+        font-size: 20px;
+    }
+
+    /* Selectbox chosen option - this targets element with CLASS name as given*/
+    .stSelectbox > div[data-baseweb='select'] > div
+    {
+        font-size: 20px;
+    }
+
+    /* Selectbox other options */
+    ul[data-testid=stVirtualDropdown] > div > div > li[role='option']
+    {
+        font-size: 20px;
+    }
+
+    /* Expander */
+    div[data-testid=stExpander] > details > summary > span > div > p
+    {
+        font-size: 20px;
+    }
+
+    /* Radio in sidebar */
+    /*div[class*='row-widget stRadio'] > label > div > p
+    {
+        font-size: 20px;
+    }*/
 }
 
 /* Font */
