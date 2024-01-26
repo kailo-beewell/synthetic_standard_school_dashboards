@@ -13,6 +13,24 @@ if check_password():
     # Add name of school (to help with monitoring)
     st.markdown(st.session_state.school)
 
+    # Set button css for this page
+    st.markdown('''
+<style>
+    /* Button */
+    /* Set padding to match status elements, which are 16px but 14px matches */
+    div.stButton > button:first-child
+    {
+        background-color: #F5F0ED;
+        border-color: #F5F0ED;
+        width: 100%;
+        font-weight: bold;
+        height: auto;
+        padding-top: 14px !important;
+        padding-bottom: 14px !important;
+    }
+</style>
+''', unsafe_allow_html=True)
+
     # Import data used on this page
     data = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
     counts = pd.read_csv('data/survey_data/overall_counts.csv')

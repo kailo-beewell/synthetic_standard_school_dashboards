@@ -75,24 +75,18 @@ def check_password():
     if 'password_correct' not in st.session_state:
         # Show inputs for username and password
         login_screen()
-        st.text_input('Username',
-                      on_change=password_entered,
-                      key='username')
-        st.text_input('Password',
-                      type='password',
-                      on_change=password_entered,
-                      key='password')
+        st.text_input('Username', key='username')
+        st.text_input('Password', type='password', key='password')
+        st.write('')
+        st.button(label='Enter', on_click=password_entered)
         return False
     elif not st.session_state['password_correct']:
         # Password not correct, show input boxes again and an error message
         login_screen()
-        st.text_input('Username',
-                      on_change=password_entered,
-                      key='username')
-        st.text_input('Password',
-                      type='password',
-                      on_change=password_entered,
-                      key='password')
+        st.text_input('Username', key='username')
+        st.text_input('Password', type='password', key='password')
+        st.write('')
+        st.button(label='Enter', on_click=password_entered)
         st.error('😕 User not known or password incorrect')
         return False
     else:
