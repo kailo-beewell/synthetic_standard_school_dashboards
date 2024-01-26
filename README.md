@@ -11,4 +11,4 @@ Streamlit Community Cloud only appears to work with virtual environment (states 
 * Enter environment -  `source kailo_dashboards/bin/activate`
 * Install requirements into environment - `pip install -r requirements.txt`
 
-Manage streamlit apps here: https://share.streamlit.io/
+Manage streamlit apps here: https://share.streamlit.io/. To push changes to the app from main, go that site and select 'reboot' (won't implement changes automatically from main).

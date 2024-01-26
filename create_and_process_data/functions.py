@@ -273,7 +273,6 @@ def results_by_school_and_group(
         dictionary where keys are all the possible numeric (or nan) answers to
         the question, and values are the relevant label for each answer.
 
-
     Returns
     -------
     result : pandas DataFramne
