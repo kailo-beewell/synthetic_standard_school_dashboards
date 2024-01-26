@@ -1,15 +1,10 @@
-django==5.0.1
 geopandas==0.9.0
-ipykernel==6.27.1
-matplotlib==3.8.0
-nbformat==5.9.2
 numpy==1.26.0
-odfpy==1.4.1
 pandas==2.1.1
 pip==23.3
 plotly==5.9.0
-statsmodels==0.14.0
-st-pages==0.4.5
-# Don't give streamlit version to ensure app has latest security updates
+# Don't give version to ensure app has latest security updates
 # However, please be aware that as of 26th Jan 2024, I am using 1.30.0
+# streamlit and 5.0.1 django
+django
 streamlit
