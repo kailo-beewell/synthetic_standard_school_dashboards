@@ -1,5 +1,5 @@
 '''
-Functions used to produce charts/figures
+Functions used to produce the two types of bar chart
 '''
 import numpy as np
 import plotly.express as px

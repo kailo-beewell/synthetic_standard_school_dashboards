@@ -2,9 +2,9 @@ from ast import literal_eval
 import numpy as np
 import pandas as pd
 import streamlit as st
-from utilities.fixed_params import page_setup
-from utilities.details import survey_responses
-from utilities.details_text import create_response_description
+from utilities.page_setup import page_setup
+from utilities.bar_charts import survey_responses
+from utilities.bar_charts_text import create_response_description
 
 # Set page configuration
 page_setup()

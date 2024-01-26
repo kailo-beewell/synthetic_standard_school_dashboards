@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 from utilities.switch_page_button import switch_page
-from utilities.fixed_params import page_setup
+from utilities.page_setup import page_setup
 
 # Set page configuration
 page_setup()

@@ -4,9 +4,9 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from utilities.fixed_params import page_setup
-from utilities.details import survey_responses, details_ordered_bar
-from utilities.details_text import create_response_description
+from utilities.page_setup import page_setup
+from utilities.bar_charts import survey_responses, details_ordered_bar
+from utilities.bar_charts_text import create_response_description
 from utilities.score_descriptions import score_descriptions
 
 # Set page configuration

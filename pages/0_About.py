@@ -1,5 +1,5 @@
 import streamlit as st
-from utilities.fixed_params import page_setup
+from utilities.page_setup import page_setup
 from utilities.stylable_container import stylable_container, header_container
 import base64
 from pathlib import Path
