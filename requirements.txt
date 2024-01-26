@@ -11,4 +11,5 @@ plotly==5.9.0
 statsmodels==0.14.0
 st-pages==0.4.5
 # Don't give streamlit version to ensure app has latest security updates
+# However, please be aware that as of 26th Jan 2024, I am using 1.30.0
 streamlit
