@@ -1,23 +1,24 @@
 '''
-Functions used for the streamlit page Details.py
+Functions used to produce the two types of bar chart
 '''
 import numpy as np
 import plotly.express as px
-import plotly.graph_objects as go
 import streamlit as st
-from utilities.colours import linear_gradient
 
 
-def survey_responses(dataset):
+def survey_responses(dataset, font_size=16):
     '''
     Create bar charts for each of the quetsions in the provided dataframe.
     The dataframe should contain questions which all have the same set
     of possible responses.
-    Inputs:
-    - df, dataframe - e.g. chosen_result
-    '''
-    font_size=18
 
+    Parameters
+    ----------
+    df : dataframe
+        Dataframe to create plot from (e.g. chosen_result)
+    font_size : integer
+        Font size of x axis labels, y axis labels and legend text, default=16
+    '''
     # Create seperate figures for each of the measures
     for measure in dataset['measure_lab'].drop_duplicates():
 
@@ -109,13 +110,19 @@ shown for {kept} pupils.''')
             st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
 
-def details_ordered_bar(school_scores, school_name):
+def details_ordered_bar(school_scores, school_name, font_size=16):
     '''
     Created ordered bar chart with the results from each school, with the
     chosen school highlighted
-    Inputs:
-    - school_scores, dataframe with mean score at each school (e.g. between_schools)
-    - school_name, string, name of school (matching name in 'school_lab' col)
+
+    Parameters
+    ----------
+    school_scores : dataframe
+        Dataframe with mean score at each school (e.g. between_schools)
+    school_name : string
+        Name of school (matching name in 'school_lab' col)
+    font_size : integer
+        Font size of x axis labels, y axis labels and legend text, default=16
     '''
     # Make a copy of the school_scores df to work on (avoid SettingCopyWarning)
     df = school_scores.copy()
@@ -143,7 +150,7 @@ def details_ordered_bar(school_scores, school_name):
     min = df['mean'].min()
     max = df['mean'].max()
     adj_axis = (max - min)*0.15
-    ymin = min - adj_axis
+    ymin = np.max([0, (min - adj_axis)])
     ymax = max + adj_axis
     fig.update_layout(yaxis_range=[ymin, ymax])
 
@@ -164,19 +171,20 @@ def details_ordered_bar(school_scores, school_name):
     # Set font size and hide x axis tick labels (but seems to be a bug that
     # means the axis label is then above the plot, so had to use a work around
     # of replacing the axis labels with spaces
-    font_size = 18
     fig.update_layout(
         font = dict(size=font_size),
-        xaxis = dict(title='Northern Devon schools (ordered by mean score)',
-                     title_font_size=font_size,
+        xaxis = dict(title='Northern Devon schools<br>(ordered by mean score)',
+                     tickfont=dict(color='#05291F', size=font_size),
+                     titlefont=dict(color='#05291F', size=font_size),
                      tickvals=df['school_lab'],
                      ticktext=[' ']*len(df['school_lab'])),
         yaxis = dict(title='Mean score',
-                     title_font_size=font_size,
-                     tickfont=dict(size=font_size)),
-        legend = dict(font_size=font_size,
+                     tickfont=dict(color='#05291F', size=font_size),
+                     titlefont=dict(color='#05291F', size=font_size)),
+        legend = dict(title='School',
+                      font=dict(color='#05291F', size=font_size),
                       itemclick=False, itemdoubleclick=False),
-        legend_title_text=''
+        legend_title = dict(font=dict(color='#05291F', size=font_size))
     )
 
     # Prevent zooming and panning, remove grid, and hide plotly toolbar

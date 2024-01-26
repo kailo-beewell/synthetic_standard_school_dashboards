@@ -1,8 +1,9 @@
 '''
-Helper function for setting up the page, with the same settings for every page.
+Helper functions for setting up the page, with the same settings for every page.
 '''
 import base64
 import streamlit as st
+
 
 def page_logo():
     '''
@@ -29,6 +30,7 @@ def page_logo():
 </style>
 ''', unsafe_allow_html=True)
 
+
 def page_setup():
     '''
     Set up page to standard conditions, with layout as specified
@@ -47,8 +49,3 @@ def page_setup():
 
     # Add page logo
     page_logo()
-
-    # Choose school
-    st.session_state.school = st.selectbox(
-        'School', ['School A', 'School B', 'School C',
-                   'School D', 'School E', 'School F'])
