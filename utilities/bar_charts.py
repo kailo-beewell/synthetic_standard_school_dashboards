@@ -150,7 +150,7 @@ def details_ordered_bar(school_scores, school_name, font_size=16):
     min = df['mean'].min()
     max = df['mean'].max()
     adj_axis = (max - min)*0.15
-    ymin = min - adj_axis
+    ymin = np.max([0, (min - adj_axis)])
     ymax = max + adj_axis
     fig.update_layout(yaxis_range=[ymin, ymax])
 
