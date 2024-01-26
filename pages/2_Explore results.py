@@ -15,6 +15,7 @@ page_setup()
 # Import the scores and the proportion each response
 df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
 df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
+counts = pd.read_csv('data/survey_data/overall_counts.csv')
 
 ###############################################################################
 # Getting topics
@@ -227,6 +228,14 @@ st.text('')
 ###############################################################################
 # Comparator chart between schools...
 
+# Filter to relevant school and get total school size to use in text with chart
+school_counts = counts.loc[counts['school_lab'] == st.session_state.school]
+school_size = school_counts.loc[
+    (school_counts['year_group_lab'] == 'All') &
+    (school_counts['gender_lab'] == 'All') &
+    (school_counts['fsm_lab'] == 'All') &
+    (school_counts['sen_lab'] == 'All'), 'count'].values[0].astype(int)
+
 # Create dataframe based on chosen variable
 between_schools = df_scores[
     (df_scores['variable'].str.replace('_score', '') == chosen_variable) &
@@ -249,7 +258,7 @@ st.markdown(f'''
 In this section, an overall score for the topic of
 '{chosen_variable_lab.lower()}' has been calculated for each pupil with complete
 responses on this question. For this topic, your school had {topic_count} complete
-responses.
+responses (out of a possible {school_size}).
 
 Possible scores for each pupil on this topic range from 
 {score_descriptions[chosen_variable][0]} with **higher scores indicating
@@ -273,20 +282,29 @@ elif devon_rag == 'above':
 details_ordered_bar(between_schools, st.session_state.school)
 
 # Add caveat for interpretation
-st.subheader('A word of caution')
+st.subheader('Comparing between schools')
 st.markdown('''
-There are lots of reasons why pupils in different schools may get different
-results, and its important to consider this when comparing between schools. For
-example:
-* Schools with fewer respondents are more likely to get more extreme
-results (above or below average) than schools with a large number of respondents
-(which are most likely to get average results)
-* There will also be differences in the pupil populations, such as differing
-proportions of students of each gender, year group, free school meal eligibility
-and special educational needs.
-
+Always be mindful when making comparisons between different schools. There are
+a number of factors that could explain differences in scores (whether you are
+above average, average, or below average). These include:
+* Random chance ('one-off' findings).
+* Differences in the socio-economic characteristics of pupils and the areas
+where they live (e.g. income, education, ethnicity, access to services and
+amenities).
+* The number of pupils taking part - schools that are much smaller are more
+likely to have more "extreme" results (i.e. above or below average), whilst
+schools with a larger number of pupils who took part are more likely to
+see average results
+            
 It's also worth noting that the score will only include results from pupils who
 completed each of the questions used to calculate that topic - so does not
 include any reflection of results from pupils who did not complete some or all
 of the questions for that topic.
 ''')
+
+# Draft phrasing for benchmarking (not currently included in dashboards):
+# When comparing to the Greater Manchester data, be aware that (i) there are
+# likely to be greater differences in population characteristics between
+# Northern Devon and Greater Manchester than between different areas in
+# Northern Devon, and (ii) the Greater Manchester data were collected in Autumn
+# Term 2021 while the Havering data was collected in Summer Term 2023. 
