@@ -25,7 +25,7 @@ score_descriptions = {
     'home_relationship': [' 4 to 20', 'higher levels of perceived support at home'],
     'home_happy': ['0 to 10', 'higher levels of happiness with the home environment'],
     'local_env': ['5 to 25', 'pupils feel more positively about their local area'],
-    'discrim': ['0 to 1', 'fewer experiences of discrimination'],
+    'discrim': ['1 to 2', 'fewer experiences of discrimination'],
     'belong_local': ['1 to 4', 'greater feelings of belonging in the local area'],
     'wealth': ['0 to 1', 'pupils feel their family has similar wealth as their friends (as opposed to feeling they are richer or poorer)'],
     'future': ['3 to 12', 'pupils feel more positively about future work, education and/or training opportunities in their local area'],

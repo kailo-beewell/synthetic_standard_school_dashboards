@@ -207,10 +207,13 @@ def calculate_scores(data):
     # Identify relevant columns
     discrim_col = ['discrim_race', 'discrim_gender', 'discrim_orientation', 'discrim_disability', 'discrim_faith']
     # Find if any of them are one of those responses
-    # If true, set to 0. If false, set to 1. This is because true is the
+    # If true, set to 1. If false, set to 2. This is because true is the
     # negative outcome whilst false is the positive outcome (so set to higher score).
+    # We use 1 and 2 rather than 0 and 1 as often the score for a school will
+    # fall fairly low in the synthetic data, and when 0 is the minimum, the
+    # minimum bar doesn't show on the plot and there's no x axis ticks to explain
     data['discrim_score'] = (
-        data[discrim_col].isin([1, 2, 3]).any(axis=1).map({True: 0, False: 1}))
+        data[discrim_col].isin([1, 2, 3]).any(axis=1).map({True: 1, False: 2}))
     # Set to NaN if all responses were NaN
     data.loc[data[discrim_col].isnull().all(axis=1), 'discrim_score'] = np.nan
 
