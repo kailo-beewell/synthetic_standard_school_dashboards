@@ -3,8 +3,10 @@ numpy==1.26.0
 pandas==2.1.1
 pip==23.3
 plotly==5.9.0
-# Don't give version to ensure app has latest security updates
-# However, please be aware that as of 26th Jan 2024, I am using 1.30.0
-# streamlit and 5.0.1 django
-django
+django==5.0.1
+pymongo==4.6.1
+mysqlclient==2.2.1
+SQLAlchemy==2.0.25
+# No version for security updates.
+# As of 26th Jan 2024, using 1.30.0
 streamlit
