@@ -3,7 +3,7 @@ numpy==1.26.0
 pandas==2.1.1
 pip==23.3.2
 plotly==5.9.0
-mysqlclient==2.2.1
+PyMySQL==1.1.0
 SQLAlchemy==2.0.25
 
 # Not latest version as Streamlit Community Cloud had error that couldn't
