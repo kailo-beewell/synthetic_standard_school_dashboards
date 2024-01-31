@@ -1,12 +1,14 @@
 geopandas==0.9.0
 numpy==1.26.0
 pandas==2.1.1
-pip==23.3
+pip==23.3.2
 plotly==5.9.0
-django==5.0.1
-pymongo==4.6.1
 mysqlclient==2.2.1
 SQLAlchemy==2.0.25
+
+# Not latest version as Streamlit Community Cloud had error that couldn't
+# satsify requirement django==5.0.1
+django==4.2.9
 
 # To run jupyter notebooks
 ipykernel==6.29.0
