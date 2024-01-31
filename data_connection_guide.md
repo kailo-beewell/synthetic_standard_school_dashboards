@@ -6,19 +6,80 @@ Below are **step-by-step guides on how to set up connection with data source**..
 
 ## TiDB Cloud
 
-**Working**
+**Successfully implemented and currently used in this repository**
+
+**Part 1. Set up TIDB Cloud**
 
 1. If not already doing so, make sure that when saving the Python DataFrames to CSV files, you include `na_rep='NULL'` in `df.to_csv()`. Otherwise, you will encounter issues with SQL struggling to parse Python's null values.
-2. Add **mysqlclient** and **SQLAlchemy** to requirements.txt and update environment. In order to install mysqlclient on Linux, as on the mysqlclient [GitHub page](https://github.com/PyMySQL/mysqlclient), I had to first run `sudo apt-get install python3-dev default-libmysqlclient-dev build-essential pkg-config`
-3. Create a TiDB Cloud account, signing up with the Kailo BeeWell DSDL Google account
-4. You'll have Cluster0 automatically created and in account. Click on the cluster, then go to Data > Import and drag and drop a csv file.
-    * Location will be Local as we upload from our computer.
-    * Set the database (synthetic_standard_survey) and table name (matching filename e.g. overall_counts).
-    * For **aggregate_responses** and **aggregate_responses_rag**, set **counts** and **percentages** columns to **VARCHAR(512)** if you want exact match to the CSV files, where these are read in as strings. This ensures exact match to CSV (e.g. 0.0 rather than 0).
-    * Note: I did find some unusual behaviour when replacing one of the tables, where using the same name as before, it was doing something (modifying order maybe, not clear) causing it to not match the CSV file - this was resolved by deleting the back-ups.
-5. Go to cluster overview and click the "Connect" blue button in the top right corner
-6. On the pop-up, click "Generate Password". Make a record of that password
-7. Copy the password and parameters from that pop-up into the .streamlit/secrets.toml file - example:
+2. Create a TiDB Cloud account - I used the Kailo BeeWell DSDL Google account
+3. You'll have Cluster0 automatically created and in account. Click on the cluster, then go to Data > Import and drag and drop a csv file.
+    * Location will be "Local" as we upload from our computer.
+    * Set the database (synthetic_standard_survey) and table name (I chose to match filename e.g. overall_counts).
+    * For **aggregate_responses** and **aggregate_responses_rag**, set **counts** and **percentages** columns to **VARCHAR(512)**. This means they are read as strings and ensures exact match to CSV (e.g. 0.0 rather than 0).
+    * I found some unusual behaviour when replacing one of the tables, where using the same name as before, it was doing something (modifying order maybe, not clear) causing it to not match the CSV file - this was resolved by deleting the back-ups
+
+**Part 2. Link Streamlit to TiDB Cloud**
+
+I have used and explained two methods - one that only worked on my local machine, and one that worked both on my local machine and when deployed on Streamlit Community Cloud.
+
+Method that is **compatible** with Streamlit Community Cloud:
+
+1. Add **pymysql** to requirements.txt and update enviornment
+2. On TiDB Cloud, go to the cluster overview and click the "Connect" blue button in the top right corner. On the pop-up, click:
+    * "Generate Password" - make a record of that password
+    * "Download the CA Cert" - to get the .pem file
+
+3. Copy the password and parameters from that pop-up into the .streamlit/secrets.toml file - example:
+```
+[tidb]
+dialect = 'mysql'
+driver = 'pymysql'
+host = '<TiDB_Host>'
+port = '<TiDB_Port>'
+database = '<TiDB_Database>'
+username = '<TiDB_User>'
+password = '<TiDB_Password>'
+root_cert = '''<Copy of contents of .pem file>'''
+```
+
+4. Likewise copy this information into the deployed app's secrets. To do this, open https://share.streamlit.io/ and go to the Settings of dashboard, then click on the Secrets tab, and paste it into there.
+
+5. To import the data within the Streamlit app:
+```
+from tempfile import NamedTemporaryFile
+import pymysql
+
+# Create temporary PEM file for setting up the connection
+with NamedTemporaryFile(suffix='.pem') as temp:
+
+    # Write the temporary file
+    temp.write(st.secrets.tidb.root_cert.encode('utf-8'))
+
+    # Temporary file have pointer to current position in file - as we have
+    # just written, the pointer is at the end of the last write, so if you
+    # don't seek, you would read from the end of the file and find nothing
+    temp.seek(0)
+
+    # Set up connection manually, providing the temporary PEM file
+    # (as cannot use st.connection() without providing tempfile name in secrets)
+    conn = pymysql.connect(
+        host = st.secrets.tidb.host,
+        user = st.secrets.tidb.username,
+        password = st.secrets.tidb.password,
+        database = st.secrets.tidb.database,
+        port = st.secrets.tidb.port,
+        ssl_verify_cert = False,
+        ssl_verify_identity = False,
+        ssl_ca = temp.name
+    )
+
+    scores = pd.read_sql('SELECT * FROM aggregate_scores;', conn)
+```
+
+Method that was **not** compatible with Streamlit Community Cloud (due to issues with environment not being built due to mysqlclient):
+
+1. Add **mysqlclient** and **SQLAlchemy** to requirements.txt and update environment. In order to install mysqlclient on Linux, as on the mysqlclient [GitHub page](https://github.com/PyMySQL/mysqlclient), I had to first run `sudo apt-get install python3-dev default-libmysqlclient-dev build-essential pkg-config`
+2. As above, get the password and details for the secrets file, but this time structured differently:
 ```
 [connections.tidb]
 dialect = "mysql"
@@ -28,12 +89,12 @@ database = "<TiDB_database_name>"
 username = "<TiDB_cluster_user>"
 password = "<TiDB_cluster_password>"
 ```
-8. On the Python streamlit page run:
+
+3. To import the data within the Streamlit app:
 ```
 conn = st.connection('tidb', type='sql')
 df = conn.query('SELECT * from mytablename;')
 ```
-9. To run on Streamlit Community Cloud, copied the contents of the secret file to the deployed app's secretes - https://share.streamlit.io/, go to Settings of dashboard, then Secrets tab, and paste in there.
 
 ## MongoDB
 

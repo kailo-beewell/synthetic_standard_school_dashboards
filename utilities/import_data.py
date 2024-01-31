@@ -5,24 +5,8 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 from pandas.testing import assert_frame_equal
-
 from tempfile import NamedTemporaryFile
-#import os
 import pymysql
-
-def get_connection():
-    db_conf = {
-        "host": st.secrets.tidb.host,
-        "user": st.secrets.tidb.username,
-        "password": st.secrets.tidb.password,
-        "database": st.secrets.tidb.database,
-        "port": st.secrets.tidb.port,
-        "ssl_verify_cert": True,
-        "ssl_verify_identity": True,
-        "ssl_ca": st.secrets.tidb.ssl_ca
-    }
-    return pymysql.connect(**db_conf)
-
 
 def import_tidb_data(tests=False):
     '''
