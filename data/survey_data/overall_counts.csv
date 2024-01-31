@@ -15,7 +15,7 @@ count,school_lab,year_group_lab,gender_lab,fsm_lab,sen_lab
 15.0,School B,All,Boy,All,All
 57.0,School B,All,All,FSM,All
 64.0,School B,All,All,Non-FSM,All
-,School B,All,All,All,SEN
+NULL,School B,All,All,All,SEN
 122.0,School B,All,All,All,Non-SEN
 111.0,School C,All,All,All,All
 38.0,School C,Year 8,All,All,All
@@ -46,7 +46,7 @@ count,school_lab,year_group_lab,gender_lab,fsm_lab,sen_lab
 45.0,School E,All,All,All,Non-SEN
 110.0,School F,All,All,All,All
 97.0,School F,Year 8,All,All,All
-,School F,Year 10,All,All,All
+NULL,School F,Year 10,All,All,All
 15.0,School F,All,Girl,All,All
 21.0,School F,All,Boy,All,All
 49.0,School F,All,All,FSM,All

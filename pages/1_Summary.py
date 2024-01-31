@@ -4,11 +4,19 @@ import streamlit as st
 from utilities.switch_page_button import switch_page
 from utilities.page_setup import page_setup
 from utilities.authentication import check_password
+from utilities.import_data import import_tidb_data
 
 # Set page configuration
 page_setup()
 
 if check_password():
+
+    # Import the data from TiDB Cloud if not already in session state
+    import_tidb_data()
+
+    # Get data from session state
+    counts = st.session_state.counts
+    data = st.session_state.scores_rag
 
     # Add name of school (to help with monitoring)
     st.markdown(st.session_state.school)
@@ -30,10 +38,6 @@ if check_password():
     }
 </style>
 ''', unsafe_allow_html=True)
-
-    # Import data used on this page
-    data = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
-    counts = pd.read_csv('data/survey_data/overall_counts.csv')
 
     ###############################################################################
 

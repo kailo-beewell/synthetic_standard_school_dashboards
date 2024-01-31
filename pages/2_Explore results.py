@@ -1,27 +1,29 @@
 from ast import literal_eval
 import numpy as np
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
 import streamlit as st
 from utilities.page_setup import page_setup
 from utilities.authentication import check_password
 from utilities.bar_charts import survey_responses, details_ordered_bar
 from utilities.bar_charts_text import create_response_description
 from utilities.score_descriptions import score_descriptions
+from utilities.import_data import import_tidb_data
 
 # Set page configuration
 page_setup()
 
 if check_password():
 
+    # Import the data from TiDB Cloud if not already in session state
+    import_tidb_data()
+
     # Add name of school (to help with monitoring)
     st.markdown(st.session_state.school)
 
-    # Import the scores and the proportion each response
-    df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
-    df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
-    counts = pd.read_csv('data/survey_data/overall_counts.csv')
+    # Assign the data from the session state
+    df_scores = st.session_state.scores_rag
+    df_prop = st.session_state.responses
+    counts = st.session_state.counts
 
     ###############################################################################
     # Getting topics

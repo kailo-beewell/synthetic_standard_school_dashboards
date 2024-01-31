@@ -99,10 +99,10 @@ autonomy_score,17.833333333333332,12.0,School A,All,Girl,All,All
 life_satisfaction_score,5.2,15.0,School A,All,Girl,All,All
 optimism_score,12.133333333333333,15.0,School A,All,Girl,All,All
 wellbeing_score,20.3,10.0,School A,All,Girl,All,All
-esteem_score,,,School A,All,Girl,All,All
+esteem_score,NULL,NULL,School A,All,Girl,All,All
 stress_score,7.461538461538462,13.0,School A,All,Girl,All,All
 appearance_score,4.214285714285714,14.0,School A,All,Girl,All,All
-negative_score,,,School A,All,Girl,All,All
+negative_score,NULL,NULL,School A,All,Girl,All,All
 lonely_score,2.875,16.0,School A,All,Girl,All,All
 support_score,4.416666666666667,12.0,School A,All,Girl,All,All
 sleep_score,0.4375,16.0,School A,All,Girl,All,All
@@ -119,11 +119,11 @@ school_belong_score,3.1538461538461537,13.0,School A,All,Girl,All,All
 staff_relationship_score,12.181818181818182,11.0,School A,All,Girl,All,All
 home_relationship_score,11.272727272727273,11.0,School A,All,Girl,All,All
 home_happy_score,5.285714285714286,14.0,School A,All,Girl,All,All
-local_env_score,,,School A,All,Girl,All,All
+local_env_score,NULL,NULL,School A,All,Girl,All,All
 discrim_score,1.0625,16.0,School A,All,Girl,All,All
 belong_local_score,2.7333333333333334,15.0,School A,All,Girl,All,All
 wealth_score,0.45454545454545453,11.0,School A,All,Girl,All,All
-future_score,,,School A,All,Girl,All,All
+future_score,NULL,NULL,School A,All,Girl,All,All
 climate_score,2.6875,16.0,School A,All,Girl,All,All
 social_score,12.636363636363637,11.0,School A,All,Girl,All,All
 bully_score,7.5625,16.0,School A,All,Girl,All,All
@@ -155,7 +155,7 @@ local_env_score,14.380952380952383,14.0,School A,All,Boy,All,All
 discrim_score,1.0,22.0,School A,All,Boy,All,All
 belong_local_score,2.3333333333333335,21.0,School A,All,Boy,All,All
 wealth_score,0.35294117647058826,17.0,School A,All,Boy,All,All
-future_score,,,School A,All,Boy,All,All
+future_score,NULL,NULL,School A,All,Boy,All,All
 climate_score,2.5454545454545454,22.0,School A,All,Boy,All,All
 social_score,12.636363636363637,11.0,School A,All,Boy,All,All
 bully_score,7.909090909090909,22.0,School A,All,Boy,All,All
@@ -383,7 +383,7 @@ future_score,6.947368421052632,19.0,School B,Year 10,All,All,All
 climate_score,2.488888888888889,45.0,School B,Year 10,All,All,All
 social_score,12.214285714285714,28.0,School B,Year 10,All,All,All
 bully_score,7.543478260869565,46.0,School B,Year 10,All,All,All
-autonomy_score,,,School B,All,Girl,All,All
+autonomy_score,NULL,NULL,School B,All,Girl,All,All
 life_satisfaction_score,4.666666666666667,21.0,School B,All,Girl,All,All
 optimism_score,12.052631578947368,19.0,School B,All,Girl,All,All
 wellbeing_score,20.75,12.0,School B,All,Girl,All,All
@@ -411,18 +411,18 @@ local_env_score,14.527777777777777,12.0,School B,All,Girl,All,All
 discrim_score,1.0909090909090908,22.0,School B,All,Girl,All,All
 belong_local_score,2.238095238095238,21.0,School B,All,Girl,All,All
 wealth_score,0.5882352941176471,17.0,School B,All,Girl,All,All
-future_score,,,School B,All,Girl,All,All
+future_score,NULL,NULL,School B,All,Girl,All,All
 climate_score,3.0,21.0,School B,All,Girl,All,All
 social_score,11.428571428571429,14.0,School B,All,Girl,All,All
 bully_score,7.15,20.0,School B,All,Girl,All,All
-autonomy_score,,,School B,All,Boy,All,All
+autonomy_score,NULL,NULL,School B,All,Boy,All,All
 life_satisfaction_score,5.615384615384615,13.0,School B,All,Boy,All,All
 optimism_score,12.363636363636363,11.0,School B,All,Boy,All,All
 wellbeing_score,22.25,12.0,School B,All,Boy,All,All
-esteem_score,,,School B,All,Boy,All,All
+esteem_score,NULL,NULL,School B,All,Boy,All,All
 stress_score,9.7,10.0,School B,All,Boy,All,All
 appearance_score,5.466666666666667,15.0,School B,All,Boy,All,All
-negative_score,,,School B,All,Boy,All,All
+negative_score,NULL,NULL,School B,All,Boy,All,All
 lonely_score,3.642857142857143,14.0,School B,All,Boy,All,All
 support_score,4.733333333333333,15.0,School B,All,Boy,All,All
 sleep_score,0.6923076923076923,13.0,School B,All,Boy,All,All
@@ -430,10 +430,10 @@ physical_score,242.5,12.0,School B,All,Boy,All,All
 free_like_score,3.142857142857143,14.0,School B,All,Boy,All,All
 media_score,4.066666666666666,15.0,School B,All,Boy,All,All
 places_score,2.2666666666666666,15.0,School B,All,Boy,All,All
-staff_talk_score,,,School B,All,Boy,All,All
+staff_talk_score,NULL,NULL,School B,All,Boy,All,All
 home_talk_score,2.9375,12.0,School B,All,Boy,All,All
 peer_talk_score,2.5,13.0,School B,All,Boy,All,All
-talk_score,,,School B,All,Boy,All,All
+talk_score,NULL,NULL,School B,All,Boy,All,All
 accept_score,10.285714285714286,14.0,School B,All,Boy,All,All
 school_belong_score,2.6923076923076925,13.0,School B,All,Boy,All,All
 staff_relationship_score,12.0,14.0,School B,All,Boy,All,All
@@ -443,9 +443,9 @@ local_env_score,14.23333333333333,10.0,School B,All,Boy,All,All
 discrim_score,1.0,15.0,School B,All,Boy,All,All
 belong_local_score,2.3333333333333335,15.0,School B,All,Boy,All,All
 wealth_score,0.3333333333333333,12.0,School B,All,Boy,All,All
-future_score,,,School B,All,Boy,All,All
+future_score,NULL,NULL,School B,All,Boy,All,All
 climate_score,2.2142857142857144,14.0,School B,All,Boy,All,All
-social_score,,,School B,All,Boy,All,All
+social_score,NULL,NULL,School B,All,Boy,All,All
 bully_score,7.642857142857143,14.0,School B,All,Boy,All,All
 autonomy_score,17.86842105263158,38.0,School B,All,All,FSM,All
 life_satisfaction_score,5.62962962962963,54.0,School B,All,All,FSM,All
@@ -511,38 +511,38 @@ future_score,7.071428571428571,21.0,School B,All,All,Non-FSM,All
 climate_score,2.377049180327869,61.0,School B,All,All,Non-FSM,All
 social_score,11.825,40.0,School B,All,All,Non-FSM,All
 bully_score,7.704918032786885,61.0,School B,All,All,Non-FSM,All
-autonomy_score,,,School B,All,All,All,SEN
-life_satisfaction_score,,,School B,All,All,All,SEN
-optimism_score,,,School B,All,All,All,SEN
-wellbeing_score,,,School B,All,All,All,SEN
-esteem_score,,,School B,All,All,All,SEN
-stress_score,,,School B,All,All,All,SEN
-appearance_score,,,School B,All,All,All,SEN
-negative_score,,,School B,All,All,All,SEN
-lonely_score,,,School B,All,All,All,SEN
-support_score,,,School B,All,All,All,SEN
-sleep_score,,,School B,All,All,All,SEN
-physical_score,,,School B,All,All,All,SEN
-free_like_score,,,School B,All,All,All,SEN
-media_score,,,School B,All,All,All,SEN
-places_score,,,School B,All,All,All,SEN
-staff_talk_score,,,School B,All,All,All,SEN
-home_talk_score,,,School B,All,All,All,SEN
-peer_talk_score,,,School B,All,All,All,SEN
-talk_score,,,School B,All,All,All,SEN
-accept_score,,,School B,All,All,All,SEN
-school_belong_score,,,School B,All,All,All,SEN
-staff_relationship_score,,,School B,All,All,All,SEN
-home_relationship_score,,,School B,All,All,All,SEN
-home_happy_score,,,School B,All,All,All,SEN
-local_env_score,,,School B,All,All,All,SEN
-discrim_score,,,School B,All,All,All,SEN
-belong_local_score,,,School B,All,All,All,SEN
-wealth_score,,,School B,All,All,All,SEN
-future_score,,,School B,All,All,All,SEN
-climate_score,,,School B,All,All,All,SEN
-social_score,,,School B,All,All,All,SEN
-bully_score,,,School B,All,All,All,SEN
+autonomy_score,NULL,NULL,School B,All,All,All,SEN
+life_satisfaction_score,NULL,NULL,School B,All,All,All,SEN
+optimism_score,NULL,NULL,School B,All,All,All,SEN
+wellbeing_score,NULL,NULL,School B,All,All,All,SEN
+esteem_score,NULL,NULL,School B,All,All,All,SEN
+stress_score,NULL,NULL,School B,All,All,All,SEN
+appearance_score,NULL,NULL,School B,All,All,All,SEN
+negative_score,NULL,NULL,School B,All,All,All,SEN
+lonely_score,NULL,NULL,School B,All,All,All,SEN
+support_score,NULL,NULL,School B,All,All,All,SEN
+sleep_score,NULL,NULL,School B,All,All,All,SEN
+physical_score,NULL,NULL,School B,All,All,All,SEN
+free_like_score,NULL,NULL,School B,All,All,All,SEN
+media_score,NULL,NULL,School B,All,All,All,SEN
+places_score,NULL,NULL,School B,All,All,All,SEN
+staff_talk_score,NULL,NULL,School B,All,All,All,SEN
+home_talk_score,NULL,NULL,School B,All,All,All,SEN
+peer_talk_score,NULL,NULL,School B,All,All,All,SEN
+talk_score,NULL,NULL,School B,All,All,All,SEN
+accept_score,NULL,NULL,School B,All,All,All,SEN
+school_belong_score,NULL,NULL,School B,All,All,All,SEN
+staff_relationship_score,NULL,NULL,School B,All,All,All,SEN
+home_relationship_score,NULL,NULL,School B,All,All,All,SEN
+home_happy_score,NULL,NULL,School B,All,All,All,SEN
+local_env_score,NULL,NULL,School B,All,All,All,SEN
+discrim_score,NULL,NULL,School B,All,All,All,SEN
+belong_local_score,NULL,NULL,School B,All,All,All,SEN
+wealth_score,NULL,NULL,School B,All,All,All,SEN
+future_score,NULL,NULL,School B,All,All,All,SEN
+climate_score,NULL,NULL,School B,All,All,All,SEN
+social_score,NULL,NULL,School B,All,All,All,SEN
+bully_score,NULL,NULL,School B,All,All,All,SEN
 autonomy_score,18.114285714285714,70.0,School B,All,All,All,Non-SEN
 life_satisfaction_score,5.754385964912281,114.0,School B,All,All,All,Non-SEN
 optimism_score,11.866666666666667,105.0,School B,All,All,All,Non-SEN
@@ -671,7 +671,7 @@ future_score,8.41304347826087,23.0,School C,Year 10,All,All,All
 climate_score,2.457627118644068,59.0,School C,Year 10,All,All,All
 social_score,11.545454545454545,44.0,School C,Year 10,All,All,All
 bully_score,7.666666666666667,57.0,School C,Year 10,All,All,All
-autonomy_score,,,School C,All,Girl,All,All
+autonomy_score,NULL,NULL,School C,All,Girl,All,All
 life_satisfaction_score,6.0,17.0,School C,All,Girl,All,All
 optimism_score,12.4375,16.0,School C,All,Girl,All,All
 wellbeing_score,21.533333333333335,15.0,School C,All,Girl,All,All
@@ -699,7 +699,7 @@ local_env_score,15.090909090909092,11.0,School C,All,Girl,All,All
 discrim_score,1.0,19.0,School C,All,Girl,All,All
 belong_local_score,2.263157894736842,19.0,School C,All,Girl,All,All
 wealth_score,0.23076923076923078,13.0,School C,All,Girl,All,All
-future_score,,,School C,All,Girl,All,All
+future_score,NULL,NULL,School C,All,Girl,All,All
 climate_score,2.6842105263157894,19.0,School C,All,Girl,All,All
 social_score,12.133333333333333,15.0,School C,All,Girl,All,All
 bully_score,8.0,18.0,School C,All,Girl,All,All
@@ -707,10 +707,10 @@ autonomy_score,18.9,10.0,School C,All,Boy,All,All
 life_satisfaction_score,4.6923076923076925,13.0,School C,All,Boy,All,All
 optimism_score,12.785714285714286,14.0,School C,All,Boy,All,All
 wellbeing_score,21.1,10.0,School C,All,Boy,All,All
-esteem_score,,,School C,All,Boy,All,All
+esteem_score,NULL,NULL,School C,All,Boy,All,All
 stress_score,8.8,10.0,School C,All,Boy,All,All
 appearance_score,4.642857142857143,14.0,School C,All,Boy,All,All
-negative_score,,,School C,All,Boy,All,All
+negative_score,NULL,NULL,School C,All,Boy,All,All
 lonely_score,3.5,16.0,School C,All,Boy,All,All
 support_score,5.5,14.0,School C,All,Boy,All,All
 sleep_score,0.3076923076923077,13.0,School C,All,Boy,All,All
@@ -727,11 +727,11 @@ school_belong_score,2.857142857142857,14.0,School C,All,Boy,All,All
 staff_relationship_score,12.307692307692308,13.0,School C,All,Boy,All,All
 home_relationship_score,12.545454545454545,11.0,School C,All,Boy,All,All
 home_happy_score,5.133333333333334,15.0,School C,All,Boy,All,All
-local_env_score,,,School C,All,Boy,All,All
+local_env_score,NULL,NULL,School C,All,Boy,All,All
 discrim_score,1.0,16.0,School C,All,Boy,All,All
 belong_local_score,2.4285714285714284,14.0,School C,All,Boy,All,All
 wealth_score,0.38461538461538464,13.0,School C,All,Boy,All,All
-future_score,,,School C,All,Boy,All,All
+future_score,NULL,NULL,School C,All,Boy,All,All
 climate_score,2.6666666666666665,15.0,School C,All,Boy,All,All
 social_score,11.727272727272727,11.0,School C,All,Boy,All,All
 bully_score,7.666666666666667,15.0,School C,All,Boy,All,All
@@ -959,14 +959,14 @@ future_score,7.928571428571429,21.0,School D,Year 10,All,All,All
 climate_score,2.326530612244898,49.0,School D,Year 10,All,All,All
 social_score,12.264705882352942,34.0,School D,Year 10,All,All,All
 bully_score,7.52,50.0,School D,Year 10,All,All,All
-autonomy_score,,,School D,All,Girl,All,All
+autonomy_score,NULL,NULL,School D,All,Girl,All,All
 life_satisfaction_score,4.642857142857143,14.0,School D,All,Girl,All,All
 optimism_score,12.461538461538462,13.0,School D,All,Girl,All,All
 wellbeing_score,21.5,12.0,School D,All,Girl,All,All
 esteem_score,12.5,12.0,School D,All,Girl,All,All
 stress_score,8.76923076923077,13.0,School D,All,Girl,All,All
 appearance_score,4.5,14.0,School D,All,Girl,All,All
-negative_score,,,School D,All,Girl,All,All
+negative_score,NULL,NULL,School D,All,Girl,All,All
 lonely_score,3.1538461538461537,13.0,School D,All,Girl,All,All
 support_score,4.3076923076923075,13.0,School D,All,Girl,All,All
 sleep_score,0.5,14.0,School D,All,Girl,All,All
@@ -983,13 +983,13 @@ school_belong_score,3.3076923076923075,13.0,School D,All,Girl,All,All
 staff_relationship_score,12.5,10.0,School D,All,Girl,All,All
 home_relationship_score,12.0,10.0,School D,All,Girl,All,All
 home_happy_score,4.0,12.0,School D,All,Girl,All,All
-local_env_score,,,School D,All,Girl,All,All
+local_env_score,NULL,NULL,School D,All,Girl,All,All
 discrim_score,1.0,14.0,School D,All,Girl,All,All
 belong_local_score,2.5,14.0,School D,All,Girl,All,All
-wealth_score,,,School D,All,Girl,All,All
-future_score,,,School D,All,Girl,All,All
+wealth_score,NULL,NULL,School D,All,Girl,All,All
+future_score,NULL,NULL,School D,All,Girl,All,All
 climate_score,2.4166666666666665,12.0,School D,All,Girl,All,All
-social_score,,,School D,All,Girl,All,All
+social_score,NULL,NULL,School D,All,Girl,All,All
 bully_score,8.071428571428571,14.0,School D,All,Girl,All,All
 autonomy_score,19.181818181818183,11.0,School D,All,Boy,All,All
 life_satisfaction_score,4.0,17.0,School D,All,Boy,All,All
@@ -1019,7 +1019,7 @@ local_env_score,16.151515151515152,11.0,School D,All,Boy,All,All
 discrim_score,1.0,21.0,School D,All,Boy,All,All
 belong_local_score,2.526315789473684,19.0,School D,All,Boy,All,All
 wealth_score,0.6428571428571429,14.0,School D,All,Boy,All,All
-future_score,,,School D,All,Boy,All,All
+future_score,NULL,NULL,School D,All,Boy,All,All
 climate_score,2.6315789473684212,19.0,School D,All,Boy,All,All
 social_score,11.75,16.0,School D,All,Boy,All,All
 bully_score,7.238095238095238,21.0,School D,All,Boy,All,All
@@ -1247,11 +1247,11 @@ future_score,7.1,15.0,School E,Year 10,All,All,All
 climate_score,2.2916666666666665,48.0,School E,Year 10,All,All,All
 social_score,11.733333333333333,30.0,School E,Year 10,All,All,All
 bully_score,7.0638297872340425,47.0,School E,Year 10,All,All,All
-autonomy_score,,,School E,All,Girl,All,All
+autonomy_score,NULL,NULL,School E,All,Girl,All,All
 life_satisfaction_score,5.909090909090909,11.0,School E,All,Girl,All,All
 optimism_score,11.285714285714286,14.0,School E,All,Girl,All,All
 wellbeing_score,19.0,10.0,School E,All,Girl,All,All
-esteem_score,,,School E,All,Girl,All,All
+esteem_score,NULL,NULL,School E,All,Girl,All,All
 stress_score,8.5,10.0,School E,All,Girl,All,All
 appearance_score,3.7857142857142856,14.0,School E,All,Girl,All,All
 negative_score,9.727272727272727,11.0,School E,All,Girl,All,All
@@ -1275,18 +1275,18 @@ local_env_score,15.454545454545457,11.0,School E,All,Girl,All,All
 discrim_score,1.0,15.0,School E,All,Girl,All,All
 belong_local_score,2.6153846153846154,13.0,School E,All,Girl,All,All
 wealth_score,0.5,10.0,School E,All,Girl,All,All
-future_score,,,School E,All,Girl,All,All
+future_score,NULL,NULL,School E,All,Girl,All,All
 climate_score,2.5,14.0,School E,All,Girl,All,All
 social_score,11.363636363636363,11.0,School E,All,Girl,All,All
 bully_score,7.3076923076923075,13.0,School E,All,Girl,All,All
-autonomy_score,,,School E,All,Boy,All,All
+autonomy_score,NULL,NULL,School E,All,Boy,All,All
 life_satisfaction_score,5.142857142857143,14.0,School E,All,Boy,All,All
 optimism_score,12.8125,16.0,School E,All,Boy,All,All
 wellbeing_score,19.916666666666668,12.0,School E,All,Boy,All,All
 esteem_score,11.727272727272727,11.0,School E,All,Boy,All,All
 stress_score,7.533333333333333,15.0,School E,All,Boy,All,All
 appearance_score,4.705882352941177,17.0,School E,All,Boy,All,All
-negative_score,,,School E,All,Boy,All,All
+negative_score,NULL,NULL,School E,All,Boy,All,All
 lonely_score,3.111111111111111,18.0,School E,All,Boy,All,All
 support_score,5.125,16.0,School E,All,Boy,All,All
 sleep_score,0.5882352941176471,17.0,School E,All,Boy,All,All
@@ -1307,7 +1307,7 @@ local_env_score,14.033333333333335,10.0,School E,All,Boy,All,All
 discrim_score,1.0,18.0,School E,All,Boy,All,All
 belong_local_score,2.642857142857143,14.0,School E,All,Boy,All,All
 wealth_score,0.2857142857142857,14.0,School E,All,Boy,All,All
-future_score,,,School E,All,Boy,All,All
+future_score,NULL,NULL,School E,All,Boy,All,All
 climate_score,2.2222222222222223,18.0,School E,All,Boy,All,All
 social_score,12.1,10.0,School E,All,Boy,All,All
 bully_score,7.0,16.0,School E,All,Boy,All,All
@@ -1503,46 +1503,46 @@ future_score,7.145833333333333,48.0,School F,Year 8,All,All,All
 climate_score,2.6041666666666665,96.0,School F,Year 8,All,All,All
 social_score,11.88888888888889,63.0,School F,Year 8,All,All,All
 bully_score,7.419354838709677,93.0,School F,Year 8,All,All,All
-autonomy_score,,,School F,Year 10,All,All,All
-life_satisfaction_score,,,School F,Year 10,All,All,All
-optimism_score,,,School F,Year 10,All,All,All
-wellbeing_score,,,School F,Year 10,All,All,All
-esteem_score,,,School F,Year 10,All,All,All
-stress_score,,,School F,Year 10,All,All,All
-appearance_score,,,School F,Year 10,All,All,All
-negative_score,,,School F,Year 10,All,All,All
-lonely_score,,,School F,Year 10,All,All,All
-support_score,,,School F,Year 10,All,All,All
-sleep_score,,,School F,Year 10,All,All,All
-physical_score,,,School F,Year 10,All,All,All
-free_like_score,,,School F,Year 10,All,All,All
-media_score,,,School F,Year 10,All,All,All
-places_score,,,School F,Year 10,All,All,All
-staff_talk_score,,,School F,Year 10,All,All,All
-home_talk_score,,,School F,Year 10,All,All,All
-peer_talk_score,,,School F,Year 10,All,All,All
-talk_score,,,School F,Year 10,All,All,All
-accept_score,,,School F,Year 10,All,All,All
-school_belong_score,,,School F,Year 10,All,All,All
-staff_relationship_score,,,School F,Year 10,All,All,All
-home_relationship_score,,,School F,Year 10,All,All,All
-home_happy_score,,,School F,Year 10,All,All,All
-local_env_score,,,School F,Year 10,All,All,All
-discrim_score,,,School F,Year 10,All,All,All
-belong_local_score,,,School F,Year 10,All,All,All
-wealth_score,,,School F,Year 10,All,All,All
-future_score,,,School F,Year 10,All,All,All
-climate_score,,,School F,Year 10,All,All,All
-social_score,,,School F,Year 10,All,All,All
-bully_score,,,School F,Year 10,All,All,All
-autonomy_score,,,School F,All,Girl,All,All
+autonomy_score,NULL,NULL,School F,Year 10,All,All,All
+life_satisfaction_score,NULL,NULL,School F,Year 10,All,All,All
+optimism_score,NULL,NULL,School F,Year 10,All,All,All
+wellbeing_score,NULL,NULL,School F,Year 10,All,All,All
+esteem_score,NULL,NULL,School F,Year 10,All,All,All
+stress_score,NULL,NULL,School F,Year 10,All,All,All
+appearance_score,NULL,NULL,School F,Year 10,All,All,All
+negative_score,NULL,NULL,School F,Year 10,All,All,All
+lonely_score,NULL,NULL,School F,Year 10,All,All,All
+support_score,NULL,NULL,School F,Year 10,All,All,All
+sleep_score,NULL,NULL,School F,Year 10,All,All,All
+physical_score,NULL,NULL,School F,Year 10,All,All,All
+free_like_score,NULL,NULL,School F,Year 10,All,All,All
+media_score,NULL,NULL,School F,Year 10,All,All,All
+places_score,NULL,NULL,School F,Year 10,All,All,All
+staff_talk_score,NULL,NULL,School F,Year 10,All,All,All
+home_talk_score,NULL,NULL,School F,Year 10,All,All,All
+peer_talk_score,NULL,NULL,School F,Year 10,All,All,All
+talk_score,NULL,NULL,School F,Year 10,All,All,All
+accept_score,NULL,NULL,School F,Year 10,All,All,All
+school_belong_score,NULL,NULL,School F,Year 10,All,All,All
+staff_relationship_score,NULL,NULL,School F,Year 10,All,All,All
+home_relationship_score,NULL,NULL,School F,Year 10,All,All,All
+home_happy_score,NULL,NULL,School F,Year 10,All,All,All
+local_env_score,NULL,NULL,School F,Year 10,All,All,All
+discrim_score,NULL,NULL,School F,Year 10,All,All,All
+belong_local_score,NULL,NULL,School F,Year 10,All,All,All
+wealth_score,NULL,NULL,School F,Year 10,All,All,All
+future_score,NULL,NULL,School F,Year 10,All,All,All
+climate_score,NULL,NULL,School F,Year 10,All,All,All
+social_score,NULL,NULL,School F,Year 10,All,All,All
+bully_score,NULL,NULL,School F,Year 10,All,All,All
+autonomy_score,NULL,NULL,School F,All,Girl,All,All
 life_satisfaction_score,5.071428571428571,14.0,School F,All,Girl,All,All
 optimism_score,11.666666666666666,15.0,School F,All,Girl,All,All
 wellbeing_score,21.583333333333332,12.0,School F,All,Girl,All,All
 esteem_score,12.166666666666666,12.0,School F,All,Girl,All,All
 stress_score,7.466666666666667,15.0,School F,All,Girl,All,All
 appearance_score,6.076923076923077,13.0,School F,All,Girl,All,All
-negative_score,,,School F,All,Girl,All,All
+negative_score,NULL,NULL,School F,All,Girl,All,All
 lonely_score,3.1333333333333333,15.0,School F,All,Girl,All,All
 support_score,4.533333333333333,15.0,School F,All,Girl,All,All
 sleep_score,0.6,15.0,School F,All,Girl,All,All
@@ -1553,21 +1553,21 @@ places_score,2.642857142857143,14.0,School F,All,Girl,All,All
 staff_talk_score,2.477272727272727,11.0,School F,All,Girl,All,All
 home_talk_score,2.173076923076923,13.0,School F,All,Girl,All,All
 peer_talk_score,2.5714285714285716,14.0,School F,All,Girl,All,All
-talk_score,,,School F,All,Girl,All,All
+talk_score,NULL,NULL,School F,All,Girl,All,All
 accept_score,10.285714285714286,14.0,School F,All,Girl,All,All
 school_belong_score,2.857142857142857,14.0,School F,All,Girl,All,All
 staff_relationship_score,11.733333333333333,15.0,School F,All,Girl,All,All
 home_relationship_score,12.727272727272727,11.0,School F,All,Girl,All,All
 home_happy_score,5.0,15.0,School F,All,Girl,All,All
-local_env_score,,,School F,All,Girl,All,All
+local_env_score,NULL,NULL,School F,All,Girl,All,All
 discrim_score,1.0666666666666667,15.0,School F,All,Girl,All,All
 belong_local_score,2.8333333333333335,12.0,School F,All,Girl,All,All
 wealth_score,0.2,10.0,School F,All,Girl,All,All
-future_score,,,School F,All,Girl,All,All
+future_score,NULL,NULL,School F,All,Girl,All,All
 climate_score,2.6,15.0,School F,All,Girl,All,All
-social_score,,,School F,All,Girl,All,All
+social_score,NULL,NULL,School F,All,Girl,All,All
 bully_score,7.066666666666666,15.0,School F,All,Girl,All,All
-autonomy_score,,,School F,All,Boy,All,All
+autonomy_score,NULL,NULL,School F,All,Boy,All,All
 life_satisfaction_score,5.0,17.0,School F,All,Boy,All,All
 optimism_score,11.578947368421053,19.0,School F,All,Boy,All,All
 wellbeing_score,20.72222222222222,18.0,School F,All,Boy,All,All
@@ -1591,7 +1591,7 @@ school_belong_score,3.380952380952381,21.0,School F,All,Boy,All,All
 staff_relationship_score,12.5,20.0,School F,All,Boy,All,All
 home_relationship_score,11.944444444444445,18.0,School F,All,Boy,All,All
 home_happy_score,5.368421052631579,19.0,School F,All,Boy,All,All
-local_env_score,,,School F,All,Boy,All,All
+local_env_score,NULL,NULL,School F,All,Boy,All,All
 discrim_score,1.0,21.0,School F,All,Boy,All,All
 belong_local_score,2.8,20.0,School F,All,Boy,All,All
 wealth_score,0.42857142857142855,14.0,School F,All,Boy,All,All
@@ -1826,11 +1826,11 @@ bully_score,7.441860465116279,43.0,School G,Year 10,All,All,All
 autonomy_score,19.272727272727273,11.0,School G,All,Girl,All,All
 life_satisfaction_score,5.076923076923077,13.0,School G,All,Girl,All,All
 optimism_score,11.583333333333334,12.0,School G,All,Girl,All,All
-wellbeing_score,,,School G,All,Girl,All,All
-esteem_score,,,School G,All,Girl,All,All
+wellbeing_score,NULL,NULL,School G,All,Girl,All,All
+esteem_score,NULL,NULL,School G,All,Girl,All,All
 stress_score,7.416666666666667,12.0,School G,All,Girl,All,All
 appearance_score,4.083333333333333,12.0,School G,All,Girl,All,All
-negative_score,,,School G,All,Girl,All,All
+negative_score,NULL,NULL,School G,All,Girl,All,All
 lonely_score,3.857142857142857,14.0,School G,All,Girl,All,All
 support_score,5.083333333333333,12.0,School G,All,Girl,All,All
 sleep_score,0.5,14.0,School G,All,Girl,All,All
@@ -1844,16 +1844,16 @@ peer_talk_score,3.0,13.0,School G,All,Girl,All,All
 talk_score,8.8,10.0,School G,All,Girl,All,All
 accept_score,11.25,12.0,School G,All,Girl,All,All
 school_belong_score,3.2142857142857144,14.0,School G,All,Girl,All,All
-staff_relationship_score,,,School G,All,Girl,All,All
+staff_relationship_score,NULL,NULL,School G,All,Girl,All,All
 home_relationship_score,11.9,10.0,School G,All,Girl,All,All
 home_happy_score,5.0,14.0,School G,All,Girl,All,All
-local_env_score,,,School G,All,Girl,All,All
+local_env_score,NULL,NULL,School G,All,Girl,All,All
 discrim_score,1.0,14.0,School G,All,Girl,All,All
 belong_local_score,2.0,11.0,School G,All,Girl,All,All
-wealth_score,,,School G,All,Girl,All,All
-future_score,,,School G,All,Girl,All,All
+wealth_score,NULL,NULL,School G,All,Girl,All,All
+future_score,NULL,NULL,School G,All,Girl,All,All
 climate_score,2.5,14.0,School G,All,Girl,All,All
-social_score,,,School G,All,Girl,All,All
+social_score,NULL,NULL,School G,All,Girl,All,All
 bully_score,7.428571428571429,14.0,School G,All,Girl,All,All
 autonomy_score,18.25,12.0,School G,All,Boy,All,All
 life_satisfaction_score,5.388888888888889,18.0,School G,All,Boy,All,All
@@ -1879,11 +1879,11 @@ school_belong_score,3.526315789473684,19.0,School G,All,Boy,All,All
 staff_relationship_score,12.375,16.0,School G,All,Boy,All,All
 home_relationship_score,12.5,14.0,School G,All,Boy,All,All
 home_happy_score,4.157894736842105,19.0,School G,All,Boy,All,All
-local_env_score,,,School G,All,Boy,All,All
+local_env_score,NULL,NULL,School G,All,Boy,All,All
 discrim_score,1.0,20.0,School G,All,Boy,All,All
 belong_local_score,2.526315789473684,19.0,School G,All,Boy,All,All
 wealth_score,0.3,10.0,School G,All,Boy,All,All
-future_score,,,School G,All,Boy,All,All
+future_score,NULL,NULL,School G,All,Boy,All,All
 climate_score,2.111111111111111,18.0,School G,All,Boy,All,All
 social_score,12.941176470588236,17.0,School G,All,Boy,All,All
 bully_score,7.684210526315789,19.0,School G,All,Boy,All,All
