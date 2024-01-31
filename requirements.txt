@@ -7,6 +7,10 @@ django==5.0.1
 pymongo==4.6.1
 mysqlclient==2.2.1
 SQLAlchemy==2.0.25
+
+# To run jupyter notebooks
+ipykernel==6.29.0
+
 # No version for security updates.
 # As of 26th Jan 2024, using 1.30.0
 streamlit
