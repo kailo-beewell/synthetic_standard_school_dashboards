@@ -6,18 +6,22 @@ from utilities.page_setup import page_setup
 from utilities.authentication import check_password
 from utilities.bar_charts import survey_responses
 from utilities.bar_charts_text import create_response_description
+from utilities.import_data import import_tidb_data
 
 # Set page configuration
 page_setup()
 
 if check_password():
 
+    # Import the data from TiDB Cloud if not already in session state
+    import_tidb_data()
+
     # Add name of school (to help with monitoring)
     st.markdown(st.session_state.school)
 
-    # Import data
-    dem_prop = pd.read_csv('data/survey_data/aggregate_demographic.csv')
-    counts = pd.read_csv('data/survey_data/overall_counts.csv')
+    # Assign data from the session state
+    dem_prop = st.session_state.demographic
+    counts = st.session_state.counts
 
     ###############################################################################
     # Introduction including total pupil number

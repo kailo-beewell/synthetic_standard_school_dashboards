@@ -2,30 +2,8 @@ import streamlit as st
 from utilities.page_setup import page_setup
 from utilities.authentication import check_password
 
-from pymongo import MongoClient
-
 # Set page configuration
 page_setup()
-
-# MONGO DB
-# Initialise connection, using cache_resource() so we only need to run once
-@st.cache_resource()
-def init_connection():
-    return MongoClient(f'''mongodb+srv://{st.secrets.mongodb.username}:{st.secrets.mongodb.password}@{st.secrets.mongodb.cluster}.2ebtoba.mongodb.net/?retryWrites=true&w=majority''')
-client = init_connection()
-@st.cache_data(ttl=60)
-def get_data():
-    db = client.sample_guides #establish connection to the 'sample_guide' db
-    items = db.planets.find() # return all result from the 'planets' collection
-    items = list(items)        
-    return items
-data = get_data()
-st.markdown(data[0])
-
-# Import data from TiDB Cloud
-conn = st.connection('tidb', type='sql')
-df = conn.query('SELECT * FROM overall_counts;')
-st.table(df.head())
 
 if check_password():
 

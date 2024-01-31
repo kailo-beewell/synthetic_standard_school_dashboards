@@ -6,14 +6,19 @@ Below are **step-by-step guides on how to set up connection with data source**..
 
 ## TiDB Cloud
 
-1. Add **mysqlclient** and **SQLAlchemy** to requirements.txt and update environment. In order to install mysqlclient on Linux, as on the mysqlclient [GitHub page](https://github.com/PyMySQL/mysqlclient), I had to first run `sudo apt-get install python3-dev default-libmysqlclient-dev build-essential pkg-config`
-2. Create a TiDB Cloud account, signing up with the Kailo BeeWell DSDL Google account
-4. You'll have Cluster0 automatically created and in account. Click on the cluster, then go to Data > Import and drag and drop a csv file. Location will be Local as we upload from our computer. Set the database (synthetic_standard_survey) and table name (overall_counts).
-    * Initially this failed when counts was set as DOUBLE value - changed to VARCHAR (512) and it was sucessfully
-    * If you want to delete the data currently there (e.g. if incorrect or updating), go to Chat2Query and run `USE synthetic_standard_survey;` and `DROP TABLE tablename;`
-4. Go to cluster overview and click the "Connect" blue button in the top right corner
-5. On the pop-up, click "Generate Password". Make a record of that password
-6. Copy the password and parameters from that pop-up into the .streamlit/secrets.toml file - example:
+**Working**
+
+1. If not already doing so, make sure that when saving the Python DataFrames to CSV files, you include `na_rep='NULL'` in `df.to_csv()`. Otherwise, you will encounter issues with SQL struggling to parse Python's null values.
+2. Add **mysqlclient** and **SQLAlchemy** to requirements.txt and update environment. In order to install mysqlclient on Linux, as on the mysqlclient [GitHub page](https://github.com/PyMySQL/mysqlclient), I had to first run `sudo apt-get install python3-dev default-libmysqlclient-dev build-essential pkg-config`
+3. Create a TiDB Cloud account, signing up with the Kailo BeeWell DSDL Google account
+4. You'll have Cluster0 automatically created and in account. Click on the cluster, then go to Data > Import and drag and drop a csv file.
+    * Location will be Local as we upload from our computer.
+    * Set the database (synthetic_standard_survey) and table name (matching filename e.g. overall_counts).
+    * For **aggregate_responses** and **aggregate_responses_rag**, set **counts** and **percentages** columns to **VARCHAR(512)** if you want exact match to the CSV files, where these are read in as strings. This ensures exact match to CSV (e.g. 0.0 rather than 0).
+    * Note: I did find some unusual behaviour when replacing one of the tables, where using the same name as before, it was doing something (modifying order maybe, not clear) causing it to not match the CSV file - this was resolved by deleting the back-ups.
+5. Go to cluster overview and click the "Connect" blue button in the top right corner
+6. On the pop-up, click "Generate Password". Make a record of that password
+7. Copy the password and parameters from that pop-up into the .streamlit/secrets.toml file - example:
 ```
 [connections.tidb]
 dialect = "mysql"
@@ -23,7 +28,7 @@ database = "<TiDB_database_name>"
 username = "<TiDB_cluster_user>"
 password = "<TiDB_cluster_password>"
 ```
-9. On the Python streamlit page run:
+8. On the Python streamlit page run:
 ```
 conn = st.connection('tidb', type='sql')
 df = conn.query('SELECT * from mytablename;')
