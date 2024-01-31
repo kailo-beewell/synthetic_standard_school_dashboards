@@ -8,6 +8,30 @@ from pandas.testing import assert_frame_equal
 from tempfile import NamedTemporaryFile
 import pymysql
 
+
+def get_df(query, conn):
+    '''
+    Get data from the connected SQL database
+
+    Parameters:
+    -----------
+    query : string
+        SQL query
+    conn : connection object
+        Connection to the SQL database
+
+    Returns:
+    --------
+    df : pandas DataFrame
+        Dataframe produced from the query
+    '''
+    cursor = conn.cursor()
+    cursor.execute(query)
+    columns = [desc[0] for desc in cursor.description]
+    df = pd.DataFrame(cursor.fetchall(), columns=columns)
+    return df
+
+
 def import_tidb_data(tests=False):
     '''
     Imports all the datasets from TiDB Cloud, fixes any data type issues, and
@@ -45,12 +69,12 @@ def import_tidb_data(tests=False):
 
         # Scores
         if 'scores' not in st.session_state:
-            scores = pd.read_sql('SELECT * FROM aggregate_scores;', conn)
+            scores = get_df('SELECT * FROM aggregate_scores;', conn)
             st.session_state['scores'] = scores
 
         # Scores RAG
         if 'scores_rag' not in st.session_state:
-            scores_rag = pd.read_sql('SELECT * FROM aggregate_scores_rag;', conn)
+            scores_rag = get_df('SELECT * FROM aggregate_scores_rag;', conn)
             # Convert columns to numeric
             to_fix = ['mean', 'count', 'total_pupils', 'group_n', 
                     'group_wt_mean', 'group_wt_std', 'lower', 'upper']
@@ -62,18 +86,18 @@ def import_tidb_data(tests=False):
 
         # Responses
         if 'responses' not in st.session_state:
-            responses = pd.read_sql('SELECT * FROM aggregate_responses;', conn)
+            responses = get_df('SELECT * FROM aggregate_responses;', conn)
             st.session_state['responses'] = responses
 
         # Overall counts
         if 'counts' not in st.session_state:
-            counts = pd.read_sql('SELECT * FROM overall_counts;', conn)
+            counts = get_df('SELECT * FROM overall_counts;', conn)
             counts['count'] = pd.to_numeric(counts['count'], errors='ignore')
             st.session_state['counts'] = counts
 
         # Demographic
         if 'demographic' not in st.session_state:
-            demographic = pd.read_sql('SElECT * FROM aggregate_demographic;', conn)
+            demographic = get_df('SElECT * FROM aggregate_demographic;', conn)
             st.session_state['demographic'] = demographic
 
     # Run tests to check whether these match the csv files

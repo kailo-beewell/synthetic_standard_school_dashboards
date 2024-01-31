@@ -4,7 +4,6 @@ pandas==2.1.1
 pip==23.3.2
 plotly==5.9.0
 PyMySQL==1.1.0
-SQLAlchemy==2.0.25
 
 # Not latest version as Streamlit Community Cloud had error that couldn't
 # satsify requirement django==5.0.1

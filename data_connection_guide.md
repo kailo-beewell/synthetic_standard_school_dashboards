@@ -44,10 +44,33 @@ root_cert = '''<Copy of contents of .pem file>'''
 
 4. Likewise copy this information into the deployed app's secrets. To do this, open https://share.streamlit.io/ and go to the Settings of dashboard, then click on the Secrets tab, and paste it into there.
 
-5. To import the data within the Streamlit app:
+5. To import the data within the Streamlit app, follow the code below. It is simpler to use pd.read_sql() instead of producing the get_df() function, but read_sql() returns an error message as we haven't set this up with SQLAlchemy - and so would likely need to modify connection so it is based on that and a connection string, rather than using pymysql.connect(), if we wanted to use read_sql().
 ```
 from tempfile import NamedTemporaryFile
 import pymysql
+
+def get_df(query, conn):
+    '''
+    Get data from the connected SQL database
+
+    Parameters:
+    -----------
+    query : string
+        SQL query
+    conn : connection object
+        Connection to the SQL database
+
+    Returns:
+    --------
+    df : pandas DataFrame
+        Dataframe produced from the query
+    '''
+    cursor = conn.cursor()
+    cursor.execute(query)
+    columns = [desc[0] for desc in cursor.description]
+    df = pd.DataFrame(cursor.fetchall(), columns=columns)
+    return df
+
 
 # Create temporary PEM file for setting up the connection
 with NamedTemporaryFile(suffix='.pem') as temp:
@@ -73,7 +96,7 @@ with NamedTemporaryFile(suffix='.pem') as temp:
         ssl_ca = temp.name
     )
 
-    scores = pd.read_sql('SELECT * FROM aggregate_scores;', conn)
+    scores = pd.get_df('SELECT * FROM aggregate_scores;', conn)
 ```
 
 Method that was **not** compatible with Streamlit Community Cloud (due to issues with environment not being built due to mysqlclient):
