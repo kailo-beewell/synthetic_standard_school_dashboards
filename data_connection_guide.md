@@ -33,6 +33,7 @@ password = "<TiDB_cluster_password>"
 conn = st.connection('tidb', type='sql')
 df = conn.query('SELECT * from mytablename;')
 ```
+9. To run on Streamlit Community Cloud, copied the contents of the secret file to the deployed app's secretes - https://share.streamlit.io/, go to Settings of dashboard, then Secrets tab, and paste in there.
 
 ## MongoDB
 
