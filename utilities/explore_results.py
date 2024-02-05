@@ -6,6 +6,8 @@ repeated between those two outputs, and ensure any changes are made to both.
 '''
 import pandas as pd
 import streamlit as st
+from ast import literal_eval
+import numpy as np
 
 
 def create_topic_dict(df):
@@ -136,3 +138,95 @@ questions that relate to the topic of '{chosen_variable_lab.lower()}'.'''
     elif output=='pdf':
         content.append(f'<p>{section_descrip}</p>')
         return content
+
+
+def get_chosen_result(chosen_variable, chosen_group, df, school):
+    '''
+    Filters the dataframe with responses to each question, to just responses
+    for the chosen topic, school and group.
+
+    Parameters
+    ----------
+    chosen_variable : string
+        Name of the chosen topic
+    chosen_group : string
+        Name of the chosen group to view results by - options are
+        'For all pupils', 'By year group', 'By gender', 'By FSM' or 'By SEN'
+    df : dataframe
+        Dataframe with responses to all the questions for all topics
+    school : string
+        Name of school to get results for
+        
+    Returns
+    ----------
+    chosen_result : dataframe
+        Contains responses to each question in the chosen topic, with the
+        results extracted so they are in seperate rows and columns (rather
+        than original format where they are nested in lists)
+
+    '''
+    # Set default values
+    year_group = ['All']
+    gender = ['All']
+    fsm = ['All']
+    sen = ['All']
+    group_lab = 'year_group_lab' # not used, just require default else get error
+
+    # Depending on chosen breakdown, alter one of the above variables
+    # If the chosen group was All, then no changes are made (as this is default)
+    if chosen_group == 'By year group':
+        year_group = ['Year 8', 'Year 10']
+        group_lab = 'year_group_lab'
+    elif chosen_group == 'By gender':
+        gender = ['Girl', 'Boy']
+                #'I describe myself in another way', 'Non-binary',
+                #'Prefer not to say']
+        group_lab = 'gender_lab'
+    elif chosen_group == 'By FSM':
+        fsm = ['FSM', 'Non-FSM']
+        group_lab = 'fsm_lab'
+    elif chosen_group == 'By SEN':
+        sen = ['SEN', 'Non-SEN']
+        group_lab = 'sen_lab'
+
+    # Filter to chosen variable and school
+    chosen = df[
+        (df['group'] == chosen_variable) &
+        (df['school_lab'] == school) &
+        (df['year_group_lab'].isin(year_group)) &
+        (df['gender_lab'].isin(gender)) &
+        (df['fsm_lab'].isin(fsm)) &
+        (df['sen_lab'].isin(sen))]
+
+    # Extract the lists with results stored in the dataframe
+    # e.g. ['Yes', 'No'], [20, 80], [2, 8] in the original data will become
+    # seperate columns with [Yes, 20, 2] and [No, 80, 8]
+    df_list = []
+    for index, row in chosen.iterrows():
+        # Extract results as long as it isn't NaN (e.g. NaN when n<10)
+        if ~np.isnan(row.n_responses):
+            df = pd.DataFrame(zip(literal_eval(row['cat'].replace('nan', 'None')),
+                                literal_eval(row['cat_lab']),
+                                literal_eval(row['percentage']),
+                                literal_eval(row['count'])),
+                            columns=['cat', 'cat_lab', 'percentage', 'count'])
+            # Replace NaN with max number so stays at end of sequence
+            df['cat'] = df['cat'].fillna(df['cat'].max()+1)
+            # Add measure (don't need to extract as string rather than list in df)
+            df['measure'] = row['measure']
+            df['measure_lab'] = row['measure_lab']
+            df['group'] = row[group_lab]
+            df_list.append(df)
+        # As we still want a bar when n<10, we create a record still but label as such
+        else:
+            df = row.to_frame().T[['measure', 'measure_lab']]
+            df['group'] = row[group_lab]
+            df['cat'] = 0
+            df['cat_lab'] = 'Less than 10 responses'
+            df['count'] = np.nan
+            df['percentage'] = 100
+            df_list.append(df)
+
+    chosen_result = pd.concat(df_list)
+
+    return chosen_result
