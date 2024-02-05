@@ -5,6 +5,12 @@ Function to create dictionaries with text that accompanies figures.
 def create_response_description():
     '''
     Creates and returns dictionary with descriptions for the survey responses
+
+    Returns
+    -------
+    stacked_descrip : dictionary
+        Keys are variables and sub-groups of variables, and values are
+        descriptions to be displayed above the charts.
     '''
     stacked_descrip = {
         'autonomy': '''
