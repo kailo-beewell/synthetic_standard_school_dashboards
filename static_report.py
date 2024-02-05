@@ -8,6 +8,8 @@ import base64
 import os
 import weasyprint
 
+# Import functions I have defined elsewhere
+from utilities.bar_charts import survey_responses
 from utilities.bar_charts_text import create_response_description
 
 chosen_variable_lab = 'Autonomy'
@@ -152,132 +154,6 @@ def reverse_categories(df):
     # Return the resorted dataframe
     return(new_df)
 
-def survey_responses(dataset, content, font_size=16):
-    '''
-    Create bar charts for each of the questions in the provided dataframe.
-    The dataframe should contain questions which all have the same set
-    of possible responses.
-
-    Parameters
-    ----------
-    df : dataframe
-        Dataframe to create plot from (e.g. chosen_result)
-    font_size : integer
-        Font size of x axis labels, y axis labels and legend text, default=16
-    '''
-    # Create seperate figures for each of the measures
-    for measure in dataset['measure_lab'].drop_duplicates():
-        temp_content = []
-
-        # Create header for plot (use markdown instead of plotly title as the
-        # plotly title overlaps the legend if it spans over 2 lines)
-        temp_content.append(f'''<p style='margin:0;'><strong>{measure}</strong></p>''')
-
-        # Filter to the relevant measure
-        df = dataset[dataset['measure_lab'] == measure]
-
-        # Check if there are any groups where n<10
-        mask = df['cat_lab'] == 'Less than 10 responses'
-        under_10 = df[mask]
-        # If one of the groups are n<10, remove from the dataframe and print
-        # explanation
-        if len(under_10.index) == 1:
-            # Remove group from dataframe
-            df = df[~mask]
-            # Print explanation
-            dropped = np.unique(under_10['group'])[0]
-            kept = np.unique(df['group'])[0]
-            temp_content.append(f'''<p>There were less than 10 responses from {dropped} pupils so results are just shown for {kept} pupils.</p>''')
-
-        # Create colour map
-        unique_groups = np.unique(df['group'])
-        if (len(unique_groups) == 1):
-            colour_map = {unique_groups[0]: '#FF6E4A'}
-        else:
-            colour_map = {unique_groups[0]: '#ffb49a',
-                            unique_groups[1]: '#e05a38'}
-
-        # Create figure
-        fig = px.bar(
-            df, x='cat_lab', y='percentage',
-            # Set colours and grouping
-            color='group', barmode='group', color_discrete_map=colour_map,
-            # Label bars with the percentage to 1 decimal place
-            text_auto='.1f',
-            # Specify what to show when hover over the bars
-            hover_data={
-                'cat_lab': True,
-                'percentage': ':.1f',
-                'count': True,
-                'measure_lab': False,
-                'group': False})
-
-        # Set x axis to type category, else only shows integer categories if you
-        # have a mix of numbers and strings
-        fig.update_layout(xaxis_type='category')
-
-        # Add percent sign to the numbers labelling the bars
-        fig.for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + ' %'))
-
-        # Make changes to figure design...
-        fig.update_layout(
-            # Set font size of bar labels
-            font = dict(size=font_size),
-            # Set x axis title, labels, colour and size
-            xaxis = dict(
-                title='Response',
-                tickfont=dict(color='#05291F', size=font_size),
-                titlefont=dict(color='#05291F', size=font_size)),
-            # Set y axis title, labels, colour and size
-            yaxis = dict(
-                title='Percentage of pupils<br>providing response',
-                titlefont=dict(color='#05291F', size=font_size),
-                tickfont=dict(color='#05291F', size=font_size),
-                ticksuffix='%'
-            ),
-            # Legend title and labels and remove interactivity
-            legend = dict(
-                title='Pupils',
-                font=dict(color='#05291F', size=font_size),
-                itemclick=False, itemdoubleclick=False),
-            # Legend title font
-            legend_title = dict(
-                font=dict(color='#05291F', size=font_size)))
-
-        # Disable zooming and panning
-        fig.layout.xaxis.fixedrange = True
-        fig.layout.yaxis.fixedrange = True
-
-        # Height and width designed to be in scale of streamlit which was 450x657
-        # Set automargin=True so that it adjusts figure so that the labels aren't cut off
-        fig.update_layout(
-            height=411,
-            width=600,
-            xaxis=dict(automargin=True),
-            yaxis=dict(automargin=True)
-        )
-
-        # Write image to PNG then link HTML to that file
-        #fig.write_image(f'report/images/report_{measure}.png')
-        #img_tag = f'''<img src='{os.getcwd()}/report/report_{measure}.png' alt='{measure}' />'''
-
-        # Write image to PNG then insert directly HTML
-        fig.write_image(f'report/temp_image.png')
-        data_uri = base64.b64encode(
-            open(f'report/temp_image.png', 'rb').read()).decode('utf-8')
-        img_tag = f'''<img src='data:image/png;base64,{data_uri}' alt='{measure}'>'''
-        temp_content.append(img_tag)
-
-        content.append(f'''
-<div class='img_container'>
-    {''.join(temp_content)}
-</div><br>''')
-
-        # Write image to HTML
-        #fig.write_html(f'report/report_{measure}.html')
-
-    return content
-
 # Create stacked bar chart with seperate charts if required
 if chosen_variable in multiple_charts:
     var_dict = multiple_charts[chosen_variable]
@@ -289,7 +165,8 @@ if chosen_variable in multiple_charts:
         to_plot = chosen_result[chosen_result['measure'].isin(value)]
         if key in reverse:
             to_plot = reverse_categories(to_plot)
-        content = survey_responses(to_plot, content, font_size=14)
+        content = survey_responses(
+            dataset=to_plot, font_size=14, output='pdf', content=content)
 
 # Otherwise create a single stacked bar chart
 else:
@@ -299,7 +176,8 @@ else:
     # Create plot (reversing the categories if required)
     if chosen_variable in reverse:
         chosen_result = reverse_categories(chosen_result)
-    content = survey_responses(chosen_result, content, font_size=14)
+    content = survey_responses(
+        dataset=chosen_result, font_size=14, output='pdf', content=content)
 
 
 # Remove the final temporary image file
@@ -332,7 +210,7 @@ p {
 }
 @page {
     @top-right{
-        content: "Page " counter(page) " of " counter(pages);
+        content: 'Page ' counter(page) ' of ' counter(pages);
         font-family: sans-serif;
         font-size: 10px;
     }
@@ -343,7 +221,7 @@ html_content = f'''
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Test report</title>
+    <title>#BeeWell Kailo School Report 2024</title>
     <style>
         {css_style}
     </style>

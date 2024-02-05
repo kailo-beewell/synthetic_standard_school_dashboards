@@ -4,9 +4,11 @@ Functions used to produce the two types of bar chart
 import numpy as np
 import plotly.express as px
 import streamlit as st
+from contextlib import nullcontext
+import base64
 
 
-def survey_responses(dataset, font_size=16):
+def survey_responses(dataset, font_size=16, output='streamlit', content=None):
     '''
     Create bar charts for each of the quetsions in the provided dataframe.
     The dataframe should contain questions which all have the same set
@@ -18,34 +20,60 @@ def survey_responses(dataset, font_size=16):
         Dataframe to create plot from (e.g. chosen_result)
     font_size : integer
         Font size of x axis labels, y axis labels and legend text, default=16
+    output : string
+        Use of function - either for streamlit page or PDF report
+        Must be either 'streamlit' or 'pdf, default is 'streamlit.
+    content : list
+        Optional input used when output=='pdf', contains HTML for report.
+
+    Returns
+    -------
+    content : list
+        Optional return, used when output=='pdf', contains HTML for report.
     '''
     # Create seperate figures for each of the measures
     for measure in dataset['measure_lab'].drop_duplicates():
 
-        # Use containers to help visually seperate plots
-        with st.container(border=True):
+        # Streamlit: Create containers to visually seperate plots
+        with (st.container(border=True) if output=='streamlit' else nullcontext()):
+
+            # PDF: Create empty list to store content for PDF
+            if output=='pdf':
+                temp_content = []
             
-            # Create header for plot (use markdown instead of plotly title as the
-            # plotly title overlaps the legend if it spans over 2 lines)
-            st.markdown(f'**{measure}**')
+            # Streamlit and PDF: Create header for plot 
+            # Don't use in-built plotly title as that overlaps the legend if it
+            # spans over 2 lines
+            if output=='streamlit':
+                st.markdown(f'**{measure}**')
+            elif output=='pdf':
+                temp_content.append(
+                    f'''<p style='margin:0;'><strong>{measure}</strong></p>''')
 
             # Filter to the relevant measure
             df = dataset[dataset['measure_lab'] == measure]
 
-            # Check if there are any groups where n<10
+            # Check if there are any groups where n<10 - if one of the groups
+            # are, remove it from the dataframe and print and explanation
             mask = df['cat_lab'] == 'Less than 10 responses'
             under_10 = df[mask]
-            # If one of the groups are n<10, remove from the dataframe and print
-            # explanation
             if len(under_10.index) == 1:
+
                 # Remove group from dataframe
                 df = df[~mask]
-                # Print explanation
+
+                # Create explanation
                 dropped = np.unique(under_10['group'])[0]
                 kept = np.unique(df['group'])[0]
-                st.markdown(f'''
+                explanation = f'''
 There were less than 10 responses from {dropped} pupils so results are just 
-shown for {kept} pupils.''')
+shown for {kept} pupils.'''
+
+                # Streamlit and PDF: Print explanation
+                if output=='streamlit':
+                    st.markdown(explanation)
+                elif output=='pdf':
+                    temp_content.append(f'<p>{explanation}</p>')
 
             # Create colour map
             unique_groups = np.unique(df['group'])
@@ -106,8 +134,41 @@ shown for {kept} pupils.''')
             fig.layout.xaxis.fixedrange = True
             fig.layout.yaxis.fixedrange = True
 
-            # Create plot on streamlit app, hiding the plotly settings bar
-            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+            # Streamlit: Create plot on streamlit app, hiding the plotly
+            # settings bar
+            if output=='streamlit':
+                st.plotly_chart(
+                    fig, use_container_width=True, config={'displayModeBar': False})
+
+            # PDF: Write image to a temporary PNG file, convert that to HTML,
+            # and add the image HTML to temp_content
+            elif output=='pdf':
+                # Height and width should be similar scale as streamlit which
+                # was 450x657. Automargin adjusts figure so labels aren't cut off
+                fig.update_layout(
+                    height=411,
+                    width=600,
+                    xaxis=dict(automargin=True),
+                    yaxis=dict(automargin=True)
+                )
+                # Write image to a temporary file
+                fig.write_image(f'report/temp_image.png')
+                # Convert to HTML
+                data_uri = base64.b64encode(
+                    open(f'report/temp_image.png', 'rb').read()).decode('utf-8')
+                img_tag = f'''<img src='data:image/png;base64,{data_uri}' alt='{measure}'>'''
+                # Add to temporary record of HTML content for report
+                temp_content.append(img_tag)
+                # Insert temp_content into a div class
+                content.append(f'''
+<div class='img_container'>
+    {''.join(temp_content)}
+</div><br>''')
+
+    # At the end of the loop, if PDF report, return content
+    if output=='pdf':
+        return content
+
 
 
 def details_ordered_bar(school_scores, school_name, font_size=16):
