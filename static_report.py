@@ -4,13 +4,13 @@ import numpy as np
 from ast import literal_eval
 from utilities.bar_charts import survey_responses
 #import kaleido
-import base64
 import os
 import weasyprint
 
 # Import functions I have defined elsewhere
 from utilities.bar_charts import survey_responses
 from utilities.bar_charts_text import create_response_description
+from utilities.explore_results import create_topic_dict, write_topic_intro, write_response_section_intro
 
 chosen_variable_lab = 'Autonomy'
 chosen_group = 'For all pupils'
@@ -20,28 +20,22 @@ school = 'School A'
 df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
 df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
 
+# Create empty list to fill with HTML content for PDF report
 content = []
 
 # Create dictionary of topics
-topic_df = df_scores[['variable', 'variable_lab']].drop_duplicates()
-topic_df = topic_df[~topic_df['variable'].isin([
-        'staff_talk_score', 'home_talk_score', 'peer_talk_score'])]
-topic_df['variable'] = topic_df['variable'].str.replace('_score', '')
-topic_dict = pd.Series(topic_df.variable.values, index=topic_df.variable_lab).to_dict()
+topic_dict = create_topic_dict(df_scores)
 
 # Convert from variable_lab to variable
 chosen_variable = topic_dict[chosen_variable_lab]
 
-# Create dictionary of descriptions, where index is the variable
-description = df_scores[['variable', 'description']].drop_duplicates().set_index('variable').to_dict()['description']
+# Topic header and description
+content = write_topic_intro(chosen_variable, chosen_variable_lab, df_scores,
+                            output='pdf', content=content)
 
-# Write text
-content.append(f'''<h2 style='text-align:center;'>{chosen_variable_lab}</h2>''')
-content.append(f'''<br><p style='text-align:center;'><b>These questions are about {description[f'{chosen_variable}_score'].lower()}</b></p><br>''')
-content.append('<h3>Responses from pupils at your school</h3>')
-content.append(f'''\
-<p>In this section, you can see how pupils at you school responded to survey \
-questions that relate to the topic of '{chosen_variable_lab.lower()}'.</p>''')
+# Section header and description
+content = write_response_section_intro(
+    chosen_variable_lab, output='pdf', content=content)
 
 # Set default values
 year_group = ['All']

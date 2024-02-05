@@ -8,6 +8,7 @@ from utilities.bar_charts import survey_responses, details_ordered_bar
 from utilities.bar_charts_text import create_response_description
 from utilities.score_descriptions import score_descriptions
 from utilities.import_data import import_tidb_data
+from utilities.explore_results import create_topic_dict, write_topic_intro, write_response_section_intro
 
 # Set page configuration
 page_setup()
@@ -28,18 +29,8 @@ if check_password():
     ###############################################################################
     # Getting topics
 
-    # Get the unique topics
-    topic_df = df_scores[['variable', 'variable_lab']].drop_duplicates()
-
-    # Drop those we don't create detailed pages about
-    topic_df = topic_df[~topic_df['variable'].isin([
-        'staff_talk_score', 'home_talk_score', 'peer_talk_score'])]
-
-    # Remove '_score'
-    topic_df['variable'] = topic_df['variable'].str.replace('_score', '')
-
-    # Convert to dictionary
-    topic_dict = pd.Series(topic_df.variable.values, index=topic_df.variable_lab).to_dict()
+    # Create dictionary of topics
+    topic_dict = create_topic_dict(df_scores)
 
     # If session state doesn't contain chosen variable, default to Autonomy
     # If it does (i.e. set from Summary page), use that
@@ -65,33 +56,27 @@ if check_password():
     # Select topic
     chosen_variable_lab = st.selectbox(
         '**Topic:**', topic_dict.keys(), index=default)
+
+    # Convert from variable_lab to variable
     chosen_variable = topic_dict[chosen_variable_lab]
 
     # Select pupils to view results for
     chosen_group = st.selectbox(
         '**View results:**', ['For all pupils', 'By year group',
                             'By gender', 'By FSM', 'By SEN'])
-    st.markdown('')
-    st.markdown('')
+    st.write('')
+    st.write('')
 
-    # Header with the name of the topic
+    # Topic header and description
     st.divider()
-    st.markdown(f'''<h2 style='font-size:55px;text-align:center;'>{chosen_variable_lab}</h2>''', unsafe_allow_html=True)
-
-    # Create table of descriptions, where index is the variable
-    description = df_scores[['variable', 'description']].drop_duplicates().set_index('variable').to_dict()['description']
-
-    # Write the short topic description (centred and bold)
-    st.markdown(f'''<p style='text-align:center;'><b>These questions are about {description[f'{chosen_variable}_score'].lower()}</b></p>''', unsafe_allow_html=True)
+    write_topic_intro(chosen_variable, chosen_variable_lab, df_scores)
     st.write('')
 
     ###############################################################################
     # Breakdown of question responses chart
 
-    st.subheader('Responses from pupils at your school')
-    st.markdown(f'''
-    In this section, you can see how pupils at you school responded to survey \
-    questions that relate to the topic of '{chosen_variable_lab.lower()}'.''')
+    # Section header and description
+    write_response_section_intro(chosen_variable_lab)
 
     # Set default values
     year_group = ['All']
@@ -157,6 +142,8 @@ if check_password():
     chosen_result = pd.concat(df_list)
 
     # For categories with multiple charts, list the variables for each chart
+    # This is to create seperate sections of chart (e.g. some text above one,
+    # and then some text above three)
     multiple_charts = {
         'optimism': {'optimism_future': ['optimism_future'],
                     'optimism_other': ['optimism_best', 'optimism_good', 'optimism_work']},
