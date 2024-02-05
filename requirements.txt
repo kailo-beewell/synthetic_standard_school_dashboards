@@ -12,6 +12,8 @@ weasyprint
 nbformat
 kaleido
 markdown==3.5.2
+xhtml2pdf
+pdfkit
 
 # Not latest version as Streamlit Community Cloud had error that couldn't
 # satsify requirement django==5.0.1

@@ -10,6 +10,8 @@ import os
 import markdown
 import weasyprint
 from io import BytesIO
+from xhtml2pdf import pisa
+import pdfkit
 
 from utilities.bar_charts_text import create_response_description
 
@@ -170,10 +172,11 @@ def survey_responses(dataset, content, font_size=16):
     '''
     # Create seperate figures for each of the measures
     for measure in dataset['measure_lab'].drop_duplicates():
-            
+        temp_content = []
+
         # Create header for plot (use markdown instead of plotly title as the
         # plotly title overlaps the legend if it spans over 2 lines)
-        content.append(f'<p><strong>{measure}</strong></p>')
+        temp_content.append(f'''<p style='margin:0;'><strong>{measure}</strong></p>''')
 
         # Filter to the relevant measure
         df = dataset[dataset['measure_lab'] == measure]
@@ -189,7 +192,7 @@ def survey_responses(dataset, content, font_size=16):
             # Print explanation
             dropped = np.unique(under_10['group'])[0]
             kept = np.unique(df['group'])[0]
-            content.append(f'''<p>There were less than 10 responses from {dropped} pupils so results are just shown for {kept} pupils.</p>''')
+            temp_content.append(f'''<p>There were less than 10 responses from {dropped} pupils so results are just shown for {kept} pupils.</p>''')
 
         # Create colour map
         unique_groups = np.unique(df['group'])
@@ -250,11 +253,11 @@ def survey_responses(dataset, content, font_size=16):
         fig.layout.xaxis.fixedrange = True
         fig.layout.yaxis.fixedrange = True
 
-        # Set to image dimensions as shown in streamlit
+        # Height and width designed to be in scale of streamlit which was 450x657
         # Set automargin=True so that it adjusts figure so that the labels aren't cut off
         fig.update_layout(
-            #height=450,
-            #width=657,
+            height=411,
+            width=600,
             xaxis=dict(automargin=True),
             yaxis=dict(automargin=True)
         )
@@ -268,7 +271,12 @@ def survey_responses(dataset, content, font_size=16):
         data_uri = base64.b64encode(
             open(f'report/temp_image.png', 'rb').read()).decode('utf-8')
         img_tag = f'''<img src='data:image/png;base64,{data_uri}' alt='{measure}'>'''
-        content.append(img_tag)
+        temp_content.append(img_tag)
+
+        content.append(f'''
+<div class='img_container'>
+    {''.join(temp_content)}
+</div><br>''')
 
         # Write image to HTML
         #fig.write_html(f'report/report_{measure}.html')
@@ -286,7 +294,7 @@ if chosen_variable in multiple_charts:
         to_plot = chosen_result[chosen_result['measure'].isin(value)]
         if key in reverse:
             to_plot = reverse_categories(to_plot)
-        content = survey_responses(to_plot, content)
+        content = survey_responses(to_plot, content, font_size=14)
 
 # Otherwise create a single stacked bar chart
 else:
@@ -296,7 +304,7 @@ else:
     # Create plot (reversing the categories if required)
     if chosen_variable in reverse:
         chosen_result = reverse_categories(chosen_result)
-    content = survey_responses(chosen_result, content)
+    content = survey_responses(chosen_result, content, font_size=14)
 
 
 # Remove the final temporary image file
@@ -309,6 +317,18 @@ css_style = '''
 body {
     font-family: 'Source Sans Pro', sans-serif;
     color: #05291F;
+}
+.img_container {
+    border-radius: 25px;
+    border: 2px solid #D7D7D7;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    page-break-inside: avoid;
+}
+b {
+    font-weight: bold;
 }
 '''
 
@@ -328,4 +348,15 @@ html_content = f'''
 </html>
 '''
 
+# Generate HTML (not used currently to make PDF report, but useful if want to inspect)
+with open('report/report.html', 'w') as f:
+    f.write(html_content)
+
+# Create PDF using Weasyprint (better)
 weasyprint.HTML(string=html_content).write_pdf('report/report.pdf')
+
+# Create PDF using wkhtml2pdf (worse)
+with open('report/report_2.pdf', 'w+b') as f:
+    pisa.CreatePDF(html_content, dest=f)
+
+#pdfkit.from_string(html_content, 'report/report_3.pdf')
