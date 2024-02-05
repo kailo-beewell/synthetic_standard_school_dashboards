@@ -5,6 +5,7 @@ from utilities.bar_charts import details_ordered_bar
 from utilities.score_descriptions import score_descriptions
 from utilities.import_data import import_tidb_data
 from utilities.explore_results import (
+    write_page_title,
     create_topic_dict,
     write_topic_intro,
     write_response_section_intro,
@@ -46,14 +47,7 @@ if check_password():
     ###############################################################################
     # Page introduction
 
-    st.title('Explore results')
-    st.markdown('''
-    This page allows you to explore the results of pupils at your school. For each
-    survey topic, you can see (a) a breakdown of how pupils at your school responded
-    to each question in that topic, and (b) a chart building on results from the
-    'Summary' page that allows you to understand more about the comparison of
-    your results with other schools.
-    ''')
+    write_page_title()
 
     # Select topic
     chosen_variable_lab = st.selectbox(

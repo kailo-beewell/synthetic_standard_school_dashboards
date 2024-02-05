@@ -12,6 +12,65 @@ from utilities.bar_charts_text import create_response_description
 from utilities.bar_charts import survey_responses
 
 
+def write_page_title(output='streamlit', content=None):
+    '''
+    Writes the title of this page/section (Explore Results), for the streamlit
+    page or for the PDF report.
+
+    Parameters
+    ----------
+    output : string
+        Specifies whether to write for 'streamlit' (default) or 'pdf'.
+    content : list
+        Optional input used when output=='pdf', contains HTML for report.
+
+    Returns
+    -------
+    content : list
+        Optional return, used when output=='pdf', contains HTML for report.
+    '''
+    # Title
+    title = 'Explore results'
+    if output=='streamlit':
+        st.title(title)
+    elif output=='pdf':
+        temp_content = []
+        temp_content.append(f'<h1>{title}</h1>')
+
+    # Generate the description (with some changes to the text and spacing
+    # between streamlit and the PDF report)
+    if output=='streamlit':
+        type1 = 'page'
+        type2 = 'page'
+        line_break = ''
+    elif output=='pdf':
+        type1 = 'section of the report'
+        type2 = 'section'
+        line_break = '<br><br>'
+    descrip = f'''
+This {type1} allows you to explore the results of pupils at your school.
+{line_break} For each survey topic, you can see (a) a breakdown of how pupils
+at your school responded to each question in that topic, and (b) a chart
+building on results from the 'Summary' {type2} that allows you to understand
+more about the comparison of your results with other schools.'''
+
+    # Add the description to the streamlit page or to the report
+    if output=='streamlit':
+        st.markdown(descrip)
+    elif output=='pdf':
+        temp_content.append(f'<p>{descrip}</p>')
+
+        # Then, for the PDF report, format in div and add to content list
+        content.append(f'''
+<div class='page'>
+    <div class='section_container'>
+        {''.join(temp_content)}
+    </div>
+</div>
+''')
+        return content
+
+
 def create_topic_dict(df):
     '''
     Generate dictionary of survey topics with keys as the topic labels 

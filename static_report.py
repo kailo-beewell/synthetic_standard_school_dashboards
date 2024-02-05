@@ -6,6 +6,7 @@ import weasyprint
 
 # Import functions I have defined elsewhere
 from utilities.explore_results import (
+    write_page_title,
     create_topic_dict,
     write_topic_intro,
     write_response_section_intro,
@@ -14,7 +15,15 @@ from utilities.explore_results import (
 )
 
 ################################################################################
-# Set-up and header
+# Set-up and report section title page
+
+# Create empty list to fill with HTML content for PDF report
+content = []
+
+content = write_page_title(output='pdf', content=content)
+
+################################################################################
+# Continued set-up and header
 
 chosen_variable_lab = 'Autonomy'
 chosen_group = 'For all pupils'
@@ -23,9 +32,6 @@ chosen_school = 'School A'
 # Import data
 df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
 df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
-
-# Create empty list to fill with HTML content for PDF report
-content = []
 
 # Create dictionary of topics
 topic_dict = create_topic_dict(df_scores)
@@ -75,6 +81,16 @@ body {
     padding-top: 15px;
     padding-bottom: 10px;
     page-break-inside: avoid;
+}
+.page {
+    page-break-after: always;
+}
+.section_container {
+    position: absolute;
+    top: 30%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 h2 {
     font-size: 40px;
