@@ -10,7 +10,7 @@ import weasyprint
 # Import functions I have defined elsewhere
 from utilities.bar_charts import survey_responses
 from utilities.bar_charts_text import create_response_description
-from utilities.explore_results import create_topic_dict, write_topic_intro, write_response_section_intro, get_chosen_result
+from utilities.explore_results import *
 
 chosen_variable_lab = 'Autonomy'
 chosen_group = 'For all pupils'
@@ -41,79 +41,9 @@ content = write_response_section_intro(
 chosen_result = get_chosen_result(
     chosen_variable, chosen_group, df_prop, chosen_school)
 
-# For categories with multiple charts, list the variables for each chart
-multiple_charts = {
-    'optimism': {'optimism_future': ['optimism_future'],
-                'optimism_other': ['optimism_best', 'optimism_good', 'optimism_work']},
-    'appearance': {'appearance_happy': ['appearance_happy'],
-                'appearance_feel': ['appearance_feel']},
-    'physical': {'physical_days': ['physical_days'],
-                'physical_hours': ['physical_hours']},
-    'places': {'places_freq': ['places_freq'],
-            'places_barriers': ['places_barriers___1', 'places_barriers___2',
-                                'places_barriers___3', 'places_barriers___4',
-                                'places_barriers___5', 'places_barriers___6',
-                                'places_barriers___7', 'places_barriers___8',
-                                'places_barriers___9']},
-    'talk': {'talk_yesno': ['staff_talk', 'home_talk', 'peer_talk'],
-            'talk_listen': ['staff_talk_listen', 'home_talk_listen', 'peer_talk_listen'],
-            'talk_helpful': ['staff_talk_helpful', 'home_talk_helpful', 'peer_talk_helpful'],
-            'talk_if': ['staff_talk_if', 'home_talk_if', 'peer_talk_if']},
-    'local_env': {'local_safe': ['local_safe'],
-                'local_other': ['local_support', 'local_trust',
-                                'local_neighbours', 'local_places']},
-    'future': {'future_options': ['future_options'],
-            'future_interest': ['future_interest'],
-            'future_support': ['future_support']}
-}
-# Import descriptions for stacked bar charts
-response_descrip = create_response_description()
-
-# Categories to reverse - exceptions were media and bully, as the order when
-# negative to positive felt counter-intuitive
-reverse = ['esteem', 'negative', 'support', 'free_like', 'local_safe',
-        'local_other', 'belong_local', 'bully']
-
-def reverse_categories(df):
-    '''
-    Resorts dataframe so categories are in reverse order, but non-respones is
-    still at the end (despite being max value).
-    Inputs:
-    df - dataframe to sort
-    '''
-    # Resort everything except for the pupils who did not respond (which is
-    # always the final category)
-    new_df = df[df['cat'] != df['cat'].max()].sort_values(by=['cat'], ascending=False)
-    # Append those non-response counts back to the end
-    new_df = pd.concat([new_df, df[df['cat'] == df['cat'].max()]])
-    # Return the resorted dataframe
-    return(new_df)
-
-# Create stacked bar chart with seperate charts if required
-if chosen_variable in multiple_charts:
-    var_dict = multiple_charts[chosen_variable]
-    for key, value in var_dict.items():
-        # Add description
-        if key in response_descrip.keys():
-            content.append(f'<p>{response_descrip[key]}</p><br>')
-        # Create plot (reversing the categories if required)
-        to_plot = chosen_result[chosen_result['measure'].isin(value)]
-        if key in reverse:
-            to_plot = reverse_categories(to_plot)
-        content = survey_responses(
-            dataset=to_plot, font_size=14, output='pdf', content=content)
-
-# Otherwise create a single stacked bar chart
-else:
-    # Add description
-    if chosen_variable in response_descrip.keys():
-        content.append(f'<p>{response_descrip[chosen_variable]}</p><br>')
-    # Create plot (reversing the categories if required)
-    if chosen_variable in reverse:
-        chosen_result = reverse_categories(chosen_result)
-    content = survey_responses(
-        dataset=chosen_result, font_size=14, output='pdf', content=content)
-
+# Produce bar charts with accompanying chart section descriptions, and titles
+content = create_bar_charts(
+    chosen_variable, chosen_result, output='pdf', content=content)
 
 # Remove the final temporary image file
 if os.path.exists('report/temp_image.png'):
