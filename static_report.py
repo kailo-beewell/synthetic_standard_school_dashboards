@@ -1,16 +1,20 @@
-import plotly.express as px
+# Import required packages
 import pandas as pd
-import numpy as np
-from ast import literal_eval
-from utilities.bar_charts import survey_responses
 #import kaleido
 import os
 import weasyprint
 
 # Import functions I have defined elsewhere
-from utilities.bar_charts import survey_responses
-from utilities.bar_charts_text import create_response_description
-from utilities.explore_results import *
+from utilities.explore_results import (
+    create_topic_dict,
+    write_topic_intro,
+    write_response_section_intro,
+    get_chosen_result,
+    create_bar_charts
+)
+
+################################################################################
+# Set-up and header
 
 chosen_variable_lab = 'Autonomy'
 chosen_group = 'For all pupils'
@@ -33,6 +37,9 @@ chosen_variable = topic_dict[chosen_variable_lab]
 content = write_topic_intro(chosen_variable, chosen_variable_lab, df_scores,
                             output='pdf', content=content)
 
+################################################################################
+# Responses to each question...
+
 # Section header and description
 content = write_response_section_intro(
     chosen_variable_lab, output='pdf', content=content)
@@ -44,6 +51,9 @@ chosen_result = get_chosen_result(
 # Produce bar charts with accompanying chart section descriptions, and titles
 content = create_bar_charts(
     chosen_variable, chosen_result, output='pdf', content=content)
+
+################################################################################
+# Create HTML report...
 
 # Remove the final temporary image file
 if os.path.exists('report/temp_image.png'):

@@ -1,14 +1,16 @@
-from ast import literal_eval
-import numpy as np
-import pandas as pd
 import streamlit as st
 from utilities.page_setup import page_setup
 from utilities.authentication import check_password
-from utilities.bar_charts import survey_responses, details_ordered_bar
-from utilities.bar_charts_text import create_response_description
+from utilities.bar_charts import details_ordered_bar
 from utilities.score_descriptions import score_descriptions
 from utilities.import_data import import_tidb_data
-from utilities.explore_results import *
+from utilities.explore_results import (
+    create_topic_dict,
+    write_topic_intro,
+    write_response_section_intro,
+    get_chosen_result,
+    create_bar_charts
+)
 
 # Set page configuration
 page_setup()
