@@ -3,15 +3,10 @@ import pandas as pd
 import numpy as np
 from ast import literal_eval
 from utilities.bar_charts import survey_responses
-import kaleido
+#import kaleido
 import base64
-import plotly
 import os
-import markdown
 import weasyprint
-from io import BytesIO
-from xhtml2pdf import pisa
-import pdfkit
 
 from utilities.bar_charts_text import create_response_description
 
@@ -39,8 +34,8 @@ chosen_variable = topic_dict[chosen_variable_lab]
 description = df_scores[['variable', 'description']].drop_duplicates().set_index('variable').to_dict()['description']
 
 # Write text
-content.append(f'''<h2 style='font-size:55px;text-align:center;'>{chosen_variable_lab}</h2>''')
-content.append(f'''<p style='text-align:center;'><b>These questions are about {description[f'{chosen_variable}_score'].lower()}</b></p>''')
+content.append(f'''<h2 style='text-align:center;'>{chosen_variable_lab}</h2>''')
+content.append(f'''<br><p style='text-align:center;'><b>These questions are about {description[f'{chosen_variable}_score'].lower()}</b></p><br>''')
 content.append('<h3>Responses from pupils at your school</h3>')
 content.append(f'''\
 <p>In this section, you can see how pupils at you school responded to survey \
@@ -289,7 +284,7 @@ if chosen_variable in multiple_charts:
     for key, value in var_dict.items():
         # Add description
         if key in response_descrip.keys():
-            content.append(f'<p>{response_descrip[key]}</p>')
+            content.append(f'<p>{response_descrip[key]}</p><br>')
         # Create plot (reversing the categories if required)
         to_plot = chosen_result[chosen_result['measure'].isin(value)]
         if key in reverse:
@@ -300,7 +295,7 @@ if chosen_variable in multiple_charts:
 else:
     # Add description
     if chosen_variable in response_descrip.keys():
-        content.append(f'<p>{response_descrip[chosen_variable]}</p>')
+        content.append(f'<p>{response_descrip[chosen_variable]}</p><br>')
     # Create plot (reversing the categories if required)
     if chosen_variable in reverse:
         chosen_result = reverse_categories(chosen_result)
@@ -311,11 +306,12 @@ else:
 if os.path.exists('report/temp_image.png'):
     os.remove('report/temp_image.png')
 
-# Source Sans Pro is the sans-serif font used by Streamlit
+# Source Sans Pro is the sans-serif font used by Streamlit, but was having issues
+# with getting bold typeface, so switched to use default 'sans-serif' which was fine
 # #05291F is Kailo's dark green colour.
 css_style = '''
 body {
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: sans-serif;
     color: #05291F;
 }
 .img_container {
@@ -327,8 +323,19 @@ body {
     padding-bottom: 10px;
     page-break-inside: avoid;
 }
-b {
-    font-weight: bold;
+h2 {
+    font-size: 40px;
+    margin: 0;
+}
+p {
+    font-size: 14px;
+}
+@page {
+    @top-right{
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: sans-serif;
+        font-size: 10px;
+    }
 }
 '''
 
@@ -337,7 +344,6 @@ html_content = f'''
 <html>
 <head>
     <title>Test report</title>
-    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
     <style>
         {css_style}
     </style>
@@ -354,9 +360,3 @@ with open('report/report.html', 'w') as f:
 
 # Create PDF using Weasyprint (better)
 weasyprint.HTML(string=html_content).write_pdf('report/report.pdf')
-
-# Create PDF using wkhtml2pdf (worse)
-with open('report/report_2.pdf', 'w+b') as f:
-    pisa.CreatePDF(html_content, dest=f)
-
-#pdfkit.from_string(html_content, 'report/report_3.pdf')
