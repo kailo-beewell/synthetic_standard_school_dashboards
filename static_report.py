@@ -1,8 +1,10 @@
 # Import required packages
 import pandas as pd
-#import kaleido
 import os
 import weasyprint
+from utilities.score_descriptions import score_descriptions
+from markdown import markdown
+import numpy as np
 
 # Import functions I have defined elsewhere
 from utilities.explore_results import (
@@ -11,7 +13,9 @@ from utilities.explore_results import (
     write_topic_intro,
     write_response_section_intro,
     get_chosen_result,
-    create_bar_charts
+    create_bar_charts,
+    get_between_schools,
+    write_comparison_intro
 )
 
 ################################################################################
@@ -32,6 +36,7 @@ chosen_school = 'School A'
 # Import data
 df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
 df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
+counts = pd.read_csv('data/survey_data/overall_counts.csv')
 
 # Create dictionary of topics
 topic_dict = create_topic_dict(df_scores)
@@ -59,6 +64,17 @@ content = create_bar_charts(
     chosen_variable, chosen_result, output='pdf', content=content)
 
 ################################################################################
+# Comparator chart between schools...
+
+# Create dataframe based on chosen variable
+between_schools = get_between_schools(df_scores, chosen_variable)
+
+# Write the comparison intro text (title, description, RAG rating)
+content = write_comparison_intro(
+    counts, chosen_school, chosen_variable, chosen_variable_lab,
+    score_descriptions, between_schools, output='pdf', content=content)
+
+################################################################################
 # Create HTML report...
 
 # Remove the final temporary image file
@@ -69,9 +85,27 @@ if os.path.exists('report/temp_image.png'):
 # with getting bold typeface, so switched to use default 'sans-serif' which was fine
 # #05291F is Kailo's dark green colour.
 css_style = '''
+
+/* Page style */
 body {
     font-family: sans-serif;
     color: #05291F;
+}
+@page {
+    @top-right{
+        content: 'Page ' counter(page) ' of ' counter(pages);
+        font-family: sans-serif;
+        font-size: 10px;
+    }
+}
+
+/* DIV container style */
+.section_container {
+    position: absolute;
+    top: 30%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 .img_container {
     border-radius: 25px;
@@ -82,16 +116,17 @@ body {
     padding-bottom: 10px;
     page-break-inside: avoid;
 }
+.result_box {
+    border-radius: 15px;
+    padding: 5px;
+    text-align: center;
+    page-break-inside: avoid;
+}
 .page {
     page-break-after: always;
 }
-.section_container {
-    position: absolute;
-    top: 30%;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
+
+/* Text style */
 h2 {
     font-size: 40px;
     margin: 0;
@@ -99,13 +134,7 @@ h2 {
 p {
     font-size: 14px;
 }
-@page {
-    @top-right{
-        content: 'Page ' counter(page) ' of ' counter(pages);
-        font-family: sans-serif;
-        font-size: 10px;
-    }
-}
+
 '''
 
 html_content = f'''

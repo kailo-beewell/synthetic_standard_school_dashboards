@@ -10,6 +10,8 @@ from ast import literal_eval
 import numpy as np
 from utilities.bar_charts_text import create_response_description
 from utilities.bar_charts import survey_responses
+from utilities.score_descriptions import score_descriptions
+from markdown import markdown
 
 
 def write_page_title(output='streamlit', content=None):
@@ -444,4 +446,163 @@ def create_bar_charts(chosen_variable, chosen_result,
                 output='pdf', content=content)
 
     if output=='pdf':
+        return content
+
+
+def get_between_schools(df, chosen_variable):
+    '''
+    Get dataframe with scores from different schools for the chosen variable
+
+    Parameters
+    ----------
+    df : dataframe
+        Dataframe with the scores for each variable for each school
+    chosen_variable : string
+        Chosen variable (e.g. 'autonomy')
+
+    Returns
+    -------
+    between_schools : dataframe
+        Dataframe with score on the chosen variable for each school
+    '''
+    between_schools = df[
+        (df['variable'].str.replace('_score', '') == chosen_variable) &
+        (df['year_group_lab'] == 'All') &
+        (df['gender_lab'] == 'All') &
+        (df['fsm_lab'] == 'All') &
+        (df['sen_lab'] == 'All')]
+
+    return between_schools
+
+
+def result_box(rag, content):
+    '''
+    Creates a result box with the RAG rating
+
+    Parameters
+    ----------
+    rag : string
+        Result from comparison with other schools - either 'below', 'average',
+        'above', or np.nan
+    content : list
+        Optional input used when output=='pdf', contains HTML for report.
+
+    Returns
+    -------
+    content : list
+        Optional return, used when output=='pdf', contains HTML for report.
+    '''
+    if rag=='below':
+        content.append('''
+<div class='result_box' style='background: #FFCCCC; color: #95444B'>
+    <p>Below average</p>
+</div>
+''')
+    elif rag=='average':
+        content.append('''
+<div class='result_box' style='background: #FFE8BF; color: #AA7A18'>
+    <p>Average</p>
+</div>
+''')
+    elif rag=='above':
+        content.append('''
+<div class='result_box' style='background: #B6E6B6; color: #2B7C47'>
+    <p>Above average</p>
+</div>
+''')
+    elif pd.isnull(rag):
+        content.append('''
+<div class='result_box' style='background: #DCE4FF; color: #19539A'>
+    <p>n < 10</p>
+</div>
+''')
+    return content
+
+
+def write_comparison_intro(
+        counts, chosen_school, chosen_variable, chosen_variable_lab,
+        score_descriptions, between_schools, output='streamlit', content=None):
+    '''
+    Write the introduction to the comparison section (heading, description
+    and RAG rating)
+
+    Parameters
+    ----------
+    counts : dataframe
+        Dataframe with counts of pupils in each school
+    chosen_school : string
+        Name of chosen school
+    chosen_variable : string
+        Chosen variable (e.g. 'autonomy')
+    chosen_variable_lab : string
+        Label for the chosen variable (e.g. 'Autonomy')
+    score_descriptions : dictionary
+        Dictionary with variable and then the appropriate descriptions for this
+        section (range of score, and interpretation of score)
+    between_schools: dataframe
+        Dataframe with scores for the chosen variable in each school
+    output : string
+        Specifies whether to write for 'streamlit' (default) or 'pdf'.
+    content : list
+        Optional input used when output=='pdf', contains HTML for report.
+
+    Returns
+    -------
+    content : list
+        Optional return, used when output=='pdf', contains HTML for report.
+    '''
+    # Filter to relevant school and get total school size to use in text with chart
+    school_counts = counts.loc[counts['school_lab'] == chosen_school]
+    school_size = school_counts.loc[
+        (school_counts['year_group_lab'] == 'All') &
+        (school_counts['gender_lab'] == 'All') &
+        (school_counts['fsm_lab'] == 'All') &
+        (school_counts['sen_lab'] == 'All'), 'count'].values[0].astype(int)
+
+    # Get count of pupils who completed the topic questions
+    topic_count = int(between_schools.loc[
+        between_schools['school_lab'] == chosen_school, 'count'].to_list()[0])
+
+    # Get RAG rating for that school
+    devon_rag = between_schools.loc[
+        between_schools['school_lab'] == chosen_school, 'rag'].to_list()[0]
+
+    # Heading
+    heading = 'Comparison with other schools'
+    if output=='streamlit':
+        st.subheader(heading)
+    elif output=='pdf':
+        content.append(f'<h3>{heading}</h3>')
+
+    # Description text
+    description = f'''
+In this section, an overall score for the topic of
+'{chosen_variable_lab.lower()}' has been calculated for each pupil with complete
+responses on this question. For this topic, your school had {topic_count} complete
+responses (out of a possible {school_size}).
+
+Possible scores for each pupil on this topic range from 
+{score_descriptions[chosen_variable][0]} with **higher scores indicating
+{score_descriptions[chosen_variable][1]}** - and vice versa for lower scores.
+
+The mean score of the pupils at you school is compared with pupils who completed
+the same survey questions at other schools. This allows you to see whether the 
+score for pupils at your school is average, below average or above average.
+This matches the scores presented on the 'Summary' page.
+
+The average score for {chosen_variable_lab.lower()} at your school, compared to
+other schools in Northern Devon, was:'''
+
+    # Add description to dashboard or report, alongside a RAG box with result
+    if output=='streamlit':
+        st.markdown(description)
+        if devon_rag == 'below':
+            st.error('Below average')
+        elif devon_rag == 'average':
+            st.warning('Average')
+        elif devon_rag == 'above':
+            st.success('Above average')
+    elif output=='pdf':
+        content.append(markdown(description))
+        content = result_box(devon_rag, content)
         return content

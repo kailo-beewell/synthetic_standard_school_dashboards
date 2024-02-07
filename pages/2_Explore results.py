@@ -1,5 +1,5 @@
 import streamlit as st
-from utilities.page_setup import page_setup
+from utilities.page_setup import page_setup, blank_lines
 from utilities.authentication import check_password
 from utilities.bar_charts import details_ordered_bar
 from utilities.score_descriptions import score_descriptions
@@ -10,7 +10,9 @@ from utilities.explore_results import (
     write_topic_intro,
     write_response_section_intro,
     get_chosen_result,
-    create_bar_charts
+    create_bar_charts,
+    get_between_schools,
+    write_comparison_intro
 )
 
 # Set page configuration
@@ -60,16 +62,15 @@ if check_password():
     chosen_group = st.selectbox(
         '**View results:**', ['For all pupils', 'By year group',
                             'By gender', 'By FSM', 'By SEN'])
-    st.write('')
-    st.write('')
+    blank_lines(2)
 
     # Topic header and description
     st.divider()
     write_topic_intro(chosen_variable, chosen_variable_lab, df_scores)
-    st.write('')
+    blank_lines(1)
 
     ###############################################################################
-    # Breakdown of question responses chart
+    # Responses to each question...
 
     # Section header and description
     write_response_section_intro(chosen_variable_lab)
@@ -80,62 +81,18 @@ if check_password():
 
     # Produce bar charts with accompanying chart section descriptions, and titles
     create_bar_charts(chosen_variable, chosen_result)
-    st.text('')
-    st.text('')
-    st.text('')
+    blank_lines(3)
 
     ###############################################################################
     # Comparator chart between schools...
 
-    # Filter to relevant school and get total school size to use in text with chart
-    school_counts = counts.loc[counts['school_lab'] == st.session_state.school]
-    school_size = school_counts.loc[
-        (school_counts['year_group_lab'] == 'All') &
-        (school_counts['gender_lab'] == 'All') &
-        (school_counts['fsm_lab'] == 'All') &
-        (school_counts['sen_lab'] == 'All'), 'count'].values[0].astype(int)
-
     # Create dataframe based on chosen variable
-    between_schools = df_scores[
-        (df_scores['variable'].str.replace('_score', '') == chosen_variable) &
-        (df_scores['year_group_lab'] == 'All') &
-        (df_scores['gender_lab'] == 'All') &
-        (df_scores['fsm_lab'] == 'All') &
-        (df_scores['sen_lab'] == 'All')]
+    between_schools = get_between_schools(df_scores, chosen_variable)
 
-    # Get count of pupils who completed the topic questions
-    topic_count = int(between_schools.loc[
-        between_schools['school_lab'] == st.session_state.school, 'count'].to_list()[0])
-
-    # Get RAG rating for that school
-    devon_rag = between_schools.loc[
-        between_schools['school_lab'] == st.session_state.school, 'rag'].to_list()[0]
-
-    # Header and description of section
-    st.subheader('Comparison with other schools')
-    st.markdown(f'''
-    In this section, an overall score for the topic of
-    '{chosen_variable_lab.lower()}' has been calculated for each pupil with complete
-    responses on this question. For this topic, your school had {topic_count} complete
-    responses (out of a possible {school_size}).
-
-    Possible scores for each pupil on this topic range from 
-    {score_descriptions[chosen_variable][0]} with **higher scores indicating
-    {score_descriptions[chosen_variable][1]}** - and vice versa for lower scores.
-
-    The mean score of the pupils at you school is compared with pupils who completed
-    the same survey questions at other schools. This allows you to see whether the 
-    score for pupils at your school is average, below average or above average.
-    This matches the scores presented on the 'Summary' page.''')
-
-    # Add box with RAG rating to the page
-    st.markdown(f'The average score for {chosen_variable_lab.lower()} at your school, compared to other schools in Northern Devon, was:')
-    if devon_rag == 'below':
-        st.error('Below average')
-    elif devon_rag == 'average':
-        st.warning('Average')
-    elif devon_rag == 'above':
-        st.success('Above average')
+    # Write the comparison intro text (title, description, RAG rating)
+    write_comparison_intro(
+        counts, st.session_state.school, chosen_variable,
+        chosen_variable_lab, score_descriptions, between_schools)
 
     # Create ordered bar chart
     details_ordered_bar(between_schools, st.session_state.school)
