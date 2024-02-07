@@ -26,4 +26,5 @@ To set up environment on your machine, need pip + python + virtualenv + virtuale
 
 Formatting:
 * Lint .py files using the Flake8 VSCode extension
+* Lint .ipynb files using terminal - `nbqa flake8 notebook_name.ipynb`
 * Function docstrings use numpy docstring [style guide](https://numpydoc.readthedocs.io/en/latest/format.html)

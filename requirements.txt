@@ -4,6 +4,10 @@ pandas==2.1.1
 pip==23.3.2
 plotly==5.9.0
 
+# For linting jupyter notebooks
+nbqa==1.7.1
+flake8==7.0.0
+
 # To link with TiDB Cloud
 PyMySQL==1.1.0
 
