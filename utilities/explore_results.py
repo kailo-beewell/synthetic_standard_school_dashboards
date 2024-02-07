@@ -503,12 +503,12 @@ def result_box(rag, content):
         Result from comparison with other schools - either 'below', 'average',
         'above', or np.nan
     content : list
-        Optional input used when output=='pdf', contains HTML for report.
+        Contains HTML for report.
 
     Returns
     -------
     content : list
-        Optional return, used when output=='pdf', contains HTML for report.
+        Contains HTML for report.
     '''
     if rag == 'below':
         content.append('''
@@ -590,7 +590,8 @@ def write_comparison_intro(
     if output == 'streamlit':
         st.subheader(heading)
     elif output == 'pdf':
-        content.append(f'<h3>{heading}</h3>')
+        content.append(f'''
+<h3 style='page-break-before: always;'>{heading}</h3>''')
 
     # Description text
     description = f'''

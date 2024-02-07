@@ -164,7 +164,7 @@ shown for {kept} pupils.'''
                 temp_content.append(img_tag)
                 # Insert temp_content into a div class
                 content.append(f'''
-<div class='img_container'>
+<div class='responses_container'>
     {''.join(temp_content)}
 </div><br>''')
 
@@ -173,7 +173,8 @@ shown for {kept} pupils.'''
         return content
 
 
-def details_ordered_bar(school_scores, school_name, font_size=16):
+def details_ordered_bar(school_scores, school_name, font_size=16,
+                        output='streamlit', content=None):
     '''
     Created ordered bar chart with the results from each school, with the
     chosen school highlighted
@@ -186,6 +187,16 @@ def details_ordered_bar(school_scores, school_name, font_size=16):
         Name of school (matching name in 'school_lab' col)
     font_size : integer
         Font size of x axis labels, y axis labels and legend text, default=16
+    output : string
+        Use of function - either for streamlit page or PDF report
+        Must be either 'streamlit' or 'pdf, default is 'streamlit.
+    content : list
+        Optional input used when output=='pdf', contains HTML for report.
+
+    Returns
+    -------
+    content : list
+        Optional return, used when output=='pdf', contains HTML for report.
     '''
     # Make a copy of the school_scores df to work on (avoid SettingCopyWarning)
     df = school_scores.copy()
@@ -260,5 +271,33 @@ def details_ordered_bar(school_scores, school_name, font_size=16):
     fig.layout.yaxis.fixedrange = True
     fig.update_yaxes(showgrid=False)
 
-    st.plotly_chart(fig, use_container_width=True,
-                    config={'displayModeBar': False})
+    if output == 'streamlit':
+        st.plotly_chart(fig, use_container_width=True,
+                        config={'displayModeBar': False})
+    elif output == 'pdf':
+        # Create temporary list to hold image HTML
+        temp_content = []
+        # Adjust size so consistent with streamlit, and automargin ensures
+        # any labels aren't cut off
+        fig.update_layout(
+            height=411,
+            width=600,
+            xaxis=dict(automargin=True),
+            yaxis=dict(automargin=True))
+        # Write image to a temporary file
+        fig.write_image('report/temp_image.png')
+        # Convert to HTML
+        data_uri = base64.b64encode(
+            open('report/temp_image.png', 'rb').read()).decode('utf-8')
+        img_tag = f'''
+<img src='data:image/png;base64,{data_uri}'
+alt='Comparison with other schools'>'''
+        # Add to temporary record of HTML content for report
+        temp_content.append(img_tag)
+        # Insert temp_content into a div class
+        content.append(f'''
+<div class='comparison_container'>
+    {''.join(temp_content)}
+</div><br>''')
+        # Return the updated content HTML
+        return content

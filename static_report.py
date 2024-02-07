@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import weasyprint
 from utilities.score_descriptions import score_descriptions
+from utilities.bar_charts import details_ordered_bar
 
 # Import functions I have defined elsewhere
 from utilities.explore_results import (
@@ -72,6 +73,11 @@ content = write_comparison_intro(
     counts, chosen_school, chosen_variable, chosen_variable_lab,
     score_descriptions, between_schools, output='pdf', content=content)
 
+# Create ordered bar chart
+content = details_ordered_bar(
+    school_scores=between_schools, school_name=chosen_school, font_size=16,
+    output='pdf', content=content)
+
 ###############################################################################
 # Create HTML report...
 
@@ -105,13 +111,17 @@ body {
     align-items: center;
     text-align: center;
 }
-.img_container {
+.responses_container {
     border-radius: 25px;
     border: 2px solid #D7D7D7;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 15px;
     padding-bottom: 10px;
+    page-break-inside: avoid;
+}
+.comparison_container {
+    padding: 5px;
     page-break-inside: avoid;
 }
 .result_box {
@@ -132,7 +142,6 @@ h2 {
 p {
     font-size: 14px;
 }
-
 '''
 
 html_content = f'''
