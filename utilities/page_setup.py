@@ -49,3 +49,18 @@ def page_setup():
 
     # Add page logo
     page_logo()
+
+
+def blank_lines(n):
+    '''
+    Create blank lines on the page of the dashboard
+
+    Parameters
+    ----------
+    n : int
+        Number of blank lines to create
+    '''
+    counter = 0
+    while counter < n:
+        st.text('')
+        counter += 1

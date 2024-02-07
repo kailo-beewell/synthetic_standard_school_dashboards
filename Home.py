@@ -1,5 +1,5 @@
 import streamlit as st
-from utilities.page_setup import page_setup
+from utilities.page_setup import page_setup, blank_lines
 from utilities.authentication import check_password
 
 # Set page configuration
@@ -64,8 +64,7 @@ if check_password():
         label='Download school report (by SEN)', data=pdf_report,
         file_name='test_streamlit_download.pdf', mime='application/pdf')
 
-    # Blank space
-    st.text('')
+    blank_lines(1)
 
     # #BeeWell pupil video
     st.subheader('Introduction to the survey')

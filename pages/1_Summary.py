@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 from utilities.switch_page_button import switch_page
-from utilities.page_setup import page_setup
+from utilities.page_setup import page_setup, blank_lines
 from utilities.authentication import check_password
 from utilities.import_data import import_tidb_data
 
@@ -94,9 +94,7 @@ if check_password():
     ##########################################################
 
     # Blank space and header
-    st.markdown('')
-    st.markdown('')
-    st.markdown('')
+    blank_lines(3)
     st.subheader('Choose what results to view')
 
     # Choose variable and comparator
@@ -151,12 +149,10 @@ if check_password():
 
     ##########################################################
     # Blank space and header
-    st.markdown('')
-    st.markdown('')
-    st.markdown('')
+    blank_lines(3)
     st.subheader('Results')
     st.markdown('Click on a topic to view results in more detail.')
-    st.markdown('')
+    blank_lines(1)
 
     description = chosen['description']
     chosen = chosen.drop('description', axis=1)

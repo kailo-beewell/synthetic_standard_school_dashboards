@@ -2,7 +2,7 @@ from ast import literal_eval
 import numpy as np
 import pandas as pd
 import streamlit as st
-from utilities.page_setup import page_setup
+from utilities.page_setup import page_setup, blank_lines
 from utilities.authentication import check_password
 from utilities.bar_charts import survey_responses
 from utilities.bar_charts_text import create_response_description
@@ -44,18 +44,13 @@ if check_password():
     There were {school_size} pupils at your school who took part in the #BeeWell survey.  
     This page describes the sample of pupils who completed the survey.  
     ''')
-
-    # Blank space
-    st.text('')
+    blank_lines(1)
 
     # Select whether to view results alongside other schools or not
     chosen_group = st.selectbox(
         '**View results:**', ['For your school',
                             'Compared with other schools in Northern Devon'])
-
-    # Blank space
-    st.text('')
-    st.text('')
+    blank_lines(2)
 
     ###############################################################################
     # Figures
