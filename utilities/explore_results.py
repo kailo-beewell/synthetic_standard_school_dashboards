@@ -36,7 +36,8 @@ def write_page_title(output='streamlit', content=None):
         st.title(title)
     elif output == 'pdf':
         temp_content = []
-        temp_content.append(f'<h1>{title}</h1>')
+        temp_content.append(f'''
+<h1 style='page-break-before:always;' id='explore_results'>{title}</h1>''')
 
     # Generate the description (with some changes to the text and spacing
     # between streamlit and the PDF report)
@@ -138,8 +139,8 @@ def write_topic_intro(chosen_variable, chosen_variable_lab, df,
         st.markdown(f'''<h2 style='font-size:55px;text-align:center;'>{
             chosen_variable_lab}</h2>''', unsafe_allow_html=True)
     elif output == 'pdf':
-        content.append(f'''<h2 style='text-align:center;'>{
-            chosen_variable_lab}</h2>''')
+        content.append(f'''<h1 style='text-align:center;'>{
+            chosen_variable_lab}</h1>''')
 
     # Description under header (one sentence summary of topic)
     # Create dictionary where key is topic name and value is topic description

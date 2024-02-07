@@ -4,6 +4,8 @@ import os
 import weasyprint
 from utilities.score_descriptions import score_descriptions
 from utilities.bar_charts import details_ordered_bar
+import base64
+from markdown import markdown
 
 # Import functions I have defined elsewhere
 from utilities.explore_results import (
@@ -18,15 +20,122 @@ from utilities.explore_results import (
 )
 
 ###############################################################################
-# Set-up and report section title page
+# Set-up and report section title page, introduction and table of contents
 
 # Create empty list to fill with HTML content for PDF report
 content = []
 
-content = write_page_title(output='pdf', content=content)
+# Logo - convert to HTML, then add to the content for the report
+data_uri = base64.b64encode(
+    open('images/kailo_beewell_logo_padded.png', 'rb').read()).decode('utf-8')
+img_tag = f'''
+<img src='data:image/png;base64,{data_uri}' alt='Kailo #BeeWell logo'
+style='width:300px; height:182px;'>'''
+content.append(img_tag)
+
+# Title and introduction
+title_page = '''
+<div class='section_container'>
+    <h1 style='text-align:center;'>The #BeeWell Survey</h1>
+    <p style='text-align:center; font-weight:bold;'>
+    Thank you for taking part in the #BeeWell survey delivered by Kailo.</p>
+    <p>The results from pupils at your school can be explored using the
+    interactive dashboard at
+    https://synthetic-beewell-kailo-standard-school-dashboard.streamlit.app/.
+    This report has been downloaded from that dashboard.</p>
+    <p>There are four reports available - these have results: (a) from all
+    pupils, (b) by gender, (c) by free school meal (FSM) eligibility, and (d)
+    by year group. This report contains the results <b>from all pupils</b>.</p>
+</div>
+'''
+content.append(title_page)
+
+# Illustration - convert to HTML, then add to the content for the report
+data_uri = base64.b64encode(
+    open('images/home_image_3_transparent.png', 'rb').read()).decode('utf-8')
+img_tag = f'''
+<img src='data:image/png;base64,{data_uri}' alt='Kailo illustration'
+style='width:650px; height:192px;'>'''
+illustration = f'''
+<div style='width:100%; position:absolute; bottom:0;'>
+    {img_tag}
+</div>'''
+content.append(illustration)
+
+# Introduction page
+content.append('''<h1 style='page-break-before:always;'>Introduction</h1>''')
+
+# Using the report (duplicate text with About.py)
+content.append('<h2>How to use this report</h2>')
+text = '''
+These data can provide a useful starting point for discussions about the needs
+of your school population and priority areas for development and improvement.
+It can also be useful in considering areas of strengths and/or helping pupils
+reflect on their positive qualities.
+
+Data in your #BeeWell report may be useful in indicating progress against
+targets in your School Improvement Plan or help to identify future target
+areas. It may help to identify areas of priority for staff training or be used
+as context when considering academic data for participating year groups. It can
+also be used as independent evidence in the context of an Ofsted inspection.
+
+Finally, young people consulted during the set-up of #BeeWell in Greater
+Manchester felt strongly that pupils should be included in discussions around
+feedback, particularly to plan activities and approaches to raise awareness of
+strengths or difficulties the #BeeWell survey may highlight. They suggested
+involving a range of students (not just those involved in school councils) in
+planning how to raise awareness about wellbeing and to support the needs of
+young people.'''
+content.append(markdown(text))
+
+# Comparison warning (duplicate text with Explore results.py)
+content.append('<h2>Comparing between schools</h2>')
+text = '''
+Always be mindful when making comparisons between different schools. There are
+a number of factors that could explain differences in scores (whether you are
+above average, average, or below average). These include:
+
+* Random chance ('one-off' findings).
+* Differences in the socio-economic characteristics of pupils and the areas
+where they live (e.g. income, education, ethnicity, access to services and
+amenities).
+* The number of pupils taking part - schools that are much smaller are more
+likely to have more "extreme" results (i.e. above or below average), whilst
+schools with a larger number of pupils who took part are more likely to
+see average results
+
+It's also worth noting that the score will only include results from pupils who
+completed each of the questions used to calculate that topic - so does not
+include any reflection of results from pupils who did not complete some or all
+of the questions for that topic.
+'''
+content.append(markdown(text))
+
+# Table of contents page
+content.append('''
+<div>
+    <h1 style='page-break-before:always;'>Table of Contents</h1>
+    <ul>
+        <li><a href='#summary'>Summary</a> - See a simple overview of results
+            from pupils at your school, compared with other schools</li>
+        <li><a href='#explore_results'>Explore results</a> - Explore how your
+pupils responded to each survey question, and see further information on how
+the summary page's comparison to other schools was generated
+            <ul>
+                <li><a href='#autonomy'>Autonomy</a></li>
+                <li><a href='#life_satisfaction'>Life satisfaction</a></li>
+            </ul>
+        </li>
+        <li><a href='#who_took_part'>Who took part</a> - See the
+            characteristics of the pupils who took part in the survey</li>
+    </ul>
+</div>
+''')
 
 ###############################################################################
-# Continued set-up and header
+# Continued set-up and explore results title and header and topic
+
+content = write_page_title(output='pdf', content=content)
 
 chosen_variable_lab = 'Autonomy'
 chosen_group = 'For all pupils'
@@ -135,11 +244,10 @@ body {
 }
 
 /* Text style */
-h2 {
-    font-size: 40px;
-    margin: 0;
-}
 p {
+    font-size: 14px;
+}
+li {
     font-size: 14px;
 }
 '''
