@@ -1,3 +1,8 @@
+# Generate a non-interactive PDF version of the dashboard
+
+###############################################################################
+# Set-up
+
 # Import required packages
 import pandas as pd
 import os
@@ -19,11 +24,23 @@ from utilities.explore_results import (
     write_comparison_intro
 )
 
-###############################################################################
-# Set-up and report section title page, introduction and table of contents
-
 # Create empty list to fill with HTML content for PDF report
 content = []
+
+# Set the chosen group and school for this report
+chosen_group = 'For all pupils'
+chosen_school = 'School A'
+
+# Import data
+df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
+df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
+counts = pd.read_csv('data/survey_data/overall_counts.csv')
+
+# Create dictionary of topics
+topic_dict = create_topic_dict(df_scores)
+
+###############################################################################
+# Title page and introduction
 
 # Logo - convert to HTML, then add to the content for the report
 data_uri = base64.b64encode(
@@ -111,8 +128,16 @@ of the questions for that topic.
 '''
 content.append(markdown(text))
 
-# Table of contents page
-content.append('''
+###############################################################################
+# Table of contents
+
+# Get all of the explore results pages as lines for the table of contents
+explore_results_pages = []
+for key, value in topic_dict.items():
+    line = f'''<li><a href='#{value}'>{key}</a></li>'''
+    explore_results_pages.append(line)
+
+content.append(f'''
 <div>
     <h1 style='page-break-before:always;'>Table of Contents</h1>
     <ul>
@@ -121,10 +146,7 @@ content.append('''
         <li><a href='#explore_results'>Explore results</a> - Explore how your
 pupils responded to each survey question, and see further information on how
 the summary page's comparison to other schools was generated
-            <ul>
-                <li><a href='#autonomy'>Autonomy</a></li>
-                <li><a href='#life_satisfaction'>Life satisfaction</a></li>
-            </ul>
+            <ul>{''.join(explore_results_pages)}</ul>
         </li>
         <li><a href='#who_took_part'>Who took part</a> - See the
             characteristics of the pupils who took part in the survey</li>
@@ -133,59 +155,76 @@ the summary page's comparison to other schools was generated
 ''')
 
 ###############################################################################
-# Continued set-up and explore results title and header and topic
+# Explore results section
 
 content = write_page_title(output='pdf', content=content)
 
-chosen_variable_lab = 'Autonomy'
-chosen_group = 'For all pupils'
-chosen_school = 'School A'
 
-# Import data
-df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
-df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
-counts = pd.read_csv('data/survey_data/overall_counts.csv')
+def create_explore_topic_page(chosen_variable_lab, topic_dict, df_scores,
+                              chosen_school, counts, content):
+    '''
+    Add an explore results page with responses to a given topic to report HTML.
 
-# Create dictionary of topics
-topic_dict = create_topic_dict(df_scores)
+    Parameters
+    ----------
+    chosen_variable_lab : string
+        Chosen variable in label format (e.g. 'Psychological wellbeing')
+    topic_dict : dictionary
+        Dictionary of topics where key is variable_lab and value is variable
+    df_scores : dataframe
+        Dataframe with scores for each topic
+    chosen_school : string
+        Name of the chosen school
+    counts : dataframe
+        Dataframe with the counts of pupils at each school
+    content : list
+        Optional input used when output=='pdf', contains HTML for report.
 
-# Convert from variable_lab to variable
-chosen_variable = topic_dict[chosen_variable_lab]
+    Returns
+    -------
+    content : list
+        Optional return, used when output=='pdf', contains HTML for report.
+    '''
+    # Convert from variable_lab to variable
+    chosen_variable = topic_dict[chosen_variable_lab]
 
-# Topic header and description
-content = write_topic_intro(chosen_variable, chosen_variable_lab, df_scores,
-                            output='pdf', content=content)
+    # Topic header and description
+    content = write_topic_intro(chosen_variable, chosen_variable_lab,
+                                df_scores, output='pdf', content=content)
 
-###############################################################################
-# Responses to each question...
+    # Section header and description
+    content = write_response_section_intro(
+        chosen_variable_lab, output='pdf', content=content)
 
-# Section header and description
-content = write_response_section_intro(
-    chosen_variable_lab, output='pdf', content=content)
+    # Get dataframe with results for the chosen variable, group and school
+    chosen_result = get_chosen_result(
+        chosen_variable, chosen_group, df_prop, chosen_school)
 
-# Get dataframe with results for the chosen variable, group and school
-chosen_result = get_chosen_result(
-    chosen_variable, chosen_group, df_prop, chosen_school)
+    # Produce bar charts, plus their chart section descriptions and titles
+    content = create_bar_charts(
+        chosen_variable, chosen_result, output='pdf', content=content)
 
-# Produce bar charts with accompanying chart section descriptions, and titles
-content = create_bar_charts(
-    chosen_variable, chosen_result, output='pdf', content=content)
+    # Create dataframe based on chosen variable
+    between_schools = get_between_schools(df_scores, chosen_variable)
 
-###############################################################################
-# Comparator chart between schools...
+    # Write the comparison intro text (title, description, RAG rating)
+    content = write_comparison_intro(
+        counts, chosen_school, chosen_variable, chosen_variable_lab,
+        score_descriptions, between_schools, output='pdf', content=content)
 
-# Create dataframe based on chosen variable
-between_schools = get_between_schools(df_scores, chosen_variable)
+    # Create ordered bar chart
+    content = details_ordered_bar(
+        school_scores=between_schools, school_name=chosen_school, font_size=16,
+        output='pdf', content=content)
 
-# Write the comparison intro text (title, description, RAG rating)
-content = write_comparison_intro(
-    counts, chosen_school, chosen_variable, chosen_variable_lab,
-    score_descriptions, between_schools, output='pdf', content=content)
+    return content
 
-# Create ordered bar chart
-content = details_ordered_bar(
-    school_scores=between_schools, school_name=chosen_school, font_size=16,
-    output='pdf', content=content)
+
+# Create pages for all of the topics
+for chosen_variable_lab in topic_dict.keys():
+    content = create_explore_topic_page(
+        chosen_variable_lab, topic_dict, df_scores,
+        chosen_school, counts, content)
 
 ###############################################################################
 # Create HTML report...

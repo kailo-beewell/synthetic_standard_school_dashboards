@@ -136,11 +136,12 @@ def write_topic_intro(chosen_variable, chosen_variable_lab, df,
     '''
     # Header (name of topic)
     if output == 'streamlit':
-        st.markdown(f'''<h2 style='font-size:55px;text-align:center;'>{
+        st.markdown(f'''<h2 style='font-size:55px; text-align:center;'>{
             chosen_variable_lab}</h2>''', unsafe_allow_html=True)
     elif output == 'pdf':
-        content.append(f'''<h1 style='text-align:center;'>{
-            chosen_variable_lab}</h1>''')
+        content.append(f'''
+<h1 style='text-align:center; page-break-before:always;'
+id='{chosen_variable}'>{chosen_variable_lab}</h1>''')
 
     # Description under header (one sentence summary of topic)
     # Create dictionary where key is topic name and value is topic description
@@ -426,7 +427,7 @@ def create_bar_charts(chosen_variable, chosen_result,
                 if output == 'streamlit':
                     st.markdown(response_descrip[key])
                 elif output == 'pdf':
-                    content.append(f'<p>{response_descrip[key]}</p><br>')
+                    content.append(f'<p>{response_descrip[key]}</p>')
 
             # Filter to questions in sub-group, reversing categories if need to
             to_plot = chosen_result[chosen_result['measure'].isin(value)]
@@ -450,7 +451,7 @@ def create_bar_charts(chosen_variable, chosen_result,
                 st.markdown(response_descrip[chosen_variable])
             elif output == 'pdf':
                 content.append(
-                    f'<p>{response_descrip[chosen_variable]}</p><br>')
+                    f'<p>{response_descrip[chosen_variable]}</p>')
 
         # Reverse categories if required
         if chosen_variable in reverse:

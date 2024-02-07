@@ -162,11 +162,13 @@ shown for {kept} pupils.'''
 <img src='data:image/png;base64,{data_uri}' alt='{measure}'>'''
                 # Add to temporary record of HTML content for report
                 temp_content.append(img_tag)
-                # Insert temp_content into a div class
-                content.append(f'''
+                # Insert temp_content into a div class, with a break after the
+                # container if it's an even number on the counter
+                img_div = f'''
 <div class='responses_container'>
     {''.join(temp_content)}
-</div><br>''')
+</div>'''
+                content.append(img_div)
 
     # At the end of the loop, if PDF report, return content
     if output == 'pdf':
@@ -298,6 +300,6 @@ alt='Comparison with other schools'>'''
         content.append(f'''
 <div class='comparison_container'>
     {''.join(temp_content)}
-</div><br>''')
+</div>''')
         # Return the updated content HTML
         return content
