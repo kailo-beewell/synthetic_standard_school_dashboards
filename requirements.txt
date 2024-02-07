@@ -7,13 +7,14 @@ plotly==5.9.0
 # To link with TiDB Cloud
 PyMySQL==1.1.0
 
-# To generate PDF reports
-weasyprint
-nbformat
-kaleido
+# To convert markdown text to HTML for PDF report
 markdown==3.5.2
-xhtml2pdf
-pdfkit
+
+# For image export for the PDF report
+kaleido==0.2.1
+
+# To convert HTML report to PDF report
+weasyprint==60.2
 
 # Not latest version as Streamlit Community Cloud had error that couldn't
 # satsify requirement django==5.0.1
@@ -23,5 +24,5 @@ django==4.2.9
 ipykernel==6.29.0
 
 # No version for security updates.
-# As of 26th Jan 2024, using 1.30.0
+# As of 7th Feb 2024, using 1.31.0
 streamlit
