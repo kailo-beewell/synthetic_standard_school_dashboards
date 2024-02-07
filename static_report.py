@@ -3,8 +3,6 @@ import pandas as pd
 import os
 import weasyprint
 from utilities.score_descriptions import score_descriptions
-from markdown import markdown
-import numpy as np
 
 # Import functions I have defined elsewhere
 from utilities.explore_results import (
@@ -18,7 +16,7 @@ from utilities.explore_results import (
     write_comparison_intro
 )
 
-################################################################################
+###############################################################################
 # Set-up and report section title page
 
 # Create empty list to fill with HTML content for PDF report
@@ -26,7 +24,7 @@ content = []
 
 content = write_page_title(output='pdf', content=content)
 
-################################################################################
+###############################################################################
 # Continued set-up and header
 
 chosen_variable_lab = 'Autonomy'
@@ -48,7 +46,7 @@ chosen_variable = topic_dict[chosen_variable_lab]
 content = write_topic_intro(chosen_variable, chosen_variable_lab, df_scores,
                             output='pdf', content=content)
 
-################################################################################
+###############################################################################
 # Responses to each question...
 
 # Section header and description
@@ -63,7 +61,7 @@ chosen_result = get_chosen_result(
 content = create_bar_charts(
     chosen_variable, chosen_result, output='pdf', content=content)
 
-################################################################################
+###############################################################################
 # Comparator chart between schools...
 
 # Create dataframe based on chosen variable
@@ -74,16 +72,16 @@ content = write_comparison_intro(
     counts, chosen_school, chosen_variable, chosen_variable_lab,
     score_descriptions, between_schools, output='pdf', content=content)
 
-################################################################################
+###############################################################################
 # Create HTML report...
 
 # Remove the final temporary image file
 if os.path.exists('report/temp_image.png'):
     os.remove('report/temp_image.png')
 
-# Source Sans Pro is the sans-serif font used by Streamlit, but was having issues
-# with getting bold typeface, so switched to use default 'sans-serif' which was fine
-# #05291F is Kailo's dark green colour.
+# Source Sans Pro is the sans-serif font used by Streamlit, but was having
+# issues with getting bold typeface, so switched to use default 'sans-serif'
+# which was fine. #05291F is Kailo's dark green colour.
 css_style = '''
 
 /* Page style */
@@ -152,7 +150,8 @@ html_content = f'''
 </html>
 '''
 
-# Generate HTML (not used currently to make PDF report, but useful if want to inspect)
+# Generate HTML (not used currently to make the PDF report, but useful if
+# you want to inspect the HTML code we have produced)
 with open('report/report.html', 'w') as f:
     f.write(html_content)
 

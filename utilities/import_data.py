@@ -47,28 +47,31 @@ def import_tidb_data(tests=False):
     # connect, but if missing stuff, will want to connect
     items = ['scores', 'scores_rag', 'responses', 'counts', 'demographic']
     if not all([x in st.session_state for x in items]):
+
         # Create temporary PEM file for setting up the connection
         with NamedTemporaryFile(suffix='.pem') as temp:
 
             # Write the temporary file
             temp.write(st.secrets.tidb.root_cert.encode('utf-8'))
 
-            # Temporary file have pointer to current position in file - as we have
-            # just written, the pointer is at the end of the last write, so if you
-            # don't seek, you would read from the end of the file and find nothing
+            # Temporary file have pointer to current position in file - as we
+            # have just written, the pointer is at the end of the last write,
+            # so if you don't seek, you would read from the end of the file and
+            # find nothing
             temp.seek(0)
 
             # Set up connection manually, providing the temporary PEM file
-            # (as cannot use st.connection() without providing tempfile name in secrets)
+            # (as cannot use st.connection() without providing tempfile name
+            # in secrets)
             conn = pymysql.connect(
-                host = st.secrets.tidb.host,
-                user = st.secrets.tidb.username,
-                password = st.secrets.tidb.password,
-                database = st.secrets.tidb.database,
-                port = st.secrets.tidb.port,
-                ssl_verify_cert = False,
-                ssl_verify_identity = False,
-                ssl_ca = temp.name
+                host=st.secrets.tidb.host,
+                user=st.secrets.tidb.username,
+                password=st.secrets.tidb.password,
+                database=st.secrets.tidb.database,
+                port=st.secrets.tidb.port,
+                ssl_verify_cert=False,
+                ssl_verify_identity=False,
+                ssl_ca=temp.name
             )
 
             # Scores
@@ -78,12 +81,14 @@ def import_tidb_data(tests=False):
 
             # Scores RAG
             if 'scores_rag' not in st.session_state:
-                scores_rag = get_df('SELECT * FROM aggregate_scores_rag;', conn)
+                scores_rag = get_df(
+                    'SELECT * FROM aggregate_scores_rag;', conn)
                 # Convert columns to numeric
-                to_fix = ['mean', 'count', 'total_pupils', 'group_n', 
-                        'group_wt_mean', 'group_wt_std', 'lower', 'upper']
+                to_fix = ['mean', 'count', 'total_pupils', 'group_n',
+                          'group_wt_mean', 'group_wt_std', 'lower', 'upper']
                 for col in to_fix:
-                    scores_rag[col] = pd.to_numeric(scores_rag[col], errors='ignore')
+                    scores_rag[col] = pd.to_numeric(scores_rag[col],
+                                                    errors='ignore')
                 # Convert string 'nan' to actual np.nan
                 scores_rag['rag'] = scores_rag['rag'].replace('nan', np.nan)
                 st.session_state['scores_rag'] = scores_rag
@@ -96,12 +101,14 @@ def import_tidb_data(tests=False):
             # Overall counts
             if 'counts' not in st.session_state:
                 counts = get_df('SELECT * FROM overall_counts;', conn)
-                counts['count'] = pd.to_numeric(counts['count'], errors='ignore')
+                counts['count'] = pd.to_numeric(counts['count'],
+                                                errors='ignore')
                 st.session_state['counts'] = counts
 
             # Demographic
             if 'demographic' not in st.session_state:
-                demographic = get_df('SElECT * FROM aggregate_demographic;', conn)
+                demographic = get_df(
+                    'SElECT * FROM aggregate_demographic;', conn)
                 st.session_state['demographic'] = demographic
 
         # Run tests to check whether these match the csv files

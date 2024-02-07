@@ -35,18 +35,19 @@ def survey_responses(dataset, font_size=16, output='streamlit', content=None):
     for measure in dataset['measure_lab'].drop_duplicates():
 
         # Streamlit: Create containers to visually seperate plots
-        with (st.container(border=True) if output=='streamlit' else nullcontext()):
+        with (st.container(border=True) if output == 'streamlit'
+              else nullcontext()):
 
             # PDF: Create empty list to store content for PDF
-            if output=='pdf':
+            if output == 'pdf':
                 temp_content = []
-            
-            # Streamlit and PDF: Create header for plot 
+
+            # Streamlit and PDF: Create header for plot
             # Don't use in-built plotly title as that overlaps the legend if it
             # spans over 2 lines
-            if output=='streamlit':
+            if output == 'streamlit':
                 st.markdown(f'**{measure}**')
-            elif output=='pdf':
+            elif output == 'pdf':
                 temp_content.append(
                     f'''<p style='margin:0;'><strong>{measure}</strong></p>''')
 
@@ -66,13 +67,13 @@ def survey_responses(dataset, font_size=16, output='streamlit', content=None):
                 dropped = np.unique(under_10['group'])[0]
                 kept = np.unique(df['group'])[0]
                 explanation = f'''
-There were less than 10 responses from {dropped} pupils so results are just 
+There were less than 10 responses from {dropped} pupils so results are just
 shown for {kept} pupils.'''
 
                 # Streamlit and PDF: Print explanation
-                if output=='streamlit':
+                if output == 'streamlit':
                     st.markdown(explanation)
-                elif output=='pdf':
+                elif output == 'pdf':
                     temp_content.append(f'<p>{explanation}</p>')
 
             # Create colour map
@@ -98,36 +99,37 @@ shown for {kept} pupils.'''
                     'measure_lab': False,
                     'group': False})
 
-            # Set x axis to type category, else only shows integer categories if you
-            # have a mix of numbers and strings
+            # Set x axis to type category, else only shows integer categories
+            # if you have a mix of numbers and strings
             fig.update_layout(xaxis_type='category')
 
             # Add percent sign to the numbers labelling the bars
-            fig.for_each_trace(lambda t: t.update(texttemplate = t.texttemplate + ' %'))
+            fig.for_each_trace(lambda t: t.update(
+                texttemplate=t.texttemplate + ' %'))
 
             # Make changes to figure design...
             fig.update_layout(
                 # Set font size of bar labels
-                font = dict(size=font_size),
+                font=dict(size=font_size),
                 # Set x axis title, labels, colour and size
-                xaxis = dict(
+                xaxis=dict(
                     title='Response',
                     tickfont=dict(color='#05291F', size=font_size),
                     titlefont=dict(color='#05291F', size=font_size)),
                 # Set y axis title, labels, colour and size
-                yaxis = dict(
+                yaxis=dict(
                     title='Percentage of pupils<br>providing response',
                     titlefont=dict(color='#05291F', size=font_size),
                     tickfont=dict(color='#05291F', size=font_size),
                     ticksuffix='%'
                 ),
                 # Legend title and labels and remove interactivity
-                legend = dict(
+                legend=dict(
                     title='Pupils',
                     font=dict(color='#05291F', size=font_size),
                     itemclick=False, itemdoubleclick=False),
                 # Legend title font
-                legend_title = dict(
+                legend_title=dict(
                     font=dict(color='#05291F', size=font_size)))
 
             # Disable zooming and panning
@@ -136,15 +138,15 @@ shown for {kept} pupils.'''
 
             # Streamlit: Create plot on streamlit app, hiding the plotly
             # settings bar
-            if output=='streamlit':
-                st.plotly_chart(
-                    fig, use_container_width=True, config={'displayModeBar': False})
+            if output == 'streamlit':
+                st.plotly_chart(fig, use_container_width=True,
+                                config={'displayModeBar': False})
 
             # PDF: Write image to a temporary PNG file, convert that to HTML,
             # and add the image HTML to temp_content
-            elif output=='pdf':
+            elif output == 'pdf':
                 # Height and width should be similar scale as streamlit which
-                # was 450x657. Automargin adjusts figure so labels aren't cut off
+                # was 450x657. Automargin ensures labels aren't cut off
                 fig.update_layout(
                     height=411,
                     width=600,
@@ -152,11 +154,12 @@ shown for {kept} pupils.'''
                     yaxis=dict(automargin=True)
                 )
                 # Write image to a temporary file
-                fig.write_image(f'report/temp_image.png')
+                fig.write_image('report/temp_image.png')
                 # Convert to HTML
                 data_uri = base64.b64encode(
-                    open(f'report/temp_image.png', 'rb').read()).decode('utf-8')
-                img_tag = f'''<img src='data:image/png;base64,{data_uri}' alt='{measure}'>'''
+                    open('report/temp_image.png', 'rb').read()).decode('utf-8')
+                img_tag = f'''
+<img src='data:image/png;base64,{data_uri}' alt='{measure}'>'''
                 # Add to temporary record of HTML content for report
                 temp_content.append(img_tag)
                 # Insert temp_content into a div class
@@ -166,9 +169,8 @@ shown for {kept} pupils.'''
 </div><br>''')
 
     # At the end of the loop, if PDF report, return content
-    if output=='pdf':
+    if output == 'pdf':
         return content
-
 
 
 def details_ordered_bar(school_scores, school_name, font_size=16):
@@ -190,7 +192,7 @@ def details_ordered_bar(school_scores, school_name, font_size=16):
 
     # Add colour for bar based on school
     df['colour'] = np.where(
-        df['school_lab']==school_name, 'Your school', 'Other schools')
+        df['school_lab'] == school_name, 'Your school', 'Other schools')
 
     # Create column with mean rounded to 2 d.p.
     df['Mean score'] = round(df['mean'], 2)
@@ -198,16 +200,18 @@ def details_ordered_bar(school_scores, school_name, font_size=16):
     # Plot the results, specifying colours and hover data
     fig = px.bar(
         df, x='school_lab', y='mean', color='colour',
-        color_discrete_map={'Your school': '#5D98AB', 'Other schools': '#BFD8E0'},
+        color_discrete_map={'Your school': '#5D98AB',
+                            'Other schools': '#BFD8E0'},
         category_orders={'colour': ['Your school', 'Other schools']},
         hover_data={'school_lab': False, 'colour': False,
                     'mean': False, 'Mean score': True})
 
     # Reorder x axis so in ascending order
-    fig.update_layout(xaxis={'categoryorder':'total ascending'})
+    fig.update_layout(xaxis={'categoryorder': 'total ascending'})
 
-    # Set y axis limits so the first and last bars of the chart a consistent height
-    # between different plots - find 15% of range and adj min and max by that
+    # Set y axis limits so the first and last bars of the chart a consistent
+    # height between different plots - find 15% of range and adjust the min
+    # and max by that
     min = df['mean'].min()
     max = df['mean'].max()
     adj_axis = (max - min)*0.15
@@ -219,33 +223,36 @@ def details_ordered_bar(school_scores, school_name, font_size=16):
     # (Colours used were matched to those from the summary page)
     lower = df['lower'].to_list()[0]
     upper = df['upper'].to_list()[0]
-    fig.add_hrect(y0=ymin, y1=lower, fillcolor='#FFCCCC', layer='below',
-                line={'color': '#9A505B'}, line_width=0.5,
-                annotation_text='Below average', annotation_position='top left')
-    fig.add_hrect(y0=lower, y1=upper, fillcolor='#FFE8BF', layer='below',
-                line={'color': '#B3852A'}, line_width=0.5,
-                annotation_text='Average', annotation_position='top left')
-    fig.add_hrect(y0=upper, y1=ymax, fillcolor='#B6E6B6', layer='below',
-                line={'color': '#3A8461'}, line_width=0.5,
-                annotation_text='Above average', annotation_position='top left')
+    fig.add_hrect(
+        y0=ymin, y1=lower, fillcolor='#FFCCCC', layer='below',
+        line={'color': '#9A505B'}, line_width=0.5,
+        annotation_text='Below average', annotation_position='top left')
+    fig.add_hrect(
+        y0=lower, y1=upper, fillcolor='#FFE8BF', layer='below',
+        line={'color': '#B3852A'}, line_width=0.5,
+        annotation_text='Average', annotation_position='top left')
+    fig.add_hrect(
+        y0=upper, y1=ymax, fillcolor='#B6E6B6', layer='below',
+        line={'color': '#3A8461'}, line_width=0.5,
+        annotation_text='Above average', annotation_position='top left')
 
     # Set font size and hide x axis tick labels (but seems to be a bug that
     # means the axis label is then above the plot, so had to use a work around
     # of replacing the axis labels with spaces
     fig.update_layout(
-        font = dict(size=font_size),
-        xaxis = dict(title='Northern Devon schools<br>(ordered by mean score)',
-                     tickfont=dict(color='#05291F', size=font_size),
-                     titlefont=dict(color='#05291F', size=font_size),
-                     tickvals=df['school_lab'],
-                     ticktext=[' ']*len(df['school_lab'])),
-        yaxis = dict(title='Mean score',
-                     tickfont=dict(color='#05291F', size=font_size),
-                     titlefont=dict(color='#05291F', size=font_size)),
-        legend = dict(title='School',
-                      font=dict(color='#05291F', size=font_size),
-                      itemclick=False, itemdoubleclick=False),
-        legend_title = dict(font=dict(color='#05291F', size=font_size))
+        font=dict(size=font_size),
+        xaxis=dict(title='Northern Devon schools<br>(ordered by mean score)',
+                   tickfont=dict(color='#05291F', size=font_size),
+                   titlefont=dict(color='#05291F', size=font_size),
+                   tickvals=df['school_lab'],
+                   ticktext=[' ']*len(df['school_lab'])),
+        yaxis=dict(title='Mean score',
+                   tickfont=dict(color='#05291F', size=font_size),
+                   titlefont=dict(color='#05291F', size=font_size)),
+        legend=dict(title='School',
+                    font=dict(color='#05291F', size=font_size),
+                    itemclick=False, itemdoubleclick=False),
+        legend_title=dict(font=dict(color='#05291F', size=font_size))
     )
 
     # Prevent zooming and panning, remove grid, and hide plotly toolbar
@@ -253,4 +260,5 @@ def details_ordered_bar(school_scores, school_name, font_size=16):
     fig.layout.yaxis.fixedrange = True
     fig.update_yaxes(showgrid=False)
 
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+    st.plotly_chart(fig, use_container_width=True,
+                    config={'displayModeBar': False})

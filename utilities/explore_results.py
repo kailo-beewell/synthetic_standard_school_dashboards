@@ -10,7 +10,6 @@ from ast import literal_eval
 import numpy as np
 from utilities.bar_charts_text import create_response_description
 from utilities.bar_charts import survey_responses
-from utilities.score_descriptions import score_descriptions
 from markdown import markdown
 
 
@@ -33,19 +32,19 @@ def write_page_title(output='streamlit', content=None):
     '''
     # Title
     title = 'Explore results'
-    if output=='streamlit':
+    if output == 'streamlit':
         st.title(title)
-    elif output=='pdf':
+    elif output == 'pdf':
         temp_content = []
         temp_content.append(f'<h1>{title}</h1>')
 
     # Generate the description (with some changes to the text and spacing
     # between streamlit and the PDF report)
-    if output=='streamlit':
+    if output == 'streamlit':
         type1 = 'page'
         type2 = 'page'
         line_break = ''
-    elif output=='pdf':
+    elif output == 'pdf':
         type1 = 'section of the report'
         type2 = 'section'
         line_break = '<br><br>'
@@ -57,9 +56,9 @@ building on results from the 'Summary' {type2} that allows you to understand
 more about the comparison of your results with other schools.'''
 
     # Add the description to the streamlit page or to the report
-    if output=='streamlit':
+    if output == 'streamlit':
         st.markdown(descrip)
-    elif output=='pdf':
+    elif output == 'pdf':
         temp_content.append(f'<p>{descrip}</p>')
 
         # Then, for the PDF report, format in div and add to content list
@@ -75,7 +74,7 @@ more about the comparison of your results with other schools.'''
 
 def create_topic_dict(df):
     '''
-    Generate dictionary of survey topics with keys as the topic labels 
+    Generate dictionary of survey topics with keys as the topic labels
     ('variable_lab') and values as the raw topic strings ('variable').
 
     Parameters
@@ -110,7 +109,7 @@ def write_topic_intro(chosen_variable, chosen_variable_lab, df,
     '''
     Writes the header for the topic on the Explore Results streamlit page or
     in HTML for page of PDF report.
-    Example output: 
+    Example output:
         Psychological Wellbeing
         These questions are about how positive and generally happy young people
         feel regarding their life.
@@ -122,7 +121,8 @@ def write_topic_intro(chosen_variable, chosen_variable_lab, df,
     chosen_variable_lab : string
         Chosen variable in label format (e.g. 'Psychological wellbeing')
     df : pandas dataframe
-        Dataframe containing the 'variable' and 'description' columns for each topic.
+        Dataframe containing the 'variable' and 'description' columns for each
+        topic.
     output : string
         Specifies whether to write for 'streamlit' (default) or 'pdf'.
     content : list
@@ -134,10 +134,10 @@ def write_topic_intro(chosen_variable, chosen_variable_lab, df,
         Optional return, used when output=='pdf', contains HTML for report.
     '''
     # Header (name of topic)
-    if output=='streamlit':
+    if output == 'streamlit':
         st.markdown(f'''<h2 style='font-size:55px;text-align:center;'>{
             chosen_variable_lab}</h2>''', unsafe_allow_html=True)
-    elif output=='pdf':
+    elif output == 'pdf':
         content.append(f'''<h2 style='text-align:center;'>{
             chosen_variable_lab}</h2>''')
 
@@ -154,9 +154,9 @@ def write_topic_intro(chosen_variable, chosen_variable_lab, df,
 {description[f'{chosen_variable}_score'].lower()}</b></p>'''
 
     # Print that description string into streamlit page or PDF report HTML
-    if output=='streamlit':
+    if output == 'streamlit':
         st.markdown(topic_descrip, unsafe_allow_html=True)
-    elif output=='pdf':
+    elif output == 'pdf':
         content.append(f'{topic_descrip}<br>')
         return content
 
@@ -166,9 +166,9 @@ def write_response_section_intro(
     '''
     Create the header and description for the section with the bar charts
     showing responses from pupils to each question of a topic.
-    Example output: 
+    Example output:
         Responses from pupils at your school
-        In this section, you can see how pupils at you school responded to 
+        In this section, you can see how pupils at you school responded to
         survey questions that relate to the topic of 'psychological wellbeing'.
 
     Parameters
@@ -187,18 +187,18 @@ def write_response_section_intro(
     '''
     # Section
     header = 'Responses from pupils at your school'
-    if output=='streamlit':
+    if output == 'streamlit':
         st.subheader(header)
-    elif output=='pdf':
+    elif output == 'pdf':
         content.append(f'<h3>{header}</h3>')
 
     # Section description
     section_descrip = f'''
 In this section, you can see how pupils at you school responded to survey
 questions that relate to the topic of '{chosen_variable_lab.lower()}'.'''
-    if output=='streamlit':
+    if output == 'streamlit':
         st.markdown(section_descrip)
-    elif output=='pdf':
+    elif output == 'pdf':
         content.append(f'<p>{section_descrip}</p>')
         return content
 
@@ -219,7 +219,7 @@ def get_chosen_result(chosen_variable, chosen_group, df, school):
         Dataframe with responses to all the questions for all topics
     school : string
         Name of school to get results for
-        
+
     Returns
     ----------
     chosen_result : dataframe
@@ -233,17 +233,16 @@ def get_chosen_result(chosen_variable, chosen_group, df, school):
     gender = ['All']
     fsm = ['All']
     sen = ['All']
-    group_lab = 'year_group_lab' # not used, just require default else get error
+    group_lab = 'year_group_lab'  # Not used, just need default else get error
 
     # Depending on chosen breakdown, alter one of the above variables
-    # If the chosen group was All, then no changes are made (as this is default)
+    # If the chosen group was All, then no changes are made, as this is default
     if chosen_group == 'By year group':
         year_group = ['Year 8', 'Year 10']
         group_lab = 'year_group_lab'
     elif chosen_group == 'By gender':
         gender = ['Girl', 'Boy']
-                #'I describe myself in another way', 'Non-binary',
-                #'Prefer not to say']
+# 'I describe myself in another way', 'Non-binary', 'Prefer not to say']
         group_lab = 'gender_lab'
     elif chosen_group == 'By FSM':
         fsm = ['FSM', 'Non-FSM']
@@ -268,19 +267,21 @@ def get_chosen_result(chosen_variable, chosen_group, df, school):
     for index, row in chosen.iterrows():
         # Extract results as long as it isn't NaN (e.g. NaN when n<10)
         if ~np.isnan(row.n_responses):
-            df = pd.DataFrame(zip(literal_eval(row['cat'].replace('nan', 'None')),
-                                literal_eval(row['cat_lab']),
-                                literal_eval(row['percentage']),
-                                literal_eval(row['count'])),
-                            columns=['cat', 'cat_lab', 'percentage', 'count'])
+            df = pd.DataFrame(
+                zip(literal_eval(row['cat'].replace('nan', 'None')),
+                    literal_eval(row['cat_lab']),
+                    literal_eval(row['percentage']),
+                    literal_eval(row['count'])),
+                columns=['cat', 'cat_lab', 'percentage', 'count'])
             # Replace NaN with max number so stays at end of sequence
             df['cat'] = df['cat'].fillna(df['cat'].max()+1)
-            # Add measure (don't need to extract as string rather than list in df)
+            # Add the string columns (no extraction needed)
             df['measure'] = row['measure']
             df['measure_lab'] = row['measure_lab']
             df['group'] = row[group_lab]
             df_list.append(df)
-        # As we still want a bar when n<10, we create a record still but label as such
+        # As we still want a bar when n<10, we create a record still but label
+        # it to indicate n<10
         else:
             df = row.to_frame().T[['measure', 'measure_lab']]
             df['group'] = row[group_lab]
@@ -310,11 +311,11 @@ def reverse_categories(df):
     new_df : dataframe
         Resorted dataframe
     '''
-    # Resort everything except for the pupils who did not respond 
+    # Resort everything except for the pupils who did not respond
     # (which is always the final category)
     new_df = df[df['cat'] != df['cat'].max()].sort_values(by=['cat'],
                                                           ascending=False)
-    
+
     # Append those non-response counts back to the end
     new_df = pd.concat([new_df, df[df['cat'] == df['cat'].max()]])
 
@@ -332,32 +333,48 @@ def define_multiple_charts():
     Returns
     -------
     multiple_charts : dictionary
-        Dictionary where key is variable and value is dictionary with sub-groups
-        of topic questions
+        Dictionary where key is variable and value is dictionary with
+        sub-groups of topic questions
     '''
     multiple_charts = {
         'optimism': {'optimism_future': ['optimism_future'],
-                    'optimism_other': ['optimism_best', 'optimism_good', 'optimism_work']},
+                     'optimism_other': ['optimism_best',
+                                        'optimism_good',
+                                        'optimism_work']},
         'appearance': {'appearance_happy': ['appearance_happy'],
-                    'appearance_feel': ['appearance_feel']},
+                       'appearance_feel': ['appearance_feel']},
         'physical': {'physical_days': ['physical_days'],
-                    'physical_hours': ['physical_hours']},
+                     'physical_hours': ['physical_hours']},
         'places': {'places_freq': ['places_freq'],
-                'places_barriers': ['places_barriers___1', 'places_barriers___2',
-                                    'places_barriers___3', 'places_barriers___4',
-                                    'places_barriers___5', 'places_barriers___6',
-                                    'places_barriers___7', 'places_barriers___8',
-                                    'places_barriers___9']},
-        'talk': {'talk_yesno': ['staff_talk', 'home_talk', 'peer_talk'],
-                'talk_listen': ['staff_talk_listen', 'home_talk_listen', 'peer_talk_listen'],
-                'talk_helpful': ['staff_talk_helpful', 'home_talk_helpful', 'peer_talk_helpful'],
-                'talk_if': ['staff_talk_if', 'home_talk_if', 'peer_talk_if']},
+                   'places_barriers': ['places_barriers___1',
+                                       'places_barriers___2',
+                                       'places_barriers___3',
+                                       'places_barriers___4',
+                                       'places_barriers___5',
+                                       'places_barriers___6',
+                                       'places_barriers___7',
+                                       'places_barriers___8',
+                                       'places_barriers___9']},
+        'talk': {'talk_yesno': ['staff_talk',
+                                'home_talk',
+                                'peer_talk'],
+                 'talk_listen': ['staff_talk_listen',
+                                 'home_talk_listen',
+                                 'peer_talk_listen'],
+                 'talk_helpful': ['staff_talk_helpful',
+                                  'home_talk_helpful',
+                                  'peer_talk_helpful'],
+                 'talk_if': ['staff_talk_if',
+                             'home_talk_if',
+                             'peer_talk_if']},
         'local_env': {'local_safe': ['local_safe'],
-                    'local_other': ['local_support', 'local_trust',
-                                    'local_neighbours', 'local_places']},
+                      'local_other': ['local_support',
+                                      'local_trust',
+                                      'local_neighbours',
+                                      'local_places']},
         'future': {'future_options': ['future_options'],
-                'future_interest': ['future_interest'],
-                'future_support': ['future_support']}
+                   'future_interest': ['future_interest'],
+                   'future_support': ['future_support']}
     }
 
     return multiple_charts
@@ -366,15 +383,15 @@ def define_multiple_charts():
 def create_bar_charts(chosen_variable, chosen_result,
                       output='streamlit', content=None):
     '''
-    Creates the section of bar charts and their accompanying text, for streamlit
-    page or PDF report.
+    Creates the section of bar charts and their accompanying text, for
+    streamlit page or PDF report.
 
     Parameters
     ----------
     chosen_variable : string
         Name of the chosen topic
     chosen_result : dataframe
-        Contains responses to each question in the chosen topic, school and group
+        Contains responses to each question in the chosen topic, school + group
     output : string
         Specifies whether to write for 'streamlit' (default) or 'pdf'.
     content : list
@@ -405,20 +422,20 @@ def create_bar_charts(chosen_variable, chosen_result,
 
             # Add description
             if key in response_descrip.keys():
-                if output=='streamlit':
+                if output == 'streamlit':
                     st.markdown(response_descrip[key])
-                elif output=='pdf':
+                elif output == 'pdf':
                     content.append(f'<p>{response_descrip[key]}</p><br>')
 
-            # Filter to questions in sub-group, reversing categories if required
+            # Filter to questions in sub-group, reversing categories if need to
             to_plot = chosen_result[chosen_result['measure'].isin(value)]
             if key in reverse:
                 to_plot = reverse_categories(to_plot)
 
             # Output the plots
-            if output=='streamlit':
+            if output == 'streamlit':
                 survey_responses(to_plot)
-            elif output=='pdf':
+            elif output == 'pdf':
                 content = survey_responses(
                     dataset=to_plot, font_size=14,
                     output='pdf', content=content)
@@ -428,24 +445,25 @@ def create_bar_charts(chosen_variable, chosen_result,
 
         # Add description
         if chosen_variable in response_descrip.keys():
-            if output=='streamlit':
+            if output == 'streamlit':
                 st.markdown(response_descrip[chosen_variable])
-            elif output=='pdf':
-                content.append(f'<p>{response_descrip[chosen_variable]}</p><br>')
+            elif output == 'pdf':
+                content.append(
+                    f'<p>{response_descrip[chosen_variable]}</p><br>')
 
         # Reverse categories if required
         if chosen_variable in reverse:
             chosen_result = reverse_categories(chosen_result)
 
         # Output the plot
-        if output=='streamlit':
+        if output == 'streamlit':
             survey_responses(chosen_result)
-        elif output=='pdf':
+        elif output == 'pdf':
             content = survey_responses(
                 dataset=chosen_result, font_size=14,
                 output='pdf', content=content)
 
-    if output=='pdf':
+    if output == 'pdf':
         return content
 
 
@@ -492,19 +510,19 @@ def result_box(rag, content):
     content : list
         Optional return, used when output=='pdf', contains HTML for report.
     '''
-    if rag=='below':
+    if rag == 'below':
         content.append('''
 <div class='result_box' style='background: #FFCCCC; color: #95444B'>
     <p>Below average</p>
 </div>
 ''')
-    elif rag=='average':
+    elif rag == 'average':
         content.append('''
 <div class='result_box' style='background: #FFE8BF; color: #AA7A18'>
     <p>Average</p>
 </div>
 ''')
-    elif rag=='above':
+    elif rag == 'above':
         content.append('''
 <div class='result_box' style='background: #B6E6B6; color: #2B7C47'>
     <p>Above average</p>
@@ -551,7 +569,7 @@ def write_comparison_intro(
     content : list
         Optional return, used when output=='pdf', contains HTML for report.
     '''
-    # Filter to relevant school and get total school size to use in text with chart
+    # Filter to relevant school and get total school size
     school_counts = counts.loc[counts['school_lab'] == chosen_school]
     school_size = school_counts.loc[
         (school_counts['year_group_lab'] == 'All') &
@@ -569,32 +587,32 @@ def write_comparison_intro(
 
     # Heading
     heading = 'Comparison with other schools'
-    if output=='streamlit':
+    if output == 'streamlit':
         st.subheader(heading)
-    elif output=='pdf':
+    elif output == 'pdf':
         content.append(f'<h3>{heading}</h3>')
 
     # Description text
     description = f'''
 In this section, an overall score for the topic of
-'{chosen_variable_lab.lower()}' has been calculated for each pupil with complete
-responses on this question. For this topic, your school had {topic_count} complete
-responses (out of a possible {school_size}).
+'{chosen_variable_lab.lower()}' has been calculated for each pupil with
+complete responses on this question. For this topic, your school had
+{topic_count} complete responses (out of a possible {school_size}).
 
-Possible scores for each pupil on this topic range from 
+Possible scores for each pupil on this topic range from
 {score_descriptions[chosen_variable][0]} with **higher scores indicating
 {score_descriptions[chosen_variable][1]}** - and vice versa for lower scores.
 
-The mean score of the pupils at you school is compared with pupils who completed
-the same survey questions at other schools. This allows you to see whether the 
-score for pupils at your school is average, below average or above average.
-This matches the scores presented on the 'Summary' page.
+The mean score of the pupils at you school is compared with pupils who
+completed the same survey questions at other schools. This allows you to see
+whether the  score for pupils at your school is average, below average or above
+average. This matches the scores presented on the 'Summary' page.
 
 The average score for {chosen_variable_lab.lower()} at your school, compared to
 other schools in Northern Devon, was:'''
 
     # Add description to dashboard or report, alongside a RAG box with result
-    if output=='streamlit':
+    if output == 'streamlit':
         st.markdown(description)
         if devon_rag == 'below':
             st.error('Below average')
@@ -602,7 +620,7 @@ other schools in Northern Devon, was:'''
             st.warning('Average')
         elif devon_rag == 'above':
             st.success('Above average')
-    elif output=='pdf':
+    elif output == 'pdf':
         content.append(markdown(description))
         content = result_box(devon_rag, content)
         return content
