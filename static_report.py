@@ -22,7 +22,7 @@ from utilities.explore_results import (
     create_bar_charts,
     get_between_schools,
     write_comparison_intro)
-from utilities.summary_rag import summary_intro
+from utilities.summary_rag import summary_intro, summary_table
 
 # Create empty list to fill with HTML content for PDF report
 content = []
@@ -51,7 +51,7 @@ style='width:300px; height:182px;'>'''
 content.append(img_tag)
 
 # Title and introduction
-title_page = '''
+title_page = f'''
 <div class='section_container'>
     <h1 style='text-align:center;'>The #BeeWell Survey</h1>
     <p style='text-align:center; font-weight:bold;'>
@@ -63,7 +63,8 @@ title_page = '''
     There are four reports available - these have results: (a) from all
     pupils, (b) by gender, (c) by free school meal (FSM) eligibility, and (d)
     by year group.<br><br>
-    This report contains the results <b>from all pupils</b>.</p>
+    This report contains the results <b>{chosen_group.lower()}</b> for
+    <b>{chosen_school}</b>.</p>
 </div>
 '''
 content.append(title_page)
@@ -160,7 +161,11 @@ the summary page's comparison to other schools was generated
 ###############################################################################
 # Summary page
 
-content.append(summary_intro(chosen_school, counts, output='pdf'))
+# Summary cover page
+content.append(summary_intro(chosen_school, counts, 'pdf'))
+
+# Summary grid with topics and RAG ratings
+content = summary_table(df_scores, chosen_group, chosen_school, 'pdf', content)
 
 ###############################################################################
 # Explore results section
@@ -241,77 +246,9 @@ for chosen_variable_lab in topic_dict.keys():
 if os.path.exists('report/temp_image.png'):
     os.remove('report/temp_image.png')
 
-# Source Sans Pro is the sans-serif font used by Streamlit, but was having
-# issues with getting bold typeface, so switched to use default 'sans-serif'
-# which was fine. #05291F is Kailo's dark green colour.
-css_style = '''
-
-/* Page style */
-/* No background colour (a) for printing (b) avoids problems w/ page number */
-body {
-    font-family: sans-serif;
-    color: #05291F;
-}
-@page {
-    size: A4;
-    @top-right{
-        content: 'Page ' counter(page) ' of ' counter(pages);
-        font-family: sans-serif;
-        font-size: 10px;
-    }
-}
-
-/* DIV container style */
-.section_container {
-    position: absolute;
-    top: 30%;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-.responses_container {
-    border-radius: 25px;
-    border: 2px solid #D7D7D7;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 15px;
-    padding-bottom: 10px;
-    page-break-inside: avoid;
-}
-.comparison_container {
-    padding: 5px;
-    page-break-inside: avoid;
-}
-.result_box {
-    border-radius: 15px;
-    padding: 5px;
-    text-align: center;
-    page-break-inside: avoid;
-}
-.page {
-    page-break-after: always;
-}
-.column {
-    float: left;
-    width: 50%;
-}
-.row:after {
-    content: '';
-    display: table;
-    clear: both;
-}
-
-/* Text style */
-p {
-    font-size: 14px;
-}
-li {
-    font-size: 14px;
-}
-.column p {
-    font-size: 14px;
-}
-'''
+# Import the CSS stylesheet
+with open('css/static_report_style.css') as css:
+    css_style = css.read()
 
 html_content = f'''
 <!DOCTYPE html>

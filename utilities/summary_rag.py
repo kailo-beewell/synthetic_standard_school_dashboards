@@ -6,6 +6,8 @@ import pandas as pd
 import streamlit as st
 import numpy as np
 from markdown import markdown
+from utilities.reshape_data import filter_by_group
+from utilities.switch_page_button import switch_page
 
 
 def html_rag_container(text, background, font):
@@ -119,10 +121,10 @@ def rag_intro_column(rag, rag_descrip, output='streamlit'):
         rag_box = result_box(rag, output='pdf')
         html_string = f'''
 <div class='row'>
-    <div class='column' style='margin-top:0.5em;'>
+    <div class='column2' style='margin-top:0.5em;'>
         {rag_box}
     </div>
-    <div class='column'>
+    <div class='column2'>
         {rag_descrip}
     </div>
 </div>
@@ -229,3 +231,139 @@ on the "Explore results" page present data from all pupils who took part.*'''
     </div>
     '''
         return html_string
+
+
+def summary_table(df_scores, chosen_group, chosen_school,
+                  output='streamlit', content=None):
+    '''
+    Produce the summary RAG table using rows and columns, for streamlit page
+    or PDF report.
+
+    Parameters
+    ----------
+    df_scores : dataframe
+        Dataframe containing the RAG ratings for each topic for each school
+    chosen_group : string
+        The group for results to be viewed by - one of: 'For all pupils',
+        'By year group', 'By gender', 'By FSM', or 'By SEN'
+    chosen_school : string
+        Name of chosen school
+    output : string
+        Specifies whether to write for 'streamlit' (default) or 'pdf'
+    content : list
+        Optional input used when output=='pdf', contains HTML for report.
+
+    Returns
+    -------
+    content : list
+        Optional return, used when output=='pdf', contains HTML for report.
+    '''
+    # Filter by chosen grouping and school
+    chosen, pivot_var, order = filter_by_group(
+        df_scores, chosen_group, chosen_school, 'summary')
+
+    # Filter to variable relevant for summary page
+    chosen = chosen[~chosen['variable'].isin([
+        'birth_you_age_score', 'overall_count', 'staff_talk_score', 
+        'home_talk_score', 'peer_talk_score'])]
+
+    if chosen_group != 'For all pupils':
+        # Pivot from wide to long whilst maintaining row order
+        chosen = pd.pivot_table(
+            chosen[['variable_lab', pivot_var, 'rag', 'description']],
+            values='rag', index=['variable_lab', 'description'],
+            columns=pivot_var,
+            aggfunc='sum', sort=False).reset_index().replace(0, np.nan)
+        # Reorder columns
+        chosen = chosen[['variable_lab'] + order + ['description']]
+    else:
+        chosen = chosen[['variable_lab', 'rag', 'description']]
+
+    # Extract description (was used for hover over button but that didn't
+    # work with CSS styling presently)
+    # description = chosen['description']
+    chosen = chosen.drop('description', axis=1)
+
+    # Set number of columns
+    ncol = len(chosen.columns)
+
+    # Rename columns if in the dataframe
+    colnames = {'variable_lab': 'Topic',
+                'rag': 'All pupils'}
+    chosen = chosen.rename(columns=colnames)
+
+    # Add the headings for each column for Streamlit
+    if output == 'streamlit':
+        # Set up columns
+        cols = st.columns([0.3, 0.35, 0.35])
+        # For column names in chosen, write that name in a column
+        for i in range(ncol):
+            with cols[i]:
+                st.markdown(f'''
+<p style='text-align: center; font-weight: bold; font-size: 22px;'>
+{chosen.columns[i]}</p>''', unsafe_allow_html=True)
+
+    # Add the headings for each column for PDF:
+    elif output == 'pdf':
+        # Create temporary list for the column headings
+        temp_headings = list()
+        # Create series of strings with HTML code for each column
+        for i in range(ncol):
+            temp_headings.append(f'''
+<div class='column{ncol}'>
+    <p style='text-align:center; font-weight:bold;'>{chosen.columns[i]}</p>
+</div>''')
+        # Combine into a single HTML string
+        content.append(f'''
+<div class='row'>
+    {''.join(temp_headings)}
+</div>''')
+
+    # Add the topics and RAG results in Streamlit:
+    if output == 'streamlit':
+        # For each row of dataframe, create streamlit columns and write data
+        # from cell
+        st.divider()
+        for index, row in chosen.iterrows():
+            cols = st.columns([0.3, 0.35, 0.35])
+            st.divider()
+            for i in range(ncol):
+                # Create topic button or score
+                with cols[i]:
+                    if ((row.iloc[i] in ['below', 'average', 'above']) |
+                            pd.isnull(row.iloc[i])):
+                        result_box(row.iloc[i])
+                    else:
+                        # Create button that, if clicked, changes to details
+                        if st.button(row.iloc[i]):
+                            st.session_state['chosen_variable_lab'] = (
+                                row.iloc[i])
+                            switch_page('explore results')
+
+    # Add the topics and RAG results in PDF:
+    if output == 'pdf':
+        for index, row in chosen.iterrows():
+            content.append('<hr>')
+            # Create temporary list to store the HTML for this row
+            temp_row = list()
+            for i in range(ncol):
+                # Create RAG button HTML
+                if ((row.iloc[i] in ['below', 'average', 'above']) |
+                        pd.isnull(row.iloc[i])):
+                    row_value = result_box(row.iloc[i], 'pdf')
+                # Create topic name HTML
+                else:
+                    row_value = f'''
+<p style='text-align:center;'>{row.iloc[i]}</p>'''
+                # Insert that into the column DIV element
+                temp_row.append(f'''
+<div class='column{ncol}'>
+    {row_value}
+</div>''')
+            # Insert that row into the overall HTML content
+            content.append(f'''
+<div class='row'>
+    {''.join(temp_row)}
+</div>''')
+
+        return content
