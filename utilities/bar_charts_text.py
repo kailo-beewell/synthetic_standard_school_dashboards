@@ -155,11 +155,6 @@ include jobs, apprenticeships, college courses, university courses.
 
         # Several demographic question have no description provided
 
-        'year_group': '''
-This section contains data on the pupils who completed the survey as provided
-by Devon County Council.
-''',
-
         'transgender': '''
 For this question, pupils were told that some young people are transgender,
 and that this means  that their gender is different to the one they were

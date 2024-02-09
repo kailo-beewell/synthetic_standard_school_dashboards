@@ -100,13 +100,16 @@ survey. This page describes the sample of pupils who completed the survey.''')
     # Define headers for each of the plot groups - this will also define the
     # order in which these groups are shown
     header_dict = {
-        'most_of_council': 'Demographic data from the council',
+        'year_group': 'Year group',
+        'fsm': 'Eligible for free school meals (FSM)',
         'gender': 'Gender and transgender',
+        'sexual_orientation': 'Sexual orientation',
         'care_experience': 'Care experience',
         'young_carer': 'Young carers',
         'neuro': 'Special educational needs and neurodivergence',
-        'birth': 'Background',
-        'sexual_orientation': 'Sexual orientation'
+        'ethnicity': 'Ethnicity',
+        'english_additional': 'English as an additional language',
+        'birth': 'Background'
     }
 
     # Import descriptions for the charts
