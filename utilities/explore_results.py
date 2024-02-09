@@ -495,7 +495,7 @@ def get_between_schools(df, chosen_variable):
     return between_schools
 
 
-def result_box(rag, content):
+def result_box(rag, content=None):
     '''
     Creates a result box with the RAG rating
 
@@ -505,38 +505,44 @@ def result_box(rag, content):
         Result from comparison with other schools - either 'below', 'average',
         'above', or np.nan
     content : list
-        Contains HTML for report.
+        Optional, contains HTML for report.
 
     Returns
     -------
+    One of two possible outputs:
+    box : string
+        HTML string (not appended to a list of other HTML)
     content : list
-        Contains HTML for report.
+        Optional, contains HTML for report, with new string appended.
     '''
+    # Create the results box
     if rag == 'below':
-        content.append('''
+        box = '''
 <div class='result_box' style='background: #FFCCCC; color: #95444B'>
     <p>Below average</p>
-</div>
-''')
+</div>'''
     elif rag == 'average':
-        content.append('''
+        box = '''
 <div class='result_box' style='background: #FFE8BF; color: #AA7A18'>
     <p>Average</p>
-</div>
-''')
+</div>'''
     elif rag == 'above':
-        content.append('''
+        box = '''
 <div class='result_box' style='background: #B6E6B6; color: #2B7C47'>
     <p>Above average</p>
-</div>
-''')
+</div>'''
     elif pd.isnull(rag):
-        content.append('''
+        box = '''
 <div class='result_box' style='background: #DCE4FF; color: #19539A'>
     <p>n < 10</p>
-</div>
-''')
-    return content
+</div>'''
+
+    # Return either as string, or appended to content
+    if content is None:
+        return box
+    else:
+        content.append(box)
+        return content
 
 
 def write_comparison_intro(
