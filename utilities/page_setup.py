@@ -1,5 +1,5 @@
 '''
-Helper functions for setting up the page, with the same settings for every page.
+Helper functions for setting up the page and page formatting.
 '''
 import base64
 import streamlit as st
@@ -26,7 +26,6 @@ def page_logo():
         background-position: 0px 50px; /* Move image down */
         background-size: 240px;
     }}
-    
 </style>
 ''', unsafe_allow_html=True)
 
@@ -41,7 +40,9 @@ def page_setup():
         page_icon='🐝',
         initial_sidebar_state='expanded',
         layout='centered',
-        menu_items={'About': 'Dashboard for schools completing the standard version of the #BeeWell survey in North Devon and Torridge in 2023/24.'})
+        menu_items={'About': '''
+Dashboard for schools completing the standard version of the #BeeWell survey in
+North Devon and Torridge in 2023/24.'''})
 
     # Import CSS style
     with open('css/style.css') as css:
@@ -49,3 +50,18 @@ def page_setup():
 
     # Add page logo
     page_logo()
+
+
+def blank_lines(n):
+    '''
+    Create blank lines on the page of the dashboard
+
+    Parameters
+    ----------
+    n : int
+        Number of blank lines to create
+    '''
+    counter = 0
+    while counter < n:
+        st.text('')
+        counter += 1

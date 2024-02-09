@@ -5,15 +5,19 @@ import numpy as np
 import pandas as pd
 import re
 
+
 def sum_score(df):
     '''
-    Find the sum of the provided columns. If any of the required columns contain,
-    NaN, it will just return NaN as the result
-    Inputs:
-    df - pandas DataFrame, just containing the columns you want to sum
+    Find the sum of the provided columns. If any of the required columns
+    contain, NaN, it will just return NaN as the result
+
+    Parameters
+    ----------
+    df : pandas DataFrame
+        Dataframe just containing the columns you want to sum
     '''
     # Convert to numeric, find sum and return
-    return(df.sum(axis=1, skipna=False))
+    return df.sum(axis=1, skipna=False)
 
 
 def reverse_score(scores, min, max):
@@ -29,7 +33,7 @@ def reverse_score(scores, min, max):
         Minimum possible score
     max : int
         Maximum possible score
-    
+
 
     Returns
     -------
@@ -60,8 +64,10 @@ def calculate_scores(data):
 
     # Autonomy
     # Reverse score on two questions in negative direction
-    data['autonomy_pressure_rev'] = reverse_score(data['autonomy_pressure'], min=1, max=5)
-    data['autonomy_told_rev'] = reverse_score(data['autonomy_told'], min=1, max=5)
+    data['autonomy_pressure_rev'] = reverse_score(
+        data['autonomy_pressure'], min=1, max=5)
+    data['autonomy_told_rev'] = reverse_score(
+        data['autonomy_told'], min=1, max=5)
     # Sum questions
     data['autonomy_score'] = sum_score(
         data[['autonomy_pressure_rev',
@@ -78,28 +84,30 @@ def calculate_scores(data):
 
     # Optimism
     data['optimism_score'] = sum_score(
-        data[['optimism_future', 'optimism_best', 'optimism_good', 'optimism_work']])
+        data[['optimism_future', 'optimism_best', 'optimism_good',
+              'optimism_work']])
 
     # Psychological wellbeing
     data['wellbeing_score'] = sum_score(
         data[['wellbeing_optimistic', 'wellbeing_useful', 'wellbeing_relaxed',
-            'wellbeing_problems', 'wellbeing_thinking', 'wellbeing_close',
-            'wellbeing_mind']])
+              'wellbeing_problems', 'wellbeing_thinking', 'wellbeing_close',
+              'wellbeing_mind']])
 
     # Self-esteem requires reversed scoring
     data['esteem_score'] = sum_score(
         data[['esteem_satisfied', 'esteem_qualities', 'esteem_well',
-            'esteem_value', 'esteem_good']].apply(
+              'esteem_value', 'esteem_good']].apply(
                 lambda x: reverse_score(x, min=1, max=4)))
 
-    # Stress 
+    # Stress
     # First, I calculate score as in GM - that was a negative direction, so
     # we have to change the two positive direction options to the negative
-    data['stress_confident_rev'] = reverse_score(data['stress_confident'], min=1, max=5)
+    data['stress_confident_rev'] = reverse_score(
+        data['stress_confident'], min=1, max=5)
     data['stress_way_rev'] = reverse_score(data['stress_way'], min=1, max=5)
     data['stress_score'] = sum_score(
         data[['stress_control', 'stress_overcome', 'stress_confident_rev',
-            'stress_way_rev']] - 1)
+              'stress_way_rev']] - 1)
     # Drop the temporary columns created to support score calculation
     data = data.drop(['stress_confident_rev', 'stress_way_rev'], axis=1)
     # We are setting all scores to positive - so reverse the final score
@@ -111,10 +119,12 @@ def calculate_scores(data):
     # Negative affect requires numbering to start at 0
     data['negative_score'] = sum_score(
         data[['negative_lonely', 'negative_unhappy', 'negative_like',
-            'negative_cry', 'negative_school', 'negative_worry', 'negative_sleep',
-            'negative_wake', 'negative_shy', 'negative_scared']] - 1)
+              'negative_cry', 'negative_school', 'negative_worry',
+              'negative_sleep', 'negative_wake', 'negative_shy',
+              'negative_scared']] - 1)
     # We are setting all scores to positive - so reverse the final score
-    data['negative_score'] = reverse_score(data['negative_score'], min=0, max=20)
+    data['negative_score'] = reverse_score(
+        data['negative_score'], min=0, max=20)
 
     # Loneliness requires reversed scoring (eg. 1 often or always becomes 5)
     # to match GM - but we are setting all scores to positive - so leave as is
@@ -127,12 +137,12 @@ def calculate_scores(data):
     # Sleep is based on proportion answering 1/Yes so no change required
     data['sleep_score'] = data['sleep']
 
-    # Physical activity multiplies days by average time per day (which is in min)
+    # Physical activity multiplies days by avg time per day (which is in min)
     data['physical_score'] = data['physical_days']*data['physical_hours']
 
     # Free time/time use - reversed so its in the positive direction
     data['free_like_score'] = reverse_score(data['free_like'], min=1, max=5)
-        
+
     # Use of social media requires scores of 0-8 (rather than 1-9)
     # Then we reverse it so it's in the positive direction
     data['media_score'] = data['media_hours'] - 1
@@ -142,18 +152,19 @@ def calculate_scores(data):
     data['places_score'] = data['places_freq']
 
     # Talking with people about feeling down
-    # If answer yes, it is the average of their listen (1-4) and helpful (1-3 but 
-    # rescaled to 1-4) questions, giving a total of 1-4. If answer no, it is just
-    # their answer to comfortable (1-4). The scores for staff, home and peer are
-    # then summed, creating an overall score of 3-12.
+    # If answer yes, it is the average of their listen (1-4) and helpful (1-3
+    # but rescaled to 1-4) questions, giving a total of 1-4. If answer no, it
+    # is just their answer to comfortable (1-4). The scores for staff, home and
+    # peer are then summed, creating an overall score of 3-12.
     for prefix in ['staff', 'home', 'peer']:
         # Create the help/listen scores (see it takes the average through /2)
         data[f'{prefix}_talk_listen_helpful'] = (
-        data[f'{prefix}_talk_listen'] +
-        data[f'{prefix}_talk_helpful'].map({1: 1, 2: 2.5, 3: 4})) / 2
-        # Create score column where choosen "help/listen" or "if" depending on answer to talk
+            data[f'{prefix}_talk_listen'] +
+            data[f'{prefix}_talk_helpful'].map({1: 1, 2: 2.5, 3: 4})) / 2
+        # Create score column where choosen "help/listen" or "if" depending on
+        # answer to talk
         data[f'{prefix}_talk_score'] = np.where(
-            data[f'{prefix}_talk']==1,
+            data[f'{prefix}_talk'] == 1,
             data[f'{prefix}_talk_listen_helpful'],
             data[f'{prefix}_talk_if'])
     # Create overall score from sum of staff, home and peer scores
@@ -174,7 +185,8 @@ def calculate_scores(data):
 
     # Relationships with staff
     data['staff_relationship_score'] = sum_score(
-        data[['staff_interest', 'staff_believe', 'staff_best', 'staff_listen']])
+        data[['staff_interest', 'staff_believe',
+              'staff_best', 'staff_listen']])
 
     # Relationship with parents/carers
     data['home_relationship_score'] = sum_score(
@@ -186,8 +198,9 @@ def calculate_scores(data):
     # Caring responsibilities and care experience aren't converted to scores
 
     # Local environment
-    # First question has four responses and one "don't know" (which convert to np.nan)
-    # We rescale to range from 1 to 5 to match remaining questions which have 1,2,3,4,5 as responses
+    # First question has four responses and one "don't know" (which convert to
+    # np.nan). We rescale to range from 1 to 5 to match remaining questions
+    # which have 1,2,3,4,5 as responses
     data['local_safe_rescaled'] = data['local_safe'].map({
         1: 1,
         2: 2 + 1/3,
@@ -195,30 +208,36 @@ def calculate_scores(data):
         4: 5,
         5: np.nan})
     data['local_env_score'] = sum_score(
-        data[['local_safe_rescaled', 'local_support', 'local_trust', 'local_neighbours', 'local_places']])
+        data[['local_safe_rescaled', 'local_support', 'local_trust',
+              'local_neighbours', 'local_places']])
     data = data.drop('local_safe_rescaled', axis=1)
     # We then reverse the score so it is in the positive direction
-    data['local_env_score'] = reverse_score(data['local_env_score'], min=5, max=25)
+    data['local_env_score'] = reverse_score(
+        data['local_env_score'], min=5, max=25)
 
     # Discrimination
-    # Proportion who respond often or always / some of the time / occassionally to any of the five questions
-    # They're not required to have responded to all five, just need to have given one of those responses
-    # to at least one of those questions
+    # Proportion who respond often or always / some of the time / occassionally
+    # to any of the five questions. They're not required to have responded to
+    # all five, just need to have given one of those responses to at least one
+    # of those questions.
     # Identify relevant columns
-    discrim_col = ['discrim_race', 'discrim_gender', 'discrim_orientation', 'discrim_disability', 'discrim_faith']
+    discrim_col = ['discrim_race', 'discrim_gender', 'discrim_orientation',
+                   'discrim_disability', 'discrim_faith']
     # Find if any of them are one of those responses
     # If true, set to 1. If false, set to 2. This is because true is the
-    # negative outcome whilst false is the positive outcome (so set to higher score).
-    # We use 1 and 2 rather than 0 and 1 as often the score for a school will
-    # fall fairly low in the synthetic data, and when 0 is the minimum, the
-    # minimum bar doesn't show on the plot and there's no x axis ticks to explain
+    # negative outcome whilst false is the positive outcome (so set to higher
+    # score). We use 1 and 2 rather than 0 and 1 as often the score for a
+    # school will fall fairly low in the synthetic data, and when 0 is the
+    # minimum, the minimum bar doesn't show on the plot and there's no x axis
+    # ticks to explain
     data['discrim_score'] = (
         data[discrim_col].isin([1, 2, 3]).any(axis=1).map({True: 1, False: 2}))
     # Set to NaN if all responses were NaN
     data.loc[data[discrim_col].isnull().all(axis=1), 'discrim_score'] = np.nan
 
     # Belonging - reverse so its in the positive direction
-    data['belong_local_score'] = reverse_score(data['belong_local'], min=1, max=4)
+    data['belong_local_score'] = reverse_score(
+        data['belong_local'], min=1, max=4)
 
     # Relative wealth
     # Proportion who feel about the same as friends, excluding "don't know"
@@ -241,10 +260,12 @@ def calculate_scores(data):
     data['climate_score'] = data['climate']
 
     # Friendships and social support
-    data['social_score'] = sum_score(data[['social_along', 'social_time', 'social_support', 'social_hard']])
+    data['social_score'] = sum_score(data[['social_along', 'social_time',
+                                           'social_support', 'social_hard']])
 
     # Bullying
-    data['bully_score'] = sum_score(data[['bully_physical', 'bully_other', 'bully_cyber']])
+    data['bully_score'] = sum_score(data[['bully_physical', 'bully_other',
+                                          'bully_cyber']])
     # Reverse so it's in the positive direction
     data['bully_score'] = reverse_score(data['bully_score'], min=3, max=12)
 
@@ -254,7 +275,7 @@ def calculate_scores(data):
 def results_by_school_and_group(
         data, agg_func, no_pupils, response_col=None, labels=None):
     '''
-    Aggregate results for all possible schools and groups (setting result to 0 
+    Aggregate results for all possible schools and groups (setting result to 0
     or NaN if no pupils from a particular group are present).
 
     Parameters
@@ -264,17 +285,17 @@ def results_by_school_and_group(
     agg_func : function
         Method for aggregating the dataset
     no_pupils: pandas dataframe
-        Output of agg_func() where all counts are set to 0 and other results set
-        to NaN, to be used in cases where there are no pupils of a particular
-        group (e.g. no FSM / SEN / Year 8)
+        Output of agg_func() where all counts are set to 0 and other results
+        set to NaN, to be used in cases where there are no pupils of a
+        particular group (e.g. no FSM / SEN / Year 8)
     response_col : list
         Optional argument used when agg_func is aggregate_proportions(). It is
         the list of columns that we want to aggregate.
     labels : dictionary
-        Optional argument used when agg_func is aggregate_proportions(). It is a
-        dictionary with all possible questions as keys, then values are another
-        dictionary where keys are all the possible numeric (or nan) answers to
-        the question, and values are the relevant label for each answer.
+        Optional argument used when agg_func is aggregate_proportions(). It is
+        a dictionary with all possible questions as keys, then values are
+        another dictionary where keys are all the possible numeric (or nan)
+        answers to the question, and values are relevant label for each answer.
 
     Returns
     -------
@@ -287,7 +308,7 @@ def results_by_school_and_group(
     result_list = list()
 
     # Define the groups that we want to aggregate by - when providing a filter,
-    # the first value is the name of the category and the second is the variable
+    # first value is the name of the category and the second is the variable
     groups = [
         'All',
         ['Year 8', 'year_group_lab'],
@@ -314,8 +335,8 @@ def results_by_school_and_group(
                 to_agg = to_agg[to_agg[group[1]] == group[0]]
 
             # If the dataframe is empty (i.e. you applied a filter but there
-            # were no students matching that filter) then set to the no_pupils df.
-            # Otherwise, just aggregate the data using the provided function
+            # were no students matching that filter) then set to the no_pupils
+            # df. Otherwise, aggregate the data using the provided function
             if len(to_agg.index) == 0:
                 res = no_pupils.copy()
             else:
@@ -328,7 +349,7 @@ def results_by_school_and_group(
             # Specify what school it was
             res['school_lab'] = school
 
-            # Set each group as all, but replace the relevant one if filter used
+            # Set each group as all, replacing one if filter used
             res['year_group_lab'] = 'All'
             res['gender_lab'] = 'All'
             res['fsm_lab'] = 'All'
@@ -342,7 +363,7 @@ def results_by_school_and_group(
     # Combine all the results into a single dataframe
     result = pd.concat(result_list)
 
-    return(result)
+    return result
 
 
 def aggregate_proportions(data, response_col, labels):
@@ -364,8 +385,8 @@ def aggregate_proportions(data, response_col, labels):
     from those who branched onto that question, and not those who branched onto
     the other question (or never answered the first branching question)).
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     data : dataframe
         Dataframe with rows for each pupil and including all the response_col
     response_col : list
@@ -375,8 +396,8 @@ def aggregate_proportions(data, response_col, labels):
         dictionary where keys are all the possible numeric (or nan) answers to
         the question, and values are the relevant label for each answer.
 
-    Returns:
-    --------
+    Returns
+    -------
     pd.concat(rows): dataframe
         Dataframe with the aggregate responses to each of the response_col
     '''
@@ -389,11 +410,13 @@ def aggregate_proportions(data, response_col, labels):
         # Find the name of the numeric version of the column
         col = col_lab.replace('_lab', '')
 
-        # Identify if the column is branching from "yes" to talking with someone
-        if any([substring in col for substring in ['talk_listen', 'talk_helpful']]):
+        # Identify if column is branching from "yes" to talking with someone
+        if any([substring in col for substring in ['talk_listen',
+                                                   'talk_helpful']]):
             # Get the prefix (staff, home or peer)
             prefix = re.sub('_talk_listen|_talk_helpful', '', col)
-            # Filter the data to only those who said they talked with them (branch)
+            # Filter the data to only those who said they talked with them
+            # (branch)
             data_subset = data[data[f'{prefix}_talk'] == 1]
             # Find value counts
             value_counts = data_subset[col].value_counts(dropna=False)
@@ -402,7 +425,8 @@ def aggregate_proportions(data, response_col, labels):
         elif 'talk_if' in col:
             # Get the prefix (staff, home or peer)
             prefix = re.sub('_talk_if', '', col)
-            # Filter the data to only those who said they didn't talk to them (branch)
+            # Filter the data to only those who said they didn't talk to them
+            # (branch)
             data_subset = data[data[f'{prefix}_talk'] == 0]
             # Find value counts
             value_counts = data_subset[col].value_counts(dropna=False)
@@ -426,7 +450,8 @@ def aggregate_proportions(data, response_col, labels):
             else:
                 counts.append(0)
 
-        # Convert list of counts to list of percentages, and create rounded version
+        # Convert list of counts to list of percentages, and create rounded
+        # version
         percentages = [(x/sum(counts))*100 for x in counts]
 
         # Create dataframe row using the calculated data
@@ -442,4 +467,4 @@ def aggregate_proportions(data, response_col, labels):
         rows.append(df_row)
 
     # Combine into a single dataframe and return
-    return(pd.concat(rows))
+    return pd.concat(rows)

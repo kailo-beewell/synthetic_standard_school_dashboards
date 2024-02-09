@@ -2,13 +2,16 @@
 Helper function for switching pages.
 Copied from streamlit_extras: https://github.com/arnaudmiribel/streamlit-extras
 '''
-import streamlit as st
 
-def switch_page(page_name: str):
+
+def switch_page(page_name):
     '''
     Switch page programmatically in a multipage app
-    Args:
-        page_name (str): Target page name
+
+    Parameters
+    ----------
+    page_name : str
+        Target page name
     '''
     from streamlit.runtime.scriptrunner import RerunData, RerunException
     from streamlit.source_util import get_pages
@@ -29,6 +32,8 @@ def switch_page(page_name: str):
                 )
             )
 
-    page_names = [standardize_name(config['page_name']) for config in pages.values()]
+    page_names = [standardize_name(config['page_name'])
+                  for config in pages.values()]
 
-    raise ValueError(f'Could not find page {page_name}. Must be one of {page_names}')
+    raise ValueError(f'''
+Could not find page {page_name}. Must be one of {page_names}''')

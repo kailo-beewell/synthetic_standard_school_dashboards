@@ -2,54 +2,51 @@
 Generic function to produce stylised containers and then specific function
 for producing the stylised header containers used on the About page
 '''
-
 import streamlit as st
+from utilities.page_setup import blank_lines
+
 
 def stylable_container(key, css_styles):
     '''
-    This is copied from streamlit-extras.
-    Insert a container into your app which you can style using CSS.
-    This is useful to style specific elements in your app.
+    This function is copied from streamlit-extras. It creates inserts a
+    container in the app that we are able to style using CSS.
 
-    Args:
-        key (str): The key associated with this container. This needs to be unique since all styles will be
-            applied to the container with this key.
-        css_styles (str | List[str]): The CSS styles to apply to the container elements.
-            This can be a single CSS block or a list of CSS blocks.
+    Parameters
+    ----------
+    key : str
+        The unique key associated with container
+    css_styles : str | list[str]
+        The CSS styles to apply to the container elements. This can be a single
+        CSS block or a list of CSS blocks.
 
     Returns:
-        DeltaGenerator: A container object. Elements can be added to this container using either the 'with'
-            notation or by calling methods directly on the returned object.
+    container
+        A container object. Elements can be added to this container using
+        either the 'with' notation or by calling methods directly on the
+        returned object.
     '''
+    # If CSS style provided is a string, insert it into a list
     if isinstance(css_styles, str):
         css_styles = [css_styles]
 
     # Remove unneeded spacing that is added by the style markdown:
-    css_styles.append(
-        '''
+    css_styles.append('''
 > div:first-child {
     margin-bottom: -1rem;
 }
-'''
-    )
+''')
 
-    style_text = '''
-<style>
-'''
-
+    # Use provided CSS to write the full CSS to style the container
+    style_text = '<style>'
     for style in css_styles:
         style_text += f'''
-
-div[data-testid="stVerticalBlock"]:has(> div.element-container > div.stMarkdown > div[data-testid="stMarkdownContainer"] > p > span.{key}) {style}
-
-'''
-
+div[data-testid="stVerticalBlock"]:has(> div.element-container > div.stMarkdown
+> div[data-testid="stMarkdownContainer"] > p > span.{key}) {style}'''
     style_text += f'''
-    </style>
+</style>
+<span class="{key}"></span>'''
 
-<span class="{key}"></span>
-'''
-
+    # Produce the container and apply style
     container = st.container()
     container.markdown(style_text, unsafe_allow_html=True)
     return container
@@ -64,18 +61,15 @@ def header_container(key, text, colour):
         text (str): Header text
         colour (str): HEX colour code for background of container
     '''
-    st.text('')
-    st.text('')
+    blank_lines(2)
     with stylable_container(
             key=key,
             css_styles=f'''
-                {{
-                    background-color: {colour};
-                    border-radius: 0.5rem;
-                    padding: 0px
-                }}
-                ''',
-        ):
-            # Add header in markdown so can add some blank space to start of line
-            st.markdown(f'<h2>&nbsp&nbsp{text}</hr>', unsafe_allow_html=True)
-            st.text('')
+{{
+    background-color: {colour};
+    border-radius: 0.5rem;
+    padding: 0px
+}}''',):
+        # Add header in markdown so can add some blank space to start of line
+        st.markdown(f'<h2>&nbsp&nbsp{text}</hr>', unsafe_allow_html=True)
+        blank_lines(1)

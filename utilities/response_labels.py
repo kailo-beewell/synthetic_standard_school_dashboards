@@ -3,6 +3,7 @@ Function to create a dictionary of labels for the responses to each question
 in the survey
 '''
 
+
 def create_response_label_dict():
     '''
     Creates dictionary with labels for each response in each question
@@ -96,7 +97,7 @@ def create_response_label_dict():
             4: '4',
             5: '5 - Completely true'
         },
-        'life_satisfaction':{
+        'life_satisfaction': {
             0: '0 - not at all',
             1: '1',
             2: '2',
@@ -384,37 +385,44 @@ def create_response_label_dict():
     # (Rather than repeatedly defining them all above)
     add_keys(['birth_parent1', 'birth_parent2', 'birth_you'], 'birth')
     add_keys(['autonomy_pressure', 'autonomy_express', 'autonomy_decide',
-            'autonomy_told', 'autonomy_myself', 'autonomy_choice'], 'autonomy')
-    add_keys(['optimism_best', 'optimism_good', 'optimism_work'], 'optimism_other')
+              'autonomy_told', 'autonomy_myself', 'autonomy_choice'],
+             'autonomy')
+    add_keys(['optimism_best', 'optimism_good', 'optimism_work'],
+             'optimism_other')
     add_keys(['wellbeing_optimistic', 'wellbeing_useful', 'wellbeing_relaxed',
-            'wellbeing_problems', 'wellbeing_thinking', 'wellbeing_close',
-            'wellbeing_mind'], 'wellbeing')
+              'wellbeing_problems', 'wellbeing_thinking', 'wellbeing_close',
+              'wellbeing_mind'], 'wellbeing')
     add_keys(['esteem_satisfied', 'esteem_qualities', 'esteem_well',
-            'esteem_value', 'esteem_good'], 'esteem')
+              'esteem_value', 'esteem_good'], 'esteem')
     add_keys(['stress_control', 'stress_overcome', 'stress_confident',
-            'stress_way'], 'stress')
+              'stress_way'], 'stress')
     add_keys(['negative_lonely', 'negative_unhappy', 'negative_like',
-            'negative_cry', 'negative_school', 'negative_worry', 'negative_sleep',
-            'negative_wake', 'negative_shy', 'negative_scared'], 'negative')
+              'negative_cry', 'negative_school', 'negative_worry',
+              'negative_sleep', 'negative_wake', 'negative_shy',
+              'negative_scared'], 'negative')
     add_keys(['support_ways', 'support_look'], 'support')
-    add_keys(['places_barriers___1', 'places_barriers___2', 'places_barriers___3',
-            'places_barriers___4', 'places_barriers___5', 'places_barriers___6',
-            'places_barriers___7', 'places_barriers___8', 'places_barriers___9'],
-            'places_barriers')
+    add_keys(['places_barriers___1', 'places_barriers___2',
+              'places_barriers___3', 'places_barriers___4',
+              'places_barriers___5', 'places_barriers___6',
+              'places_barriers___7', 'places_barriers___8',
+              'places_barriers___9'], 'places_barriers')
     add_keys(['staff_interest', 'staff_believe', 'staff_best', 'staff_listen',
-            'home_interest', 'home_believe', 'home_best', 'home_listen'],
-            'relationships')
+              'home_interest', 'home_believe', 'home_best', 'home_listen'],
+             'relationships')
     add_keys(['staff_talk', 'home_talk', 'peer_talk'], 'talk')
-    add_keys(['staff_talk_listen', 'home_talk_listen', 'peer_talk_listen'], 'talk_listen')
-    add_keys(['staff_talk_helpful', 'home_talk_helpful', 'peer_talk_helpful'], 'talk_helpful')
+    add_keys(['staff_talk_listen', 'home_talk_listen', 'peer_talk_listen'],
+             'talk_listen')
+    add_keys(['staff_talk_helpful', 'home_talk_helpful', 'peer_talk_helpful'],
+             'talk_helpful')
     add_keys(['staff_talk_if', 'home_talk_if', 'peer_talk_if'], 'talk_if')
     add_keys(['accept_staff', 'accept_home', 'accept_local',
-            'accept_peer'], 'accept')
+              'accept_peer'], 'accept')
     add_keys(['local_support', 'local_trust', 'local_neighbours',
-            'local_places'], 'local_other')
+              'local_places'], 'local_other')
     add_keys(['discrim_race', 'discrim_gender', 'discrim_orientation',
-            'discrim_disability', 'discrim_faith'], 'discrim')
-    add_keys(['social_along', 'social_time', 'social_support', 'social_hard'], 'social')
+              'discrim_disability', 'discrim_faith'], 'discrim')
+    add_keys(['social_along', 'social_time', 'social_support', 'social_hard'],
+             'social')
     add_keys(['bully_physical', 'bully_other', 'bully_cyber'], 'bully')
 
-    return(labels)
+    return labels

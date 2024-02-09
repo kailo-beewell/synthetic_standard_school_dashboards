@@ -27,7 +27,7 @@ def get_school(username):
         'schoole': 'School E',
         'schoolf': 'School F'
     }
-    return(schools[username])
+    return schools[username]
 
 
 def password_entered():
@@ -36,7 +36,7 @@ def password_entered():
     '''
     # Use Django to check if the username and password match record
     user = authenticate(
-        username=st.session_state['username'], 
+        username=st.session_state['username'],
         password=st.session_state['password']
         )
     # If this succeeds, delete the username and password, and keep record
@@ -58,7 +58,7 @@ def login_screen():
     st.title('The #BeeWell survey')
     st.markdown('''
 Please enter your school username and password to login to the dashboard.
-                
+
 For this synthetic dashboard, we have six schools, named **School A, B, C, D,
 E and F**. You can login to any of these with each following a format of a
 username like '**schoola**' and password like '**schoolapassword**'.
