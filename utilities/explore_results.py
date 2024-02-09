@@ -8,10 +8,11 @@ import pandas as pd
 import streamlit as st
 from ast import literal_eval
 import numpy as np
+from markdown import markdown
 from utilities.bar_charts_text import create_response_description
 from utilities.bar_charts import survey_responses
 from utilities.summary_rag import result_box
-from markdown import markdown
+from utilities.reshape_data import filter_by_group
 
 
 def write_page_title(output='streamlit'):
@@ -229,37 +230,10 @@ def get_chosen_result(chosen_variable, chosen_group, df, school):
         than original format where they are nested in lists)
 
     '''
-    # Set default values
-    year_group = ['All']
-    gender = ['All']
-    fsm = ['All']
-    sen = ['All']
-    group_lab = 'year_group_lab'  # Not used, just need default else get error
-
-    # Depending on chosen breakdown, alter one of the above variables
-    # If the chosen group was All, then no changes are made, as this is default
-    if chosen_group == 'By year group':
-        year_group = ['Year 8', 'Year 10']
-        group_lab = 'year_group_lab'
-    elif chosen_group == 'By gender':
-        gender = ['Girl', 'Boy']
-# 'I describe myself in another way', 'Non-binary', 'Prefer not to say']
-        group_lab = 'gender_lab'
-    elif chosen_group == 'By FSM':
-        fsm = ['FSM', 'Non-FSM']
-        group_lab = 'fsm_lab'
-    elif chosen_group == 'By SEN':
-        sen = ['SEN', 'Non-SEN']
-        group_lab = 'sen_lab'
-
-    # Filter to chosen variable and school
-    chosen = df[
-        (df['group'] == chosen_variable) &
-        (df['school_lab'] == school) &
-        (df['year_group_lab'].isin(year_group)) &
-        (df['gender_lab'].isin(gender)) &
-        (df['fsm_lab'].isin(fsm)) &
-        (df['sen_lab'].isin(sen))]
+    # Filter by the specified school and grouping
+    chosen, group_lab = filter_by_group(df, chosen_group, school, 'explore')
+    # Filter by the chosen variable
+    chosen = chosen[chosen['group'] == chosen_variable]
 
     # Extract the lists with results stored in the dataframe
     # e.g. ['Yes', 'No'], [20, 80], [2, 8] in the original data will become

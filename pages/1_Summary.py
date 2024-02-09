@@ -6,6 +6,7 @@ from utilities.page_setup import page_setup, blank_lines
 from utilities.authentication import check_password
 from utilities.import_data import import_tidb_data
 from utilities.summary_rag import summary_intro
+from utilities.reshape_data import filter_by_group
 
 # Set page configuration
 page_setup()
@@ -50,44 +51,18 @@ if check_password():
     st.subheader('Choose what results to view')
 
     # Choose variable and comparator
-    chosen_group = st.selectbox(label='Results:', options=[
-        'All pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
+    chosen_group = st.selectbox(label='Show results:', options=[
+        'For all pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
 
-    # Filter data depending on choice
-    year_group = ['All']
-    gender = ['All']
-    fsm = ['All']
-    sen = ['All']
-    if chosen_group == 'By year group':
-        pivot_var = 'year_group_lab'
-        year_group = ['Year 8', 'Year 10']
-        order = ['Year 8', 'Year 10']
-    elif chosen_group == 'By gender':
-        pivot_var = 'gender_lab'
-        gender = ['Girl', 'Boy']
-# 'I describe myself in another way', 'Non-binary', 'Prefer not to say']
-        order = ['Girl', 'Boy']
-    elif chosen_group == 'By FSM':
-        pivot_var = 'fsm_lab'
-        fsm = ['FSM', 'Non-FSM']
-        order = ['FSM', 'Non-FSM']
-    elif chosen_group == 'By SEN':
-        pivot_var = 'sen_lab'
-        sen = ['SEN', 'Non-SEN']
-        order = ['SEN', 'Non-SEN']
+    # Filter by chosen grouping and school
+    chosen, pivot_var, order = filter_by_group(
+        data, chosen_group, st.session_state.school, 'summary')
+    # Filter to variable relevant for summary page
+    chosen = chosen[~chosen['variable'].isin([
+        'birth_you_age_score', 'overall_count', 'staff_talk_score', 
+        'home_talk_score', 'peer_talk_score'])]
 
-    # Filter data
-    chosen = data[
-        (data['school_lab'] == st.session_state.school) &
-        (data['year_group_lab'].isin(year_group)) &
-        (data['gender_lab'].isin(gender)) &
-        (data['fsm_lab'].isin(fsm)) &
-        (data['sen_lab'].isin(sen)) &
-        (~data['variable'].isin([
-            'birth_you_age_score', 'overall_count', 'staff_talk_score',
-            'home_talk_score', 'peer_talk_score']))]
-
-    if chosen_group != 'All pupils':
+    if chosen_group != 'For all pupils':
         # Pivot from wide to long whilst maintaining row order
         chosen = pd.pivot_table(
             chosen[['variable_lab', pivot_var, 'rag', 'description']],
