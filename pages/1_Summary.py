@@ -5,7 +5,7 @@ from utilities.switch_page_button import switch_page
 from utilities.page_setup import page_setup, blank_lines
 from utilities.authentication import check_password
 from utilities.import_data import import_tidb_data
-from utilities.summary_rag import summary_intro
+from utilities.summary_rag import summary_intro, result_box
 from utilities.reshape_data import filter_by_group
 
 # Set page configuration
@@ -114,14 +114,9 @@ if check_password():
         for i in range(ncol):
             # Create topic button or score
             with cols[i]:
-                if row.iloc[i] == 'below':
-                    st.error('Below average')
-                elif row.iloc[i] == 'average':
-                    st.warning('Average')
-                elif row.iloc[i] == 'above':
-                    st.success('Above average')
-                elif pd.isnull(row.iloc[i]):
-                    st.info('n<10')
+                if ((row.iloc[i] in ['below', 'average', 'above']) |
+                        pd.isnull(row.iloc[i])):
+                    result_box(row.iloc[i])
                 else:
                     # Create button that, if clicked, changes to details
                     if st.button(row.iloc[i]):
