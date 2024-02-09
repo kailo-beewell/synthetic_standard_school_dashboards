@@ -14,7 +14,7 @@ from utilities.summary_rag import result_box
 from markdown import markdown
 
 
-def write_page_title(output='streamlit', content=None):
+def write_page_title(output='streamlit'):
     '''
     Writes the title of this page/section (Explore Results), for the streamlit
     page or for the PDF report.
@@ -23,12 +23,10 @@ def write_page_title(output='streamlit', content=None):
     ----------
     output : string
         Specifies whether to write for 'streamlit' (default) or 'pdf'.
-    content : list
-        Optional input used when output=='pdf', contains HTML for report.
 
     Returns
     -------
-    content : list
+    html_string : string
         Optional return, used when output=='pdf', contains HTML for report.
     '''
     # Title
@@ -64,14 +62,14 @@ more about the comparison of your results with other schools.'''
         temp_content.append(f'<p>{descrip}</p>')
 
         # Then, for the PDF report, format in div and add to content list
-        content.append(f'''
+        html_string = f'''
 <div class='page'>
     <div class='section_container'>
         {''.join(temp_content)}
     </div>
 </div>
-''')
-        return content
+'''
+        return html_string
 
 
 def create_topic_dict(df):
@@ -574,13 +572,8 @@ other schools in Northern Devon, was:'''
     # Add description to dashboard or report, alongside a RAG box with result
     if output == 'streamlit':
         st.markdown(description)
-        if devon_rag == 'below':
-            st.error('Below average')
-        elif devon_rag == 'average':
-            st.warning('Average')
-        elif devon_rag == 'above':
-            st.success('Above average')
+        result_box(devon_rag)
     elif output == 'pdf':
         content.append(markdown(description))
-        content.append(result_box(devon_rag))
+        content.append(result_box(devon_rag, 'pdf'))
         return content

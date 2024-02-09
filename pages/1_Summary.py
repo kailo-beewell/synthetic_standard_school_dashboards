@@ -5,6 +5,7 @@ from utilities.switch_page_button import switch_page
 from utilities.page_setup import page_setup, blank_lines
 from utilities.authentication import check_password
 from utilities.import_data import import_tidb_data
+from utilities.summary_rag import summary_intro
 
 # Set page configuration
 page_setup()
@@ -41,65 +42,8 @@ if check_password():
 
     ###########################################################################
 
-    # Filter to relevant school and get total school size
-    school_counts = counts.loc[counts['school_lab'] == st.session_state.school]
-    school_size = school_counts.loc[
-        (school_counts['year_group_lab'] == 'All') &
-        (school_counts['gender_lab'] == 'All') &
-        (school_counts['fsm_lab'] == 'All') &
-        (school_counts['sen_lab'] == 'All'), 'count'].values[0].astype(int)
-
-    st.title('''Summary of your school's results''')
-    st.subheader('Introduction')
-    st.markdown(f'''
-At your school, a total of {school_size} pupils took part in the #BeeWell
-survey. This page shows how the answers of pupils at your school compare with
-pupils from other schools. You can choose to compare against either the other
-schools in Northern Devon, or to matched schools from across the country.''')
-
-    cols = st.columns([0.333, 0.666])
-    with cols[0]:
-        st.error('↓ Below average')
-    with cols[1]:
-        st.markdown('''
-This means that average scores for students in your school are **worse** than
-average scores for pupils at other schools''')
-
-    cols = st.columns([0.333, 0.666])
-    with cols[0]:
-        st.warning('~ Average')
-    with cols[1]:
-        st.markdown('''
-This means that average scores for students in your school are **similar** to
-average scores for pupils at other schools''')
-
-    cols = st.columns([0.333, 0.666])
-    with cols[0]:
-        st.success('↑ Above average')
-    with cols[1]:
-        st.markdown('''
-This means that average scores for students in your school are **better** than
-average scores for pupils at other schools''')
-
-    cols = st.columns([0.333, 0.666])
-    with cols[0]:
-        st.info('n<10')
-    with cols[1]:
-        st.markdown('''
-This means that **less than ten** students in your school completed questions
-for this topic, so the results cannot be shown.''')
-
-    # Print school size
-    st.text('')
-    st.markdown(f'''
-*Please note that  although a total of {school_size} pupils took part, the
-topic summaries below are based only on responses from pupils who completed all
-the questions of a given topic. The count of pupils who completed a topic is
-available on each topic's "Explore results" page. However, the other figures
-on the "Explore results" page present data from all pupils who took part.*
-''')
-
-    ##########################################################
+    # Introduction with guide to the RAG box and what they mean
+    summary_intro(st.session_state.school, counts)
 
     # Blank space and header
     blank_lines(3)
@@ -196,11 +140,11 @@ on the "Explore results" page present data from all pupils who took part.*
             # Create topic button or score
             with cols[i]:
                 if row.iloc[i] == 'below':
-                    st.error('↓ Below average')
+                    st.error('Below average')
                 elif row.iloc[i] == 'average':
-                    st.warning('~ Average')
+                    st.warning('Average')
                 elif row.iloc[i] == 'above':
-                    st.success('↑ Above average')
+                    st.success('Above average')
                 elif pd.isnull(row.iloc[i]):
                     st.info('n<10')
                 else:

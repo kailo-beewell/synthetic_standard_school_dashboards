@@ -9,12 +9,10 @@ import os
 import weasyprint
 import base64
 from markdown import markdown
-import numpy as np
 
 # Import functions I have defined elsewhere
 from utilities.score_descriptions import score_descriptions
 from utilities.bar_charts import details_ordered_bar
-from utilities.summary_rag import rag_intro_column
 from utilities.explore_results import (
     write_page_title,
     create_topic_dict,
@@ -24,6 +22,7 @@ from utilities.explore_results import (
     create_bar_charts,
     get_between_schools,
     write_comparison_intro)
+from utilities.summary_rag import summary_intro
 
 # Create empty list to fill with HTML content for PDF report
 content = []
@@ -161,66 +160,12 @@ the summary page's comparison to other schools was generated
 ###############################################################################
 # Summary page
 
-temp_content = []
-
-# Title
-title = '''Summary of your school's results'''
-temp_content.append(f'''
-<h1 style='page-break-before:always;' id='summary'>{title}</h1>''')
-
-# Filter to relevant school and get total school size
-school_counts = counts.loc[counts['school_lab'] == chosen_school]
-school_size = school_counts.loc[
-    (school_counts['year_group_lab'] == 'All') &
-    (school_counts['gender_lab'] == 'All') &
-    (school_counts['fsm_lab'] == 'All') &
-    (school_counts['sen_lab'] == 'All'), 'count'].values[0].astype(int)
-descrip = f'''
-At your school, a total of {school_size} pupils took part in the #BeeWell
-survey. This page shows how the answers of pupils at your school compare with
-pupils from other schools in Northern Devon.'''
-temp_content.append(f'<p>{descrip}</p>')
-
-rag_descrip = '''
-This means that average scores for students in your school are **worse** than
-average scores for pupils at other schools.'''
-temp_content.append(rag_intro_column('below', markdown(rag_descrip)))
-
-rag_descrip = '''
-This means that average scores for students in your school are **similar** to
-average scores for pupils at other schools.'''
-temp_content.append(rag_intro_column('average', markdown(rag_descrip)))
-
-rag_descrip = '''
-This means that average scores for students in your school are **better** than
-average scores for pupils at other schools.'''
-temp_content.append(rag_intro_column('above', markdown(rag_descrip)))
-
-rag_descrip = '''
-This means that **less than ten** students in your school completed questions
-for this topic, so the results cannot be shown.'''
-temp_content.append(rag_intro_column(np.nan, markdown(rag_descrip)))
-
-caveat = f'''
-*Please note that  although a total of {school_size} pupils took part, the
-topic summaries below are based only on responses from pupils who completed all
-the questions of a given topic. The count of pupils who completed a topic is
-available on each topic's "Explore results" page. However, the other figures
-on the "Explore results" page present data from all pupils who took part.*'''
-temp_content.append(markdown(caveat))
-
-content.append(f'''
-<div class='page'>
-    <div class='section_container'>
-        {''.join(temp_content)}
-    </div>
-</div>
-''')
+content.append(summary_intro(chosen_school, counts, output='pdf'))
 
 ###############################################################################
 # Explore results section
 
-content = write_page_title(output='pdf', content=content)
+content.append(write_page_title(output='pdf'))
 
 
 def create_explore_topic_page(chosen_variable_lab, topic_dict, df_scores,
