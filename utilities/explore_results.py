@@ -390,17 +390,25 @@ def create_bar_charts(chosen_variable, chosen_result,
     reverse = ['esteem', 'negative', 'support', 'free_like', 'local_safe',
                'local_other', 'belong_local', 'bully']
 
-    # Create stacked bar chart with seperate charts if required
+    # Create stacked bar chart with seperate chart groups if required
     if chosen_variable in multiple_charts:
+        # Counter as we don't want to break page before first description,
+        # but do for the later description
+        i = -1
         var_dict = multiple_charts[chosen_variable]
         for key, value in var_dict.items():
-
+            i += 1
             # Add description
             if key in response_descrip.keys():
                 if output == 'streamlit':
                     st.markdown(response_descrip[key])
                 elif output == 'pdf':
-                    content.append(f'<p>{response_descrip[key]}</p>')
+                    # Break page before description, unless it's the first.
+                    if i > 0:
+                        content.append(f'''
+<p style='page-break-before:always;'>{response_descrip[key]}</p>''')
+                    else:
+                        content.append(f'<p>{response_descrip[key]}</p>')
 
             # Filter to questions in sub-group, reversing categories if need to
             to_plot = chosen_result[chosen_result['measure'].isin(value)]
@@ -532,8 +540,9 @@ complete responses on this question. For this topic, your school had
 {topic_count} complete responses (out of a possible {school_size}).
 
 Possible scores for each pupil on this topic range from
-{score_descriptions[chosen_variable][0]} with **higher scores indicating
-{score_descriptions[chosen_variable][1]}** - and vice versa for lower scores.
+{score_descriptions[chosen_variable][0]} with
+**higher scores indicating {score_descriptions[chosen_variable][1]}** -
+and vice versa for lower scores.
 
 The mean score of the pupils at you school is compared with pupils who
 completed the same survey questions at other schools. This allows you to see

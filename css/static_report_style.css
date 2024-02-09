@@ -16,6 +16,10 @@ body {
 }
 
 /* Cover page containers */
+/* With seperate one for summary as wanted different spacing */
+.page {
+    page-break-after: always;
+}
 .section_container {
     position: absolute;
     top: 30%;
@@ -23,8 +27,12 @@ body {
     align-items: center;
     text-align: center;
 }
-.page {
-    page-break-after: always;
+.summary_cover {
+    position: absolute;
+    top: 20%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 /* Figure containers */

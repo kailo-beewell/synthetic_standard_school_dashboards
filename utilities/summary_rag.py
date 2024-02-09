@@ -225,7 +225,7 @@ on the "Explore results" page present data from all pupils who took part.*'''
     if output == 'pdf':
         html_string = f'''
     <div class='page'>
-        <div class='section_container'>
+        <div class='summary_cover'>
             {''.join(temp_content)}
         </div>
     </div>
