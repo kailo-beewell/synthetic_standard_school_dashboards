@@ -10,6 +10,7 @@ from ast import literal_eval
 import numpy as np
 from utilities.bar_charts_text import create_response_description
 from utilities.bar_charts import survey_responses
+from utilities.summary_rag import result_box
 from markdown import markdown
 
 
@@ -495,56 +496,6 @@ def get_between_schools(df, chosen_variable):
     return between_schools
 
 
-def result_box(rag, content=None):
-    '''
-    Creates a result box with the RAG rating
-
-    Parameters
-    ----------
-    rag : string
-        Result from comparison with other schools - either 'below', 'average',
-        'above', or np.nan
-    content : list
-        Optional, contains HTML for report.
-
-    Returns
-    -------
-    One of two possible outputs:
-    box : string
-        HTML string (not appended to a list of other HTML)
-    content : list
-        Optional, contains HTML for report, with new string appended.
-    '''
-    # Create the results box
-    if rag == 'below':
-        box = '''
-<div class='result_box' style='background: #FFCCCC; color: #95444B'>
-    <p>Below average</p>
-</div>'''
-    elif rag == 'average':
-        box = '''
-<div class='result_box' style='background: #FFE8BF; color: #AA7A18'>
-    <p>Average</p>
-</div>'''
-    elif rag == 'above':
-        box = '''
-<div class='result_box' style='background: #B6E6B6; color: #2B7C47'>
-    <p>Above average</p>
-</div>'''
-    elif pd.isnull(rag):
-        box = '''
-<div class='result_box' style='background: #DCE4FF; color: #19539A'>
-    <p>n < 10</p>
-</div>'''
-
-    # Return either as string, or appended to content
-    if content is None:
-        return box
-    else:
-        content.append(box)
-        return content
-
-
 def write_comparison_intro(
         counts, chosen_school, chosen_variable, chosen_variable_lab,
         score_descriptions, between_schools, output='streamlit', content=None):
@@ -631,5 +582,5 @@ other schools in Northern Devon, was:'''
             st.success('Above average')
     elif output == 'pdf':
         content.append(markdown(description))
-        content = result_box(devon_rag, content)
+        content.append(result_box(devon_rag))
         return content

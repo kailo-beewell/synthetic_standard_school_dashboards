@@ -14,6 +14,7 @@ import numpy as np
 # Import functions I have defined elsewhere
 from utilities.score_descriptions import score_descriptions
 from utilities.bar_charts import details_ordered_bar
+from utilities.summary_rag import rag_intro_column
 from utilities.explore_results import (
     write_page_title,
     create_topic_dict,
@@ -22,9 +23,7 @@ from utilities.explore_results import (
     get_chosen_result,
     create_bar_charts,
     get_between_schools,
-    write_comparison_intro,
-    result_box
-)
+    write_comparison_intro)
 
 # Create empty list to fill with HTML content for PDF report
 content = []
@@ -181,38 +180,6 @@ At your school, a total of {school_size} pupils took part in the #BeeWell
 survey. This page shows how the answers of pupils at your school compare with
 pupils from other schools in Northern Devon.'''
 temp_content.append(f'<p>{descrip}</p>')
-
-
-def rag_intro_column(rag, rag_descrip):
-    '''
-    Generate a row for the introduction to the summary section, with a RAG
-    box and description of that box across 2 columns.
-
-    Parameters
-    ----------
-    rag : string
-        RAG performance - either 'above', 'average', 'below', or np.nan
-    rag_descrip : string
-        Description of the RAG rating
-
-    Returns
-    -------
-    html : string
-        Section of HTML that creates the RAG introductory columns
-    '''
-    rag_box = result_box(rag)
-    html = f'''
-<div class='row'>
-    <div class='column' style='margin-top:0.5em;'>
-        {rag_box}
-    </div>
-    <div class='column'>
-        {rag_descrip}
-    </div>
-</div>
-'''
-    return html
-
 
 rag_descrip = '''
 This means that average scores for students in your school are **worse** than
