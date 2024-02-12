@@ -3,6 +3,8 @@ from utilities.page_setup import page_setup, blank_lines
 from utilities.authentication import check_password
 from utilities.import_data import import_tidb_data
 from utilities.static_report import create_static_report
+import weasyprint
+from tempfile import NamedTemporaryFile
 
 # Set page configuration
 page_setup()
@@ -51,17 +53,23 @@ This section is incomplete - currently downloads survey booklet instead.''')
 *Please note that it will take approximately 45 seconds to generate each PDF
 report (sorry for the wait!)*''')
 
-    # Generate PDF stored in local directory
-    create_static_report(
-        chosen_school=st.session_state.school,
-        chosen_group='For all pupils',
-        df_scores=st.session_state.scores_rag,
-        df_prop=st.session_state.responses,
-        counts=st.session_state.counts,
-        dem_prop=st.session_state.demographic)
+    # Generate HTML string for the PDF report
+    if 'html_content' not in st.session_state:
+        st.session_state.html_content = create_static_report(
+            chosen_school=st.session_state.school,
+            chosen_group='For all pupils',
+            df_scores=st.session_state.scores_rag,
+            df_prop=st.session_state.responses,
+            counts=st.session_state.counts,
+            dem_prop=st.session_state.demographic)
 
-    # Download PDF from local directory
-    pdf_report = open('report/report.pdf', 'rb')
+    # Convert HTML to PDF and store as temporary file, then import content
+    # of that temporary file to variable pdf_report
+    with NamedTemporaryFile(suffix='.pdf') as temp:
+        weasyprint.HTML(string=st.session_state.html_content).write_pdf(temp)
+        temp.seek(0)
+        pdf_report = open(temp.name, 'rb')
+
     st.download_button(
         label='Download school report (all pupils)', data=pdf_report,
         file_name='school_report_all_pupils.pdf', mime='application/pdf')

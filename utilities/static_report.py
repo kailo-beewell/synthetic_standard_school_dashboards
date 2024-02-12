@@ -3,7 +3,6 @@ Function to generate a non-interactive PDF version of the dashboard as a
 temporary file that can then be downloaded from the dashboard
 '''
 import os
-import weasyprint
 import base64
 from markdown import markdown
 from utilities.reshape_data import get_school_size
@@ -219,10 +218,4 @@ style='width:650px; height:192px;'>'''
 </html>
 '''
 
-    # Generate HTML (not used currently to make the PDF report, but useful if
-    # you want to inspect the HTML code we have produced)
-    # with open('report/report.html', 'w') as f:
-    #     f.write(html_content)
-
-    # Create PDF using Weasyprint
-    weasyprint.HTML(string=html_content).write_pdf('report/report.pdf')
+    return html_content

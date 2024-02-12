@@ -6,6 +6,7 @@ import plotly.express as px
 import streamlit as st
 from contextlib import nullcontext
 import base64
+from tempfile import NamedTemporaryFile
 
 
 def survey_responses(dataset, font_size=16, output='streamlit', content=None):
@@ -153,15 +154,22 @@ shown for {kept} pupils.'''
                     xaxis=dict(automargin=True),
                     yaxis=dict(automargin=True)
                 )
-                # Write image to a temporary file
-                fig.write_image('report/temp_image.png')
-                # Convert to HTML
-                data_uri = base64.b64encode(
-                    open('report/temp_image.png', 'rb').read()).decode('utf-8')
+                # Write image to a temporary file, then open again and
+                # convert to HTML
+                with NamedTemporaryFile(suffix='.png') as temp:
+                    fig.write_image(temp)
+                    temp.seek(0)
+                    data_uri = base64.b64encode(
+                        open(temp.name, 'rb').read()).decode('utf-8')
+
+                # Write the image tag, inserting the HTML that creates the
+                # image into the tag
                 img_tag = f'''
 <img src='data:image/png;base64,{data_uri}' alt='{measure}'>'''
+
                 # Add to temporary record of HTML content for report
                 temp_content.append(img_tag)
+
                 # Insert temp_content into a div class, with a break after the
                 # container if it's an even number on the counter
                 img_div = f'''
@@ -279,6 +287,7 @@ def details_ordered_bar(school_scores, school_name, font_size=16,
     elif output == 'pdf':
         # Create temporary list to hold image HTML
         temp_content = []
+
         # Adjust size so consistent with streamlit, and automargin ensures
         # any labels aren't cut off
         fig.update_layout(
@@ -286,20 +295,28 @@ def details_ordered_bar(school_scores, school_name, font_size=16,
             width=600,
             xaxis=dict(automargin=True),
             yaxis=dict(automargin=True))
-        # Write image to a temporary file
-        fig.write_image('report/temp_image.png')
-        # Convert to HTML
-        data_uri = base64.b64encode(
-            open('report/temp_image.png', 'rb').read()).decode('utf-8')
+
+        # Write image to a temporary file, then open again and
+        # convert to HTML
+        with NamedTemporaryFile(suffix='.png') as temp:
+            fig.write_image(temp)
+            temp.seek(0)
+            data_uri = base64.b64encode(
+                open(temp.name, 'rb').read()).decode('utf-8')
+
+        # Write the image tag     
         img_tag = f'''
 <img src='data:image/png;base64,{data_uri}'
 alt='Comparison with other schools'>'''
+
         # Add to temporary record of HTML content for report
         temp_content.append(img_tag)
+
         # Insert temp_content into a div class
         content.append(f'''
 <div class='comparison_container'>
     {''.join(temp_content)}
 </div>''')
+
         # Return the updated content HTML
         return content
