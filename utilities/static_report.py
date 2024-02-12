@@ -18,8 +18,8 @@ from utilities.who_took_part import (
 from utilities.reuse_text import text_how_use, text_caution_comparing
 
 
-def create_static_report(chosen_school, chosen_group,
-                         df_scores, df_prop, counts, dem_prop):
+def create_static_report(chosen_school, chosen_group, df_scores, df_prop,
+                         counts, dem_prop, pdf_title):
     '''
     Generate a static PDF report for the chosen school and group, with all
     the key information and figures from the dashboard
@@ -39,6 +39,8 @@ def create_static_report(chosen_school, chosen_group,
         Dataframe with the counts of pupils at each school
     dem_prop : dataframe
         Dataframe with proportion of each reponse to the demographic questions
+    pdf_title : string
+        Title for the PDF file
     '''
     ##########
     # Set-up #
@@ -68,6 +70,9 @@ def create_static_report(chosen_school, chosen_group,
 style='width:300px; height:182px;'>'''
     content.append(img_tag)
 
+    # Get group name with only first character modified to lower case
+    group_lower_first = chosen_group[0].lower() + chosen_group[1:]
+
     # Title and introduction
     title_page = f'''
 <div class='section_container'>
@@ -81,7 +86,7 @@ style='width:300px; height:182px;'>'''
     There are four reports available - these have results: (a) from all
     pupils, (b) by gender, (c) by free school meal (FSM) eligibility, and
     (d) by year group.<br><br>
-    This report contains the results <b>{chosen_group.lower()}</b> for
+    This report contains the results <b>{group_lower_first}</b> for
     <b>{chosen_school}</b>.</p>
 </div>
 '''
@@ -207,7 +212,7 @@ style='width:650px; height:192px;'>'''
 <!DOCTYPE html>
 <html>
 <head>
-    <title>#BeeWell Kailo School Report 2024</title>
+    <title>{pdf_title}</title>
     <style>
         {css_style}
     </style>

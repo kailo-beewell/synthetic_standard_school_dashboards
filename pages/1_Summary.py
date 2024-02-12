@@ -46,7 +46,7 @@ if check_password():
     blank_lines(3)
     st.subheader('Choose what results to view')
 
-    # Choose variable and comparator
+    # Choose comparator
     chosen_group = st.selectbox(label='Show results:', options=[
         'For all pupils', 'By year group', 'By gender', 'By FSM', 'By SEN'])
 
