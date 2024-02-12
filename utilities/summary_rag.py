@@ -132,16 +132,14 @@ def rag_intro_column(rag, rag_descrip, output='streamlit'):
         return html_string
 
 
-def summary_intro(chosen_school, counts, output='streamlit'):
+def summary_intro(school_size, output='streamlit'):
     '''
     Creates the introduction for the summary section
 
     Parameters
     ----------
-    chosen_school : string
-        Name of chosen school
-    counts : dataframe
-        Dataframe with counts of pupils at each school
+    school_size : integer
+        Total number of pupils at school (who answered at least one question)
     output : string
         Specifies whether to write for 'streamlit' (default) or 'pdf'
 
@@ -162,14 +160,6 @@ def summary_intro(chosen_school, counts, output='streamlit'):
     elif output == 'pdf':
         temp_content.append(f'''<h1 style='page-break-before:always;'
                             id='summary'>{title}</h1>''')
-
-    # Filter to relevant school and get total school size
-    school_counts = counts.loc[counts['school_lab'] == chosen_school]
-    school_size = school_counts.loc[
-        (school_counts['year_group_lab'] == 'All') &
-        (school_counts['gender_lab'] == 'All') &
-        (school_counts['fsm_lab'] == 'All') &
-        (school_counts['sen_lab'] == 'All'), 'count'].values[0].astype(int)
 
     # Write introductory sentence for summary section
     descrip = f'''

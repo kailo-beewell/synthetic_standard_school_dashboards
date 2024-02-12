@@ -23,6 +23,7 @@ from utilities.explore_results import (
     get_between_schools,
     write_comparison_intro)
 from utilities.summary_rag import summary_intro, summary_table
+from utilities.reshape_data import get_school_size
 
 # Create empty list to fill with HTML content for PDF report
 content = []
@@ -159,10 +160,14 @@ the summary page's comparison to other schools was generated
 ''')
 
 ###############################################################################
+# Get school size
+school_size = get_school_size(counts, chosen_school)
+
+###############################################################################
 # Summary page
 
 # Summary cover page
-content.append(summary_intro(chosen_school, counts, 'pdf'))
+content.append(summary_intro(school_size, 'pdf'))
 
 # Summary grid with topics and RAG ratings
 content = summary_table(df_scores, chosen_group, chosen_school, 'pdf', content)
@@ -222,7 +227,7 @@ def create_explore_topic_page(chosen_variable_lab, topic_dict, df_scores,
 
     # Write the comparison intro text (title, description, RAG rating)
     content = write_comparison_intro(
-        counts, chosen_school, chosen_variable, chosen_variable_lab,
+        school_size, chosen_school, chosen_variable, chosen_variable_lab,
         score_descriptions, between_schools, output='pdf', content=content)
 
     # Create ordered bar chart
@@ -238,6 +243,29 @@ for chosen_variable_lab in topic_dict.keys():
     content = create_explore_topic_page(
         chosen_variable_lab, topic_dict, df_scores,
         chosen_school, counts, content)
+
+###############################################################################
+# Who took part section
+
+title = 'Who took part?'
+
+# CHANGE FROM STREAMLIT: changed 'page' to 'section
+type = 'section'
+description = f'''
+There were {school_size} pupils at your school who took part in the #BeeWell
+survey. This {type} describes the sample of pupils who completed the survey.'''
+
+content.append(f'''
+<div class='page'>
+    <div class='section_container'>
+        <h1 style='page-break-before:always;'
+               id='who_took_part'>Who took part?</h1>
+        <p>{description}</p>
+    </div>
+</div>
+''')
+
+content.append('''<h1 style='page-break-before:always;'>Test</h1>''')
 
 ###############################################################################
 # Create HTML report...

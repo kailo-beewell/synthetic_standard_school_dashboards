@@ -3,6 +3,7 @@ from utilities.page_setup import page_setup, blank_lines
 from utilities.authentication import check_password
 from utilities.import_data import import_tidb_data
 from utilities.summary_rag import summary_intro, summary_table
+from utilities.reshape_data import get_school_size
 
 # Set page configuration
 page_setup()
@@ -38,7 +39,8 @@ if check_password():
 ''', unsafe_allow_html=True)
 
     # Introduction with guide to the RAG box and what they mean
-    summary_intro(st.session_state.school, counts)
+    school_size = get_school_size(counts, st.session_state.school)
+    summary_intro(school_size)
 
     # Blank space and header
     blank_lines(3)

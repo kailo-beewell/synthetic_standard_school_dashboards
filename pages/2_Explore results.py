@@ -14,6 +14,7 @@ from utilities.explore_results import (
     get_between_schools,
     write_comparison_intro
 )
+from utilities.reshape_data import get_school_size
 
 # Set page configuration
 page_setup()
@@ -90,8 +91,9 @@ if check_password():
     between_schools = get_between_schools(df_scores, chosen_variable)
 
     # Write the comparison intro text (title, description, RAG rating)
+    school_size = get_school_size(counts, st.session_state.school)
     write_comparison_intro(
-        counts, st.session_state.school, chosen_variable,
+        school_size, st.session_state.school, chosen_variable,
         chosen_variable_lab, score_descriptions, between_schools)
 
     # Create ordered bar chart
@@ -103,6 +105,7 @@ if check_password():
 Always be mindful when making comparisons between different schools. There are
 a number of factors that could explain differences in scores (whether you are
 above average, average, or below average). These include:
+
 * Random chance ('one-off' findings).
 * Differences in the socio-economic characteristics of pupils and the areas
 where they live (e.g. income, education, ethnicity, access to services and

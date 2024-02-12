@@ -7,6 +7,7 @@ from utilities.authentication import check_password
 from utilities.bar_charts import survey_responses
 from utilities.bar_charts_text import create_response_description
 from utilities.import_data import import_tidb_data
+from utilities.reshape_data import get_school_size
 
 # Set page configuration
 page_setup()
@@ -29,15 +30,8 @@ if check_password():
     # Title
     st.title('Who took part?')
 
-    # Filter to relevant school
-    school_counts = counts.loc[counts['school_lab'] == st.session_state.school]
-
-    # Find total school size
-    school_size = school_counts.loc[
-        (school_counts['year_group_lab'] == 'All') &
-        (school_counts['gender_lab'] == 'All') &
-        (school_counts['fsm_lab'] == 'All') &
-        (school_counts['sen_lab'] == 'All'), 'count'].values[0].astype(int)
+    # Get total pupil number
+    school_size = get_school_size(counts, st.session_state.school)
 
     # Print school size
     st.markdown(f'''

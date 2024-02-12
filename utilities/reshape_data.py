@@ -1,5 +1,6 @@
 '''
-Helper functions for reshaping data, often used across multiple different pages
+Helper functions for reshaping data or extracting a certain element from the
+data, often used across multiple different pages
 '''
 
 
@@ -13,8 +14,8 @@ def filter_by_group(df, chosen_group, chosen_school, output):
     df : dataframe
         Dataframe to be filtered
     chosen_group : string
-        One of 'For all pupils', 'By year group', 'By gender', 'By FSM', or
-        'By SEN'
+        The group for results to be viewed by - one of: 'For all pupils',
+        'By year group', 'By gender', 'By FSM', or 'By SEN'
     chosen_school : string
         Name of the school to filter results for
     output : string
@@ -70,3 +71,32 @@ def filter_by_group(df, chosen_group, chosen_school, output):
         return chosen, group_lab
     elif output == 'summary':
         return chosen, group_lab, order
+
+
+def get_school_size(counts, school):
+    '''
+    Get the total pupil number for a given school
+
+    Parameters
+    ----------
+    counts : dataframe
+        Dataframe containing the count of pupils at each school
+    school : string
+        Name of the school
+
+    Returns
+    -------
+    school_size : integer
+        Total number of pupils at school (who answered at least one question)
+    '''
+    # Filter to relevant school
+    school_counts = counts.loc[counts['school_lab'] == school]
+
+    # Find total school size
+    school_size = school_counts.loc[
+        (school_counts['year_group_lab'] == 'All') &
+        (school_counts['gender_lab'] == 'All') &
+        (school_counts['fsm_lab'] == 'All') &
+        (school_counts['sen_lab'] == 'All'), 'count'].values[0].astype(int)
+
+    return school_size

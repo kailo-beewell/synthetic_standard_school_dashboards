@@ -477,7 +477,7 @@ def get_between_schools(df, chosen_variable):
 
 
 def write_comparison_intro(
-        counts, chosen_school, chosen_variable, chosen_variable_lab,
+        school_size, chosen_school, chosen_variable, chosen_variable_lab,
         score_descriptions, between_schools, output='streamlit', content=None):
     '''
     Write the introduction to the comparison section (heading, description
@@ -485,8 +485,8 @@ def write_comparison_intro(
 
     Parameters
     ----------
-    counts : dataframe
-        Dataframe with counts of pupils in each school
+    school_size : integer
+        Total number of pupils at school (who answered at least one question)
     chosen_school : string
         Name of chosen school
     chosen_variable : string
@@ -508,14 +508,6 @@ def write_comparison_intro(
     content : list
         Optional return, used when output=='pdf', contains HTML for report.
     '''
-    # Filter to relevant school and get total school size
-    school_counts = counts.loc[counts['school_lab'] == chosen_school]
-    school_size = school_counts.loc[
-        (school_counts['year_group_lab'] == 'All') &
-        (school_counts['gender_lab'] == 'All') &
-        (school_counts['fsm_lab'] == 'All') &
-        (school_counts['sen_lab'] == 'All'), 'count'].values[0].astype(int)
-
     # Get count of pupils who completed the topic questions
     topic_count = int(between_schools.loc[
         between_schools['school_lab'] == chosen_school, 'count'].to_list()[0])
