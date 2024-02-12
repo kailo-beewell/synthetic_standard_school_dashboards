@@ -1,11 +1,16 @@
 import streamlit as st
 from utilities.page_setup import page_setup, blank_lines
 from utilities.authentication import check_password
+from utilities.import_data import import_tidb_data
+from utilities.static_report import create_static_report
 
 # Set page configuration
 page_setup()
 
 if check_password():
+
+    # Import the data from TiDB Cloud if not already in session state
+    import_tidb_data()
 
     # Add name of school (to help with monitoring)
     st.markdown(st.session_state.school)
@@ -36,32 +41,43 @@ other schools was generated
 * **Who took part** - See the characteristics of the pupils who took part in
 the survey''')
 
-    # This allows you to download a PDF - currently downloading survey - will
-    # need to change to a full version of the report - however, this PDF is
-    # stored in GitHub, so will need to look if it can pull the PDF from a
-    # database else you'd need to generate on click. Also, if we'd need five
-    # reports for each of the filters.
+    # Section for downloading PDF report
     st.subheader('Download PDF report')
     st.markdown('''
 You can use the interactive dashboard to explore results for your school. We
 also provide the option of downloading a PDF version of your resuts below.
 This section is incomplete - currently downloads survey booklet instead.''')
-    pdf_report = open('pdfs/survey_v21b.pdf', 'rb')
+    st.markdown('''
+*Please note that it will take approximately 45 seconds to generate each PDF
+report (sorry for the wait!)*''')
+
+    # Generate PDF stored in local directory
+    create_static_report(
+        chosen_school=st.session_state.school,
+        chosen_group='For all pupils',
+        df_scores=st.session_state.scores_rag,
+        df_prop=st.session_state.responses,
+        counts=st.session_state.counts,
+        dem_prop=st.session_state.demographic)
+
+    # Download PDF from local directory
+    pdf_report = open('report/report.pdf', 'rb')
     st.download_button(
         label='Download school report (all pupils)', data=pdf_report,
-        file_name='test_streamlit_download.pdf', mime='application/pdf')
-    st.download_button(
-        label='Download school report (by gender)', data=pdf_report,
-        file_name='test_streamlit_download.pdf', mime='application/pdf')
-    st.download_button(
-        label='Download school report (by year group)', data=pdf_report,
-        file_name='test_streamlit_download.pdf', mime='application/pdf')
-    st.download_button(
-        label='Download school report (by FSM)', data=pdf_report,
-        file_name='test_streamlit_download.pdf', mime='application/pdf')
-    st.download_button(
-        label='Download school report (by SEN)', data=pdf_report,
-        file_name='test_streamlit_download.pdf', mime='application/pdf')
+        file_name='school_report_all_pupils.pdf', mime='application/pdf')
+
+    # st.download_button(
+    #     label='Download school report (by gender)', data=pdf_report,
+    #     file_name='test_streamlit_download.pdf', mime='application/pdf')
+    # st.download_button(
+    #     label='Download school report (by year group)', data=pdf_report,
+    #     file_name='test_streamlit_download.pdf', mime='application/pdf')
+    # st.download_button(
+    #     label='Download school report (by FSM)', data=pdf_report,
+    #     file_name='test_streamlit_download.pdf', mime='application/pdf')
+    # st.download_button(
+    #     label='Download school report (by SEN)', data=pdf_report,
+    #     file_name='test_streamlit_download.pdf', mime='application/pdf')
 
     blank_lines(1)
 

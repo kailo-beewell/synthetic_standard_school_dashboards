@@ -1,137 +1,149 @@
 '''
-Generate a non-interactive PDF version of the dashboard
+Function to generate a non-interactive PDF version of the dashboard as a
+temporary file that can then be downloaded from the dashboard
 '''
-
-##########
-# Set-up #
-##########
-
-# Import required packages
-import pandas as pd
 import os
 import weasyprint
 import base64
 from markdown import markdown
-
-# Import functions I have defined elsewhere
+from utilities.reshape_data import get_school_size
+from utilities.summary_rag import summary_intro, summary_table
 from utilities.explore_results import (
     write_page_title,
     create_topic_dict,
     create_explore_topic_page)
-from utilities.summary_rag import summary_intro, summary_table
-from utilities.reshape_data import get_school_size
 from utilities.who_took_part import (
     create_demographic_page_intro,
     demographic_headers,
     demographic_plots)
 from utilities.reuse_text import text_how_use, text_caution_comparing
 
-# Create empty list to fill with HTML content for PDF report
-content = []
 
-# Set the chosen group and school for this report
-chosen_group = 'For all pupils'
-chosen_school = 'School A'
+def create_static_report(chosen_school, chosen_group,
+                         df_scores, df_prop, counts, dem_prop):
+    '''
+    Generate a static PDF report for the chosen school and group, with all
+    the key information and figures from the dashboard
 
-# Import data
-df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
-df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
-counts = pd.read_csv('data/survey_data/overall_counts.csv')
-dem_prop = pd.read_csv('data/survey_data/aggregate_demographic.csv')
+    Parameters
+    ----------
+    chosen_school : string
+        Name of the chosen school
+    chosen_group : string
+        Name of the chosen group to view results by - options are
+        'For all pupils', 'By year group', 'By gender', 'By FSM' or 'By SEN'
+    df_scores : dataframe
+        Dataframe with aggregate scores and RAG for each topic
+    df_prop : dataframe
+        Dataframe with proportion of each response to each survey question
+    counts : dataframe
+        Dataframe with the counts of pupils at each school
+    dem_prop : dataframe
+        Dataframe with proportion of each reponse to the demographic questions
+    '''
+    ##########
+    # Set-up #
+    ##########
 
-# Get dictionaries which will use later on and for table of contents
-# Create dictionary of topics
-topic_dict = create_topic_dict(df_scores)
-# Create header dictionary for the demographic section
-dem_header_dict = demographic_headers()
+    # Create empty list to fill with HTML content for PDF report
+    content = []
 
-# Get school size
-school_size = get_school_size(counts, chosen_school)
+    # Get dictionaries which will use later on and for table of contents
+    # Create dictionary of topics
+    topic_dict = create_topic_dict(df_scores)
+    # Create header dictionary for the demographic section
+    dem_header_dict = demographic_headers()
 
-##############
-# Title page #
-##############
+    # Get school size
+    school_size = get_school_size(counts, chosen_school)
 
-# Logo - convert to HTML, then add to the content for the report
-data_uri = base64.b64encode(
-    open('images/kailo_beewell_logo_padded.png', 'rb').read()).decode('utf-8')
-img_tag = f'''
+    ##############
+    # Title page #
+    ##############
+
+    # Logo - convert to HTML, then add to the content for the report
+    data_uri = base64.b64encode(open('images/kailo_beewell_logo_padded.png',
+                                     'rb').read()).decode('utf-8')
+    img_tag = f'''
 <img src='data:image/png;base64,{data_uri}' alt='Kailo #BeeWell logo'
 style='width:300px; height:182px;'>'''
-content.append(img_tag)
+    content.append(img_tag)
 
-# Title and introduction
-title_page = f'''
+    # Title and introduction
+    title_page = f'''
 <div class='section_container'>
     <h1 style='text-align:center;'>The #BeeWell Survey</h1>
-    <p style='text-align:center; font-weight:bold;'>
-    Thank you for taking part in the #BeeWell survey delivered by Kailo.</p>
+    <p style='text-align:center; font-weight:bold;'>Thank you for taking
+    part in the #BeeWell survey delivered by Kailo.</p>
     <p>The results from pupils at your school can be explored using the
     interactive dashboard at
     https://synthetic-beewell-kailo-standard-school-dashboard.streamlit.app/.
     This report has been downloaded from that dashboard.<br><br>
     There are four reports available - these have results: (a) from all
-    pupils, (b) by gender, (c) by free school meal (FSM) eligibility, and (d)
-    by year group.<br><br>
+    pupils, (b) by gender, (c) by free school meal (FSM) eligibility, and
+    (d) by year group.<br><br>
     This report contains the results <b>{chosen_group.lower()}</b> for
     <b>{chosen_school}</b>.</p>
 </div>
 '''
-content.append(title_page)
+    content.append(title_page)
 
-# Illustration - convert to HTML, then add to the content for the report
-data_uri = base64.b64encode(
-    open('images/home_image_3_transparent.png', 'rb').read()).decode('utf-8')
-img_tag = f'''
+    # Illustration - convert to HTML, then add to the content for the report
+    data_uri = base64.b64encode(open('images/home_image_3_transparent.png',
+                                     'rb').read()).decode('utf-8')
+    img_tag = f'''
 <img src='data:image/png;base64,{data_uri}' alt='Kailo illustration'
 style='width:650px; height:192px;'>'''
-illustration = f'''
+    illustration = f'''
 <div style='width:100%; position:absolute; bottom:0;'>
     {img_tag}
 </div>'''
-content.append(illustration)
+    content.append(illustration)
 
-################
-# Introduction #
-################
+    ################
+    # Introduction #
+    ################
 
-# Heading
-content.append('''<h1 style='page-break-before:always;'>Introduction</h1>''')
+    # Heading
+    content.append('''<h1 style='page-break-before:always;'>
+                   Introduction</h1>''')
 
-# Using the report (duplicate text with About.py)
-content.append('<h2>How to use this report</h2>')
-content.append(markdown(text_how_use()))
+    # Using the report (duplicate text with About.py)
+    content.append('<h2>How to use this report</h2>')
+    content.append(markdown(text_how_use()))
 
-# Comparison warning (duplicate text with Explore results.py)
-content.append('<h2>Comparing between schools</h2>')
-content.append(markdown(text_caution_comparing()))
+    # Comparison warning (duplicate text with Explore results.py)
+    content.append('<h2>Comparing between schools</h2>')
+    content.append(markdown(text_caution_comparing()))
 
-#####################
-# Table of contents #
-#####################
+    #####################
+    # Table of contents #
+    #####################
 
-# Get all of the explore results pages as lines for the table of contents
-explore_results_pages = []
-for key, value in topic_dict.items():
-    line = f'''<li><a href='#{value}'>{key}</a></li>'''
-    explore_results_pages.append(line)
+    # Get all of the explore results pages as lines for the table of contents
+    explore_results_pages = []
+    for key, value in topic_dict.items():
+        line = f'''<li><a href='#{value}'>{key}</a></li>'''
+        explore_results_pages.append(line)
 
-# Get the demographic headers as lines for the table of contents
-demographic_pages = []
-for key, value in dem_header_dict.items():
-    line = f'''<li><a href='#{key}'>{value}</a></li>'''
-    demographic_pages.append(line)
+    # Get the demographic headers as lines for the table of contents
+    demographic_pages = []
+    for key, value in dem_header_dict.items():
+        line = f'''<li><a href='#{key}'>{value}</a></li>'''
+        demographic_pages.append(line)
 
-content.append(f'''
+    content.append(f'''
 <div>
     <h1 style='page-break-before:always;'>Table of Contents</h1>
     <ul>
-        <li><a href='#summary'>Summary</a> - See a simple overview of results
-            from pupils at your school, compared with other schools</li>
+        <li><a href='#summary'>Summary</a> - See a simple overview of
+            results from pupils at your school, compared with other
+            schools</li>
         <br>
-        <li><a href='#explore_results'>Explore results</a> - Explore how your
-pupils responded to each survey question, and see further information on how
-the summary page's comparison to other schools was generated
+        <li><a href='#explore_results'>Explore results</a> - Explore how
+            your pupils responded to each survey question, and see further
+            information on how the summary page's comparison to other
+            schools was generated
             <ul>{''.join(explore_results_pages)}</ul>
         </li>
         <br>
@@ -143,55 +155,56 @@ the summary page's comparison to other schools was generated
 </div>
 ''')
 
-################
-# Summary page #
-################
+    ################
+    # Summary page #
+    ################
 
-# Summary cover page with guide to RAG ratings
-content.append(summary_intro(school_size, 'pdf'))
+    # Summary cover page with guide to RAG ratings
+    content.append(summary_intro(school_size, 'pdf'))
 
-# Summary grid with RAG ratings for each topic
-content = summary_table(df_scores, chosen_group, chosen_school, 'pdf', content)
+    # Summary grid with RAG ratings for each topic
+    content = summary_table(
+        df_scores, chosen_group, chosen_school, 'pdf', content)
 
-###########################
-# Explore results section #
-###########################
+    ###########################
+    # Explore results section #
+    ###########################
 
-# Craete cover page with title and introduction
-content.append(write_page_title(output='pdf'))
+    # Craete cover page with title and introduction
+    content.append(write_page_title(output='pdf'))
 
-# Create pages for all of the topics
-for chosen_variable_lab in topic_dict.keys():
-    content = create_explore_topic_page(
-        chosen_variable_lab, topic_dict, df_scores, chosen_school,
-        chosen_group, df_prop, school_size, content)
+    # Create pages for all of the topics
+    for chosen_variable_lab in topic_dict.keys():
+        content = create_explore_topic_page(
+            chosen_variable_lab, topic_dict, df_scores, chosen_school,
+            chosen_group, df_prop, school_size, content)
 
-#########################
-# Who took part section #
-#########################
+    #########################
+    # Who took part section #
+    #########################
 
-# Create cover page with title and introduction
-content.append(create_demographic_page_intro(school_size, 'pdf'))
+    # Create cover page with title and introduction
+    content.append(create_demographic_page_intro(school_size, 'pdf'))
 
-# Create pages with plots for each measure
-content = demographic_plots(
-    dem_prop=dem_prop, chosen_school=chosen_school,
-    chosen_group='Compared with other schools in Northern Devon',
-    output='pdf', content=content)
+    # Create pages with plots for each measure
+    content = demographic_plots(
+        dem_prop=dem_prop, chosen_school=chosen_school,
+        chosen_group='Compared with other schools in Northern Devon',
+        output='pdf', content=content)
 
-######################
-# Create HTML report #
-######################
+    ######################
+    # Create HTML report #
+    ######################
 
-# Remove the final temporary image file
-if os.path.exists('report/temp_image.png'):
-    os.remove('report/temp_image.png')
+    # Remove the final temporary image file
+    if os.path.exists('report/temp_image.png'):
+        os.remove('report/temp_image.png')
 
-# Import the CSS stylesheet
-with open('css/static_report_style.css') as css:
-    css_style = css.read()
+    # Import the CSS stylesheet
+    with open('css/static_report_style.css') as css:
+        css_style = css.read()
 
-html_content = f'''
+    html_content = f'''
 <!DOCTYPE html>
 <html>
 <head>
@@ -206,10 +219,10 @@ html_content = f'''
 </html>
 '''
 
-# Generate HTML (not used currently to make the PDF report, but useful if
-# you want to inspect the HTML code we have produced)
-with open('report/report.html', 'w') as f:
-    f.write(html_content)
+    # Generate HTML (not used currently to make the PDF report, but useful if
+    # you want to inspect the HTML code we have produced)
+    # with open('report/report.html', 'w') as f:
+    #     f.write(html_content)
 
-# Create PDF using Weasyprint
-weasyprint.HTML(string=html_content).write_pdf('report/report.pdf')
+    # Create PDF using Weasyprint
+    weasyprint.HTML(string=html_content).write_pdf('report/report.pdf')
