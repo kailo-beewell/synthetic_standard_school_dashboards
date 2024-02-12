@@ -1,16 +1,14 @@
 '''
-Helper functions for the explore_results() page. This is in addition to the
-functions in bar_charts.py and bar_charts_text.py. They are utilised for the
-streamlit pages and PDF report, and help to streamline code that would be
-repeated between those two outputs, and ensure any changes are made to both.
+Helper functions for the explore_results() section of dashboard and PDF report.
 '''
 import pandas as pd
 import streamlit as st
 from markdown import markdown
 from utilities.bar_charts_text import create_response_description
-from utilities.bar_charts import survey_responses
+from utilities.bar_charts import survey_responses, details_ordered_bar
 from utilities.summary_rag import result_box
 from utilities.reshape_data import filter_by_group, extract_nested_results
+from utilities.score_descriptions import score_descriptions
 
 
 def write_page_title(output='streamlit'):
@@ -521,3 +519,70 @@ other schools in Northern Devon, was:'''
         content.append(markdown(description))
         content.append(result_box(devon_rag, 'pdf'))
         return content
+
+
+def create_explore_topic_page(
+        chosen_variable_lab, topic_dict, df_scores, chosen_school,
+        chosen_group, df_prop, school_size, content):
+    '''
+    Add an explore results page with responses to a given topic to report HTML.
+
+    Parameters
+    ----------
+    chosen_variable_lab : string
+        Chosen variable in label format (e.g. 'Psychological wellbeing')
+    topic_dict : dictionary
+        Dictionary of topics where key is variable_lab and value is variable
+    df_scores : dataframe
+        Dataframe with scores for each topic
+    chosen_school : string
+        Name of the chosen school
+    chosen_group : string
+        Name of the chosen group to view results by - options are
+        'For all pupils', 'By year group', 'By gender', 'By FSM' or 'By SEN'
+    df_prop : dataframe
+        Dataframe with the proportion of pupils providing each response to each
+        survey question
+    school_size : integer
+        Total pupils who completed at least one question at that school
+    content : list
+        Optional input used when output=='pdf', contains HTML for report.
+
+    Returns
+    -------
+    content : list
+        Optional return, used when output=='pdf', contains HTML for report.
+    '''
+    # Convert from variable_lab to variable
+    chosen_variable = topic_dict[chosen_variable_lab]
+
+    # Topic header and description
+    content = write_topic_intro(chosen_variable, chosen_variable_lab,
+                                df_scores, output='pdf', content=content)
+
+    # Section header and description
+    content = write_response_section_intro(
+        chosen_variable_lab, output='pdf', content=content)
+
+    # Get dataframe with results for the chosen variable, group and school
+    chosen_result = get_chosen_result(
+        chosen_variable, chosen_group, df_prop, chosen_school)
+
+    # Produce bar charts, plus their chart section descriptions and titles
+    content = create_bar_charts(
+        chosen_variable, chosen_result, output='pdf', content=content)
+
+    # Create dataframe based on chosen variable
+    between_schools = get_between_schools(df_scores, chosen_variable)
+
+    # Write the comparison intro text (title, description, RAG rating)
+    content = write_comparison_intro(
+        school_size, chosen_school, chosen_variable, chosen_variable_lab,
+        score_descriptions, between_schools, output='pdf', content=content)
+
+    # Create ordered bar chart
+    content = details_ordered_bar(
+        school_scores=between_schools, school_name=chosen_school, font_size=16,
+        output='pdf', content=content)
+
+    return content

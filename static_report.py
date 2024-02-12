@@ -1,7 +1,10 @@
-# Generate a non-interactive PDF version of the dashboard
+'''
+Generate a non-interactive PDF version of the dashboard
+'''
 
-###############################################################################
-# Set-up
+##########
+# Set-up #
+##########
 
 # Import required packages
 import pandas as pd
@@ -11,24 +14,16 @@ import base64
 from markdown import markdown
 
 # Import functions I have defined elsewhere
-from utilities.score_descriptions import score_descriptions
-from utilities.bar_charts import details_ordered_bar, survey_responses
 from utilities.explore_results import (
     write_page_title,
     create_topic_dict,
-    write_topic_intro,
-    write_response_section_intro,
-    get_chosen_result,
-    create_bar_charts,
-    get_between_schools,
-    write_comparison_intro)
+    create_explore_topic_page)
 from utilities.summary_rag import summary_intro, summary_table
-from utilities.reshape_data import get_school_size, extract_nested_results
+from utilities.reshape_data import get_school_size
 from utilities.who_took_part import (
     create_demographic_page_intro,
     demographic_headers,
     demographic_plots)
-from utilities.bar_charts_text import create_response_description
 
 # Create empty list to fill with HTML content for PDF report
 content = []
@@ -49,8 +44,12 @@ topic_dict = create_topic_dict(df_scores)
 # Create header dictionary for the demographic section
 dem_header_dict = demographic_headers()
 
-###############################################################################
-# Title page and introduction
+# Get school size
+school_size = get_school_size(counts, chosen_school)
+
+###############################
+# Title page and introduction #
+###############################
 
 # Logo - convert to HTML, then add to the content for the report
 data_uri = base64.b64encode(
@@ -140,8 +139,9 @@ of the questions for that topic.
 '''
 content.append(markdown(text))
 
-###############################################################################
-# Table of contents
+#####################
+# Table of contents #
+#####################
 
 # Get all of the explore results pages as lines for the table of contents
 explore_results_pages = []
@@ -176,93 +176,32 @@ the summary page's comparison to other schools was generated
 </div>
 ''')
 
-###############################################################################
-# Get school size
-school_size = get_school_size(counts, chosen_school)
+################
+# Summary page #
+################
 
-###############################################################################
-# Summary page
-
-# Summary cover page
+# Summary cover page with guide to RAG ratings
 content.append(summary_intro(school_size, 'pdf'))
 
-# Summary grid with topics and RAG ratings
+# Summary grid with RAG ratings for each topic
 content = summary_table(df_scores, chosen_group, chosen_school, 'pdf', content)
 
-###############################################################################
-# Explore results section
+###########################
+# Explore results section #
+###########################
 
+# Craete cover page with title and introduction
 content.append(write_page_title(output='pdf'))
-
-
-def create_explore_topic_page(chosen_variable_lab, topic_dict, df_scores,
-                              chosen_school, counts, content):
-    '''
-    Add an explore results page with responses to a given topic to report HTML.
-
-    Parameters
-    ----------
-    chosen_variable_lab : string
-        Chosen variable in label format (e.g. 'Psychological wellbeing')
-    topic_dict : dictionary
-        Dictionary of topics where key is variable_lab and value is variable
-    df_scores : dataframe
-        Dataframe with scores for each topic
-    chosen_school : string
-        Name of the chosen school
-    counts : dataframe
-        Dataframe with the counts of pupils at each school
-    content : list
-        Optional input used when output=='pdf', contains HTML for report.
-
-    Returns
-    -------
-    content : list
-        Optional return, used when output=='pdf', contains HTML for report.
-    '''
-    # Convert from variable_lab to variable
-    chosen_variable = topic_dict[chosen_variable_lab]
-
-    # Topic header and description
-    content = write_topic_intro(chosen_variable, chosen_variable_lab,
-                                df_scores, output='pdf', content=content)
-
-    # Section header and description
-    content = write_response_section_intro(
-        chosen_variable_lab, output='pdf', content=content)
-
-    # Get dataframe with results for the chosen variable, group and school
-    chosen_result = get_chosen_result(
-        chosen_variable, chosen_group, df_prop, chosen_school)
-
-    # Produce bar charts, plus their chart section descriptions and titles
-    content = create_bar_charts(
-        chosen_variable, chosen_result, output='pdf', content=content)
-
-    # Create dataframe based on chosen variable
-    between_schools = get_between_schools(df_scores, chosen_variable)
-
-    # Write the comparison intro text (title, description, RAG rating)
-    content = write_comparison_intro(
-        school_size, chosen_school, chosen_variable, chosen_variable_lab,
-        score_descriptions, between_schools, output='pdf', content=content)
-
-    # Create ordered bar chart
-    content = details_ordered_bar(
-        school_scores=between_schools, school_name=chosen_school, font_size=16,
-        output='pdf', content=content)
-
-    return content
-
 
 # Create pages for all of the topics
 for chosen_variable_lab in topic_dict.keys():
     content = create_explore_topic_page(
-        chosen_variable_lab, topic_dict, df_scores,
-        chosen_school, counts, content)
+        chosen_variable_lab, topic_dict, df_scores, chosen_school,
+        chosen_group, df_prop, school_size, content)
 
-###############################################################################
-# Who took part section
+#########################
+# Who took part section #
+#########################
 
 # Create cover page with title and introduction
 content.append(create_demographic_page_intro(school_size, 'pdf'))
@@ -273,8 +212,9 @@ content = demographic_plots(
     chosen_group='Compared with other schools in Northern Devon',
     output='pdf', content=content)
 
-###############################################################################
-# Create HTML report...
+######################
+# Create HTML report #
+######################
 
 # Remove the final temporary image file
 if os.path.exists('report/temp_image.png'):
@@ -304,5 +244,5 @@ html_content = f'''
 with open('report/report.html', 'w') as f:
     f.write(html_content)
 
-# Create PDF using Weasyprint (better)
+# Create PDF using Weasyprint
 weasyprint.HTML(string=html_content).write_pdf('report/report.pdf')
