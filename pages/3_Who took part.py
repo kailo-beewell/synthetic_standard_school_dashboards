@@ -8,6 +8,7 @@ from utilities.bar_charts import survey_responses
 from utilities.bar_charts_text import create_response_description
 from utilities.import_data import import_tidb_data
 from utilities.reshape_data import get_school_size
+from utilities.who_took_part import create_demographic_page_intro
 
 # Set page configuration
 page_setup()
@@ -27,16 +28,11 @@ if check_password():
     ###########################################################################
     # Introduction including total pupil number
 
-    # Title
-    st.title('Who took part?')
-
     # Get total pupil number
     school_size = get_school_size(counts, st.session_state.school)
 
-    # Print school size
-    st.markdown(f'''
-There were {school_size} pupils at your school who took part in the #BeeWell
-survey. This page describes the sample of pupils who completed the survey.''')
+    # Write title and introduction
+    create_demographic_page_intro(school_size)
     blank_lines(1)
 
     # Select whether to view results alongside other schools or not

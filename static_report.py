@@ -24,6 +24,7 @@ from utilities.explore_results import (
     write_comparison_intro)
 from utilities.summary_rag import summary_intro, summary_table
 from utilities.reshape_data import get_school_size
+from utilities.who_took_part import create_demographic_page_intro
 
 # Create empty list to fill with HTML content for PDF report
 content = []
@@ -247,25 +248,7 @@ for chosen_variable_lab in topic_dict.keys():
 ###############################################################################
 # Who took part section
 
-title = 'Who took part?'
-
-# CHANGE FROM STREAMLIT: changed 'page' to 'section
-type = 'section'
-description = f'''
-There were {school_size} pupils at your school who took part in the #BeeWell
-survey. This {type} describes the sample of pupils who completed the survey.'''
-
-content.append(f'''
-<div class='page'>
-    <div class='section_container'>
-        <h1 style='page-break-before:always;'
-               id='who_took_part'>Who took part?</h1>
-        <p>{description}</p>
-    </div>
-</div>
-''')
-
-content.append('''<h1 style='page-break-before:always;'>Test</h1>''')
+content.append(create_demographic_page_intro(school_size, 'pdf'))
 
 ###############################################################################
 # Create HTML report...
