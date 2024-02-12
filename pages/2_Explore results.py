@@ -14,6 +14,8 @@ from utilities.explore_results import (
     get_between_schools,
     write_comparison_intro
 )
+from utilities.reshape_data import get_school_size
+from utilities.reuse_text import text_caution_comparing
 
 # Set page configuration
 page_setup()
@@ -90,8 +92,9 @@ if check_password():
     between_schools = get_between_schools(df_scores, chosen_variable)
 
     # Write the comparison intro text (title, description, RAG rating)
+    school_size = get_school_size(counts, st.session_state.school)
     write_comparison_intro(
-        counts, st.session_state.school, chosen_variable,
+        school_size, st.session_state.school, chosen_variable,
         chosen_variable_lab, score_descriptions, between_schools)
 
     # Create ordered bar chart
@@ -99,24 +102,7 @@ if check_password():
 
     # Add caveat for interpretation
     st.subheader('Comparing between schools')
-    st.markdown('''
-Always be mindful when making comparisons between different schools. There are
-a number of factors that could explain differences in scores (whether you are
-above average, average, or below average). These include:
-* Random chance ('one-off' findings).
-* Differences in the socio-economic characteristics of pupils and the areas
-where they live (e.g. income, education, ethnicity, access to services and
-amenities).
-* The number of pupils taking part - schools that are much smaller are more
-likely to have more "extreme" results (i.e. above or below average), whilst
-schools with a larger number of pupils who took part are more likely to
-see average results
-
-It's also worth noting that the score will only include results from pupils who
-completed each of the questions used to calculate that topic - so does not
-include any reflection of results from pupils who did not complete some or all
-of the questions for that topic.
-''')
+    st.markdown(text_caution_comparing())
 
     # Draft phrasing for benchmarking (not currently included in dashboards):
     # When comparing to the Greater Manchester data, be aware that (i) there

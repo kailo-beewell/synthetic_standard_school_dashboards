@@ -1,18 +1,14 @@
 '''
-Helper functions for the explore_results() page. This is in addition to the
-functions in bar_charts.py and bar_charts_text.py. They are utilised for the
-streamlit pages and PDF report, and help to streamline code that would be
-repeated between those two outputs, and ensure any changes are made to both.
+Helper functions for the explore_results() section of dashboard and PDF report.
 '''
 import pandas as pd
 import streamlit as st
-from ast import literal_eval
-import numpy as np
 from markdown import markdown
 from utilities.bar_charts_text import create_response_description
-from utilities.bar_charts import survey_responses
+from utilities.bar_charts import survey_responses, details_ordered_bar
 from utilities.summary_rag import result_box
-from utilities.reshape_data import filter_by_group
+from utilities.reshape_data import filter_by_group, extract_nested_results
+from utilities.score_descriptions import score_descriptions
 
 
 def write_page_title(output='streamlit'):
@@ -232,41 +228,12 @@ def get_chosen_result(chosen_variable, chosen_group, df, school):
     '''
     # Filter by the specified school and grouping
     chosen, group_lab = filter_by_group(df, chosen_group, school, 'explore')
+
     # Filter by the chosen variable
     chosen = chosen[chosen['group'] == chosen_variable]
 
-    # Extract the lists with results stored in the dataframe
-    # e.g. ['Yes', 'No'], [20, 80], [2, 8] in the original data will become
-    # seperate columns with [Yes, 20, 2] and [No, 80, 8]
-    df_list = []
-    for index, row in chosen.iterrows():
-        # Extract results as long as it isn't NaN (e.g. NaN when n<10)
-        if ~np.isnan(row.n_responses):
-            df = pd.DataFrame(
-                zip(literal_eval(row['cat'].replace('nan', 'None')),
-                    literal_eval(row['cat_lab']),
-                    literal_eval(row['percentage']),
-                    literal_eval(row['count'])),
-                columns=['cat', 'cat_lab', 'percentage', 'count'])
-            # Replace NaN with max number so stays at end of sequence
-            df['cat'] = df['cat'].fillna(df['cat'].max()+1)
-            # Add the string columns (no extraction needed)
-            df['measure'] = row['measure']
-            df['measure_lab'] = row['measure_lab']
-            df['group'] = row[group_lab]
-            df_list.append(df)
-        # As we still want a bar when n<10, we create a record still but label
-        # it to indicate n<10
-        else:
-            df = row.to_frame().T[['measure', 'measure_lab']]
-            df['group'] = row[group_lab]
-            df['cat'] = 0
-            df['cat_lab'] = 'Less than 10 responses'
-            df['count'] = np.nan
-            df['percentage'] = 100
-            df_list.append(df)
-
-    chosen_result = pd.concat(df_list)
+    # Extract the nested lists in the dataframe
+    chosen_result = extract_nested_results(chosen, group_lab)
 
     return chosen_result
 
@@ -390,17 +357,25 @@ def create_bar_charts(chosen_variable, chosen_result,
     reverse = ['esteem', 'negative', 'support', 'free_like', 'local_safe',
                'local_other', 'belong_local', 'bully']
 
-    # Create stacked bar chart with seperate charts if required
+    # Create stacked bar chart with seperate chart groups if required
     if chosen_variable in multiple_charts:
+        # Counter as we don't want to break page before first description,
+        # but do for the later description
+        i = -1
         var_dict = multiple_charts[chosen_variable]
         for key, value in var_dict.items():
-
+            i += 1
             # Add description
             if key in response_descrip.keys():
                 if output == 'streamlit':
                     st.markdown(response_descrip[key])
                 elif output == 'pdf':
-                    content.append(f'<p>{response_descrip[key]}</p>')
+                    # Break page before description, unless it's the first.
+                    if i > 0:
+                        content.append(f'''
+<p style='page-break-before:always;'>{response_descrip[key]}</p>''')
+                    else:
+                        content.append(f'<p>{response_descrip[key]}</p>')
 
             # Filter to questions in sub-group, reversing categories if need to
             to_plot = chosen_result[chosen_result['measure'].isin(value)]
@@ -469,7 +444,7 @@ def get_between_schools(df, chosen_variable):
 
 
 def write_comparison_intro(
-        counts, chosen_school, chosen_variable, chosen_variable_lab,
+        school_size, chosen_school, chosen_variable, chosen_variable_lab,
         score_descriptions, between_schools, output='streamlit', content=None):
     '''
     Write the introduction to the comparison section (heading, description
@@ -477,8 +452,8 @@ def write_comparison_intro(
 
     Parameters
     ----------
-    counts : dataframe
-        Dataframe with counts of pupils in each school
+    school_size : integer
+        Total number of pupils at school (who answered at least one question)
     chosen_school : string
         Name of chosen school
     chosen_variable : string
@@ -500,14 +475,6 @@ def write_comparison_intro(
     content : list
         Optional return, used when output=='pdf', contains HTML for report.
     '''
-    # Filter to relevant school and get total school size
-    school_counts = counts.loc[counts['school_lab'] == chosen_school]
-    school_size = school_counts.loc[
-        (school_counts['year_group_lab'] == 'All') &
-        (school_counts['gender_lab'] == 'All') &
-        (school_counts['fsm_lab'] == 'All') &
-        (school_counts['sen_lab'] == 'All'), 'count'].values[0].astype(int)
-
     # Get count of pupils who completed the topic questions
     topic_count = int(between_schools.loc[
         between_schools['school_lab'] == chosen_school, 'count'].to_list()[0])
@@ -532,8 +499,9 @@ complete responses on this question. For this topic, your school had
 {topic_count} complete responses (out of a possible {school_size}).
 
 Possible scores for each pupil on this topic range from
-{score_descriptions[chosen_variable][0]} with **higher scores indicating
-{score_descriptions[chosen_variable][1]}** - and vice versa for lower scores.
+{score_descriptions[chosen_variable][0]} with
+**higher scores indicating {score_descriptions[chosen_variable][1]}** -
+and vice versa for lower scores.
 
 The mean score of the pupils at you school is compared with pupils who
 completed the same survey questions at other schools. This allows you to see
@@ -551,3 +519,70 @@ other schools in Northern Devon, was:'''
         content.append(markdown(description))
         content.append(result_box(devon_rag, 'pdf'))
         return content
+
+
+def create_explore_topic_page(
+        chosen_variable_lab, topic_dict, df_scores, chosen_school,
+        chosen_group, df_prop, school_size, content):
+    '''
+    Add an explore results page with responses to a given topic to report HTML.
+
+    Parameters
+    ----------
+    chosen_variable_lab : string
+        Chosen variable in label format (e.g. 'Psychological wellbeing')
+    topic_dict : dictionary
+        Dictionary of topics where key is variable_lab and value is variable
+    df_scores : dataframe
+        Dataframe with scores for each topic
+    chosen_school : string
+        Name of the chosen school
+    chosen_group : string
+        Name of the chosen group to view results by - options are
+        'For all pupils', 'By year group', 'By gender', 'By FSM' or 'By SEN'
+    df_prop : dataframe
+        Dataframe with the proportion of pupils providing each response to each
+        survey question
+    school_size : integer
+        Total pupils who completed at least one question at that school
+    content : list
+        Optional input used when output=='pdf', contains HTML for report.
+
+    Returns
+    -------
+    content : list
+        Optional return, used when output=='pdf', contains HTML for report.
+    '''
+    # Convert from variable_lab to variable
+    chosen_variable = topic_dict[chosen_variable_lab]
+
+    # Topic header and description
+    content = write_topic_intro(chosen_variable, chosen_variable_lab,
+                                df_scores, output='pdf', content=content)
+
+    # Section header and description
+    content = write_response_section_intro(
+        chosen_variable_lab, output='pdf', content=content)
+
+    # Get dataframe with results for the chosen variable, group and school
+    chosen_result = get_chosen_result(
+        chosen_variable, chosen_group, df_prop, chosen_school)
+
+    # Produce bar charts, plus their chart section descriptions and titles
+    content = create_bar_charts(
+        chosen_variable, chosen_result, output='pdf', content=content)
+
+    # Create dataframe based on chosen variable
+    between_schools = get_between_schools(df_scores, chosen_variable)
+
+    # Write the comparison intro text (title, description, RAG rating)
+    content = write_comparison_intro(
+        school_size, chosen_school, chosen_variable, chosen_variable_lab,
+        score_descriptions, between_schools, output='pdf', content=content)
+
+    # Create ordered bar chart
+    content = details_ordered_bar(
+        school_scores=between_schools, school_name=chosen_school, font_size=16,
+        output='pdf', content=content)
+
+    return content

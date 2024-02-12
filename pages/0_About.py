@@ -2,6 +2,7 @@ import streamlit as st
 from utilities.page_setup import page_setup
 from utilities.authentication import check_password
 from utilities.stylable_container import header_container
+from utilities.reuse_text import text_how_use
 
 # Set page configuration
 page_setup()
@@ -124,25 +125,7 @@ as free school meal eligibility and special education needs to give further
 insight into responses.''')
 
     with st.expander('How should we use these results?', expanded=expand):
-        st.markdown('''
-These data can provide a useful starting point for discussions about the needs
-of your school population and priority areas for development and improvement.
-It can also be useful in considering areas of strengths and/or helping pupils
-reflect on their positive qualities.
-
-Data in your #BeeWell report may be useful in indicating progress against
-targets in your School Improvement Plan or help to identify future target
-areas. It may help to identify areas of priority for staff training or be used
-as context when considering academic data for participating year groups. It can
-also be used as independent evidence in the context of an Ofsted inspection.
-
-Finally, young people consulted during the set-up of #BeeWell in Greater
-Manchester felt strongly that pupils should be included in discussions around
-feedback, particularly to plan activities and approaches to raise awareness of
-strengths or difficulties the #BeeWell survey may highlight. They suggested
-involving a range of students (not just those involved in school councils) in
-planning how to raise awareness about wellbeing and to support the needs of
-young people.''')
+        st.markdown(text_how_use())
         st.image('images/thinking.png')
 
     with st.expander('Can I access this dashboard on different devices?',

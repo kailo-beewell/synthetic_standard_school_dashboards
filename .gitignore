@@ -6,3 +6,5 @@ __pycache__/
 
 # Secrets file
 .streamlit/secrets.toml
+
+db.sqlite3

@@ -34,12 +34,6 @@ div[class='stMarkdown'] > div[data-testid='stMarkdownContainer'] > hr
     margin: 0;
 }
 
-/* Download button */
-div[data-testid='stDownloadButton']
-{
-    text-align: center;
-}
-
 /* Text in status elements */
 div[data-testid='stNotificationContentError'] > div
 {

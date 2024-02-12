@@ -5,7 +5,7 @@ import numpy as np
 import plotly.express as px
 import streamlit as st
 from contextlib import nullcontext
-import base64
+from utilities.convert_image import convert_fig_to_html
 
 
 def survey_responses(dataset, font_size=16, output='streamlit', content=None):
@@ -145,30 +145,16 @@ shown for {kept} pupils.'''
             # PDF: Write image to a temporary PNG file, convert that to HTML,
             # and add the image HTML to temp_content
             elif output == 'pdf':
-                # Height and width should be similar scale as streamlit which
-                # was 450x657. Automargin ensures labels aren't cut off
-                fig.update_layout(
-                    height=411,
-                    width=600,
-                    xaxis=dict(automargin=True),
-                    yaxis=dict(automargin=True)
-                )
-                # Write image to a temporary file
-                fig.write_image('report/temp_image.png')
-                # Convert to HTML
-                data_uri = base64.b64encode(
-                    open('report/temp_image.png', 'rb').read()).decode('utf-8')
-                img_tag = f'''
-<img src='data:image/png;base64,{data_uri}' alt='{measure}'>'''
-                # Add to temporary record of HTML content for report
-                temp_content.append(img_tag)
-                # Insert temp_content into a div class, with a break after the
-                # container if it's an even number on the counter
-                img_div = f'''
+
+                # Get the HTML image tag for the figure and add to temp_content
+                temp_content.append(convert_fig_to_html(
+                    fig=fig, alt_text=measure))
+
+                # Insert temp_content into a div class and add to content
+                content.append(f'''
 <div class='responses_container'>
     {''.join(temp_content)}
-</div>'''
-                content.append(img_div)
+</div>''')
 
     # At the end of the loop, if PDF report, return content
     if output == 'pdf':
@@ -279,27 +265,16 @@ def details_ordered_bar(school_scores, school_name, font_size=16,
     elif output == 'pdf':
         # Create temporary list to hold image HTML
         temp_content = []
-        # Adjust size so consistent with streamlit, and automargin ensures
-        # any labels aren't cut off
-        fig.update_layout(
-            height=411,
-            width=600,
-            xaxis=dict(automargin=True),
-            yaxis=dict(automargin=True))
-        # Write image to a temporary file
-        fig.write_image('report/temp_image.png')
-        # Convert to HTML
-        data_uri = base64.b64encode(
-            open('report/temp_image.png', 'rb').read()).decode('utf-8')
-        img_tag = f'''
-<img src='data:image/png;base64,{data_uri}'
-alt='Comparison with other schools'>'''
-        # Add to temporary record of HTML content for report
-        temp_content.append(img_tag)
-        # Insert temp_content into a div class
+
+        # Get the HTML image tag for the figure and add to temp_content
+        temp_content.append(convert_fig_to_html(
+            fig=fig, alt_text='Comparison with other schools'))
+
+        # Insert temp_content into a div class and add to content
         content.append(f'''
 <div class='comparison_container'>
     {''.join(temp_content)}
 </div>''')
+
         # Return the updated content HTML
         return content
