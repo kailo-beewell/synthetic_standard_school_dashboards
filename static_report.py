@@ -12,7 +12,7 @@ from markdown import markdown
 
 # Import functions I have defined elsewhere
 from utilities.score_descriptions import score_descriptions
-from utilities.bar_charts import details_ordered_bar
+from utilities.bar_charts import details_ordered_bar, survey_responses
 from utilities.explore_results import (
     write_page_title,
     create_topic_dict,
@@ -23,8 +23,9 @@ from utilities.explore_results import (
     get_between_schools,
     write_comparison_intro)
 from utilities.summary_rag import summary_intro, summary_table
-from utilities.reshape_data import get_school_size
+from utilities.reshape_data import get_school_size, extract_nested_results
 from utilities.who_took_part import create_demographic_page_intro
+from utilities.bar_charts_text import create_response_description
 
 # Create empty list to fill with HTML content for PDF report
 content = []
@@ -37,6 +38,7 @@ chosen_school = 'School A'
 df_scores = pd.read_csv('data/survey_data/aggregate_scores_rag.csv')
 df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
 counts = pd.read_csv('data/survey_data/overall_counts.csv')
+dem_prop = pd.read_csv('data/survey_data/aggregate_demographic.csv')
 
 # Create dictionary of topics
 topic_dict = create_topic_dict(df_scores)
@@ -249,6 +251,72 @@ for chosen_variable_lab in topic_dict.keys():
 # Who took part section
 
 content.append(create_demographic_page_intro(school_size, 'pdf'))
+
+# CHANGE: SCHOOL
+# Filter to results from current school
+chosen = dem_prop[dem_prop['school_lab'] == chosen_school]
+
+# CHANGE: JUST COMPARATOR GRAPHS
+
+# Extract the nested lists in the dataframe
+chosen_result = extract_nested_results(
+    chosen=chosen, group_lab='school_group_lab', plot_group=True)
+
+# Define headers for each of the plot groups - this will also define the
+# order in which these groups are shown
+header_dict = {
+    'year_group': 'Year group',
+    'fsm': 'Eligible for free school meals (FSM)',
+    'gender': 'Gender and transgender',
+    'sexual_orientation': 'Sexual orientation',
+    'care_experience': 'Care experience',
+    'young_carer': 'Young carers',
+    'neuro': 'Special educational needs and neurodivergence',
+    'ethnicity': 'Ethnicity',
+    'english_additional': 'English as an additional language',
+    'birth': 'Background'
+}
+
+# Import descriptions for the charts
+response_descrip = create_response_description()
+
+# CHANGE: ST.HEADER() to content.append()
+# CHANGE: ST.MARKDOWN() to content.append()
+# CHANGE: SURVEY_RESPONSES() inputs
+# CHANGE: Page break before description
+# This plots measures in loops, basing printed text on the measure names
+# and basing the titles of groups on the group names (which differs to the
+# survey responses page, which bases printed text on group names)
+
+for plot_group in header_dict.keys():
+    # Add the title for that group
+    content.append(f'''<h1 style='page-break-before: always;'>
+                   {header_dict[plot_group]}</h1>''')
+
+    # Find the measures in that group and loop through them
+    measures = chosen_result.loc[
+        chosen_result['plot_group'] == plot_group,
+        'measure'].drop_duplicates()
+
+    # Counter as we don't want to break page before first description,
+    # but do for the later description
+    i = -1
+    for measure in measures:
+        i += 1
+
+        # Add descriptive text if there is any, and breaking page before the
+        # description unless it's the first
+        if measure in response_descrip.keys():
+            if i > 0:
+                content.append(f'''<p style='page-break-before:always;'>
+                               {markdown(response_descrip[measure])}</p>''')
+            else:
+                content.append(f'<p>{markdown(response_descrip[measure])}</p>')
+
+        # Filter to current measure and plot
+        to_plot = chosen_result[chosen_result['measure'] == measure]
+        content = survey_responses(
+            to_plot, font_size=14, output='pdf', content=content)
 
 ###############################################################################
 # Create HTML report...

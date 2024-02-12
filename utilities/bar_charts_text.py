@@ -171,17 +171,21 @@ on (e.g. EHCP). This information is provided by Devon County Council.
         'neurodivergent': '''
 Pupils were told that this question is about identifying as neurodivergent.
 They were told that being neurodivergent can mean being:
+
 * Dyslexic
 * Dyspraxic
 * Dyscalculic
 * Autistic
+
 Or having:
+
 * ADHD or ADD
 * A tic disorder such as Tourette’s
 * A speech, language or communication disorder
 * An intellectual disability or learning disability
 * Dysgraphia
 * Foetal alcohol spectrum disorder
+
 It stated that they might describe themselves as neurodivergent if they
 identify with one or more of the conditions above, or they may be waiting for
 or have a diagnosis. They were then asked if they identify as neurodivergent.
