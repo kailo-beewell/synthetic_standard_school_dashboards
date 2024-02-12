@@ -5,7 +5,9 @@ from utilities.bar_charts import survey_responses
 from utilities.bar_charts_text import create_response_description
 from utilities.import_data import import_tidb_data
 from utilities.reshape_data import get_school_size, extract_nested_results
-from utilities.who_took_part import create_demographic_page_intro
+from utilities.who_took_part import (
+    create_demographic_page_intro,
+    demographic_headers)
 
 # Set page configuration
 page_setup()
@@ -54,18 +56,7 @@ if check_password():
 
     # Define headers for each of the plot groups - this will also define the
     # order in which these groups are shown
-    header_dict = {
-        'year_group': 'Year group',
-        'fsm': 'Eligible for free school meals (FSM)',
-        'gender': 'Gender and transgender',
-        'sexual_orientation': 'Sexual orientation',
-        'care_experience': 'Care experience',
-        'young_carer': 'Young carers',
-        'neuro': 'Special educational needs and neurodivergence',
-        'ethnicity': 'Ethnicity',
-        'english_additional': 'English as an additional language',
-        'birth': 'Background'
-    }
+    header_dict = demographic_headers()
 
     # Import descriptions for the charts
     response_descrip = create_response_description()

@@ -24,7 +24,9 @@ from utilities.explore_results import (
     write_comparison_intro)
 from utilities.summary_rag import summary_intro, summary_table
 from utilities.reshape_data import get_school_size, extract_nested_results
-from utilities.who_took_part import create_demographic_page_intro
+from utilities.who_took_part import (
+    create_demographic_page_intro,
+    demographic_headers)
 from utilities.bar_charts_text import create_response_description
 
 # Create empty list to fill with HTML content for PDF report
@@ -40,8 +42,11 @@ df_prop = pd.read_csv('data/survey_data/aggregate_responses.csv')
 counts = pd.read_csv('data/survey_data/overall_counts.csv')
 dem_prop = pd.read_csv('data/survey_data/aggregate_demographic.csv')
 
+# Get dictionaries which will use later on and for table of contents
 # Create dictionary of topics
 topic_dict = create_topic_dict(df_scores)
+# Create header dictionary for the demographic section
+dem_header_dict = demographic_headers()
 
 ###############################################################################
 # Title page and introduction
@@ -143,6 +148,12 @@ for key, value in topic_dict.items():
     line = f'''<li><a href='#{value}'>{key}</a></li>'''
     explore_results_pages.append(line)
 
+# Get the demographic headers as lines for the table of contents
+demographic_pages = []
+for key, value in dem_header_dict.items():
+    line = f'''<li><a href='#{key}'>{value}</a></li>'''
+    demographic_pages.append(line)
+
 content.append(f'''
 <div>
     <h1 style='page-break-before:always;'>Table of Contents</h1>
@@ -157,7 +168,9 @@ the summary page's comparison to other schools was generated
         </li>
         <br>
         <li><a href='#who_took_part'>Who took part</a> - See the
-            characteristics of the pupils who took part in the survey</li>
+            characteristics of the pupils who took part in the survey
+            <ul>{''.join(demographic_pages)}</ul>
+        </li>
     </ul>
 </div>
 ''')
@@ -262,21 +275,6 @@ chosen = dem_prop[dem_prop['school_lab'] == chosen_school]
 chosen_result = extract_nested_results(
     chosen=chosen, group_lab='school_group_lab', plot_group=True)
 
-# Define headers for each of the plot groups - this will also define the
-# order in which these groups are shown
-header_dict = {
-    'year_group': 'Year group',
-    'fsm': 'Eligible for free school meals (FSM)',
-    'gender': 'Gender and transgender',
-    'sexual_orientation': 'Sexual orientation',
-    'care_experience': 'Care experience',
-    'young_carer': 'Young carers',
-    'neuro': 'Special educational needs and neurodivergence',
-    'ethnicity': 'Ethnicity',
-    'english_additional': 'English as an additional language',
-    'birth': 'Background'
-}
-
 # Import descriptions for the charts
 response_descrip = create_response_description()
 
@@ -288,10 +286,10 @@ response_descrip = create_response_description()
 # and basing the titles of groups on the group names (which differs to the
 # survey responses page, which bases printed text on group names)
 
-for plot_group in header_dict.keys():
+for plot_group in dem_header_dict.keys():
     # Add the title for that group
-    content.append(f'''<h1 style='page-break-before: always;'>
-                   {header_dict[plot_group]}</h1>''')
+    content.append(f'''<h1 style='page-break-before:always;' id='{plot_group}'>
+                   {dem_header_dict[plot_group]}</h1>''')
 
     # Find the measures in that group and loop through them
     measures = chosen_result.loc[

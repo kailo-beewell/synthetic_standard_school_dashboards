@@ -47,3 +47,26 @@ survey. This {type} describes the sample of pupils who completed the survey.'''
     </div>
 </div>'''
         return html_string
+
+
+def demographic_headers():
+    '''
+    Creates dictionary of headers for the demographic section
+
+    Returns
+    -------
+    header_dict : dictionary
+        Dictionary where key is a variable name, and value is the header
+    '''
+    header_dict = {
+        'year_group': 'Year group',
+        'fsm': 'Eligible for free school meals (FSM)',
+        'gender': 'Gender and transgender',
+        'sexual_orientation': 'Sexual orientation',
+        'care_experience': 'Care experience',
+        'young_carer': 'Young carers',
+        'neuro': 'Special educational needs and neurodivergence',
+        'ethnicity': 'Ethnicity',
+        'english_additional': 'English as an additional language',
+        'birth': 'Background'}
+    return header_dict
