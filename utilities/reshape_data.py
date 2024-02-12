@@ -2,6 +2,9 @@
 Helper functions for reshaping data or extracting a certain element from the
 data, often used across multiple different pages
 '''
+import pandas as pd
+from ast import literal_eval
+import numpy as np
 
 
 def filter_by_group(df, chosen_group, chosen_school, output):
@@ -71,6 +74,63 @@ def filter_by_group(df, chosen_group, chosen_school, output):
         return chosen, group_lab
     elif output == 'summary':
         return chosen, group_lab, order
+
+
+def extract_nested_results(chosen, group_lab, plot_group=False):
+    '''
+    Extract lists of results that were stored in dataframe.
+    e.g. ['Yes', 'No'], [20, 80], [2, 8] in the original data will become
+    seperate columns with [Yes, 20, 2] and [No, 80, 8]
+
+    Parameters
+    ----------
+    chosen : dataframe
+        Dataframe with the nested lists to be extracted
+    group_lab : string
+        Name of chosen group (e.g. gender_lab, fsm_lab)
+    '''
+    # Initalise empty list to store rows
+    df_list = []
+
+    # Loop through each of the rows in the dataframe
+    for index, row in chosen.iterrows():
+
+        # Extract results as long as it isn't NaN (e.g. NaN when n<10)
+        if ~np.isnan(row.n_responses):
+            # Literal_eval means the string lists become actual lists
+            df = pd.DataFrame(
+                zip(literal_eval(row['cat'].replace('nan', 'None')),
+                    literal_eval(row['cat_lab']),
+                    literal_eval(row['percentage']),
+                    literal_eval(row['count'])),
+                columns=['cat', 'cat_lab', 'percentage', 'count'])
+            # Replace NaN with max number so stays at end of sequence
+            df['cat'] = df['cat'].fillna(df['cat'].max()+1)
+            # Add the string columns (no extraction needed)
+            df['measure'] = row['measure']
+            df['measure_lab'] = row['measure_lab']
+            df['group'] = row[group_lab]
+            if plot_group:
+                df['plot_group'] = row['plot_group']
+            df_list.append(df)
+
+        # As we still want a bar when n<10, we create a record still but label
+        # it to indicate n<10
+        else:
+            df = row.to_frame().T[['measure', 'measure_lab']]
+            df['group'] = row[group_lab]
+            if plot_group:
+                df['plot_group'] = row['plot_group']
+            df['cat'] = 0
+            df['cat_lab'] = 'Less than 10 responses'
+            df['count'] = np.nan
+            df['percentage'] = 100
+            df_list.append(df)
+
+    # Combine into a single dataframe
+    chosen_result = pd.concat(df_list)
+
+    return chosen_result
 
 
 def get_school_size(counts, school):

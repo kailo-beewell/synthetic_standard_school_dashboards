@@ -1,13 +1,10 @@
-from ast import literal_eval
-import numpy as np
-import pandas as pd
 import streamlit as st
 from utilities.page_setup import page_setup, blank_lines
 from utilities.authentication import check_password
 from utilities.bar_charts import survey_responses
 from utilities.bar_charts_text import create_response_description
 from utilities.import_data import import_tidb_data
-from utilities.reshape_data import get_school_size
+from utilities.reshape_data import get_school_size, extract_nested_results
 from utilities.who_took_part import create_demographic_page_intro
 
 # Set page configuration
@@ -51,41 +48,9 @@ if check_password():
     if chosen_group == 'For your school':
         chosen = chosen[chosen['school_group'] == 1]
 
-    # Extract the lists with results stored in the dataframe
-    # e.g. ['Yes', 'No'], [20, 80], [2, 8] in the original data will become
-    # seperate columns with [Yes, 20, 2] and [No, 80, 8]
-    df_list = []
-    for index, row in chosen.iterrows():
-        # Extract results as long as it isn't NaN (e.g. NaN when n<10)
-        if ~np.isnan(row.n_responses):
-            df = pd.DataFrame(zip(
-                literal_eval(row['cat'].replace('nan', 'None')),
-                literal_eval(row['cat_lab']),
-                literal_eval(row['percentage']),
-                literal_eval(row['count'])),
-                columns=['cat', 'cat_lab', 'percentage', 'count'])
-            # Replace NaN with max number so stays at end of sequence
-            df['cat'] = df['cat'].fillna(df['cat'].max()+1)
-            # Add strings
-            df['measure'] = row['measure']
-            df['measure_lab'] = row['measure_lab']
-            df['group'] = row['school_group_lab']
-            df['plot_group'] = row['plot_group']
-            df_list.append(df)
-        # As we still want a bar when n<10, we create a record still but label
-        # as such
-        else:
-            df = row.to_frame().T[['measure', 'measure_lab']]
-            df['group'] = row['school_group_lab']
-            df['plot_group'] = row['plot_group']
-            df['cat'] = 0
-            df['cat_lab'] = 'Less than 10 responses'
-            df['count'] = np.nan
-            df['percentage'] = 100
-            df_list.append(df)
-
-    # Combine into single dataframe
-    chosen_result = pd.concat(df_list)
+    # Extract the nested lists in the dataframe
+    chosen_result = extract_nested_results(
+        chosen=chosen, group_lab='school_group_lab', plot_group=True)
 
     # Define headers for each of the plot groups - this will also define the
     # order in which these groups are shown

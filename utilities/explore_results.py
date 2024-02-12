@@ -6,13 +6,11 @@ repeated between those two outputs, and ensure any changes are made to both.
 '''
 import pandas as pd
 import streamlit as st
-from ast import literal_eval
-import numpy as np
 from markdown import markdown
 from utilities.bar_charts_text import create_response_description
 from utilities.bar_charts import survey_responses
 from utilities.summary_rag import result_box
-from utilities.reshape_data import filter_by_group
+from utilities.reshape_data import filter_by_group, extract_nested_results
 
 
 def write_page_title(output='streamlit'):
@@ -232,41 +230,12 @@ def get_chosen_result(chosen_variable, chosen_group, df, school):
     '''
     # Filter by the specified school and grouping
     chosen, group_lab = filter_by_group(df, chosen_group, school, 'explore')
+
     # Filter by the chosen variable
     chosen = chosen[chosen['group'] == chosen_variable]
 
-    # Extract the lists with results stored in the dataframe
-    # e.g. ['Yes', 'No'], [20, 80], [2, 8] in the original data will become
-    # seperate columns with [Yes, 20, 2] and [No, 80, 8]
-    df_list = []
-    for index, row in chosen.iterrows():
-        # Extract results as long as it isn't NaN (e.g. NaN when n<10)
-        if ~np.isnan(row.n_responses):
-            df = pd.DataFrame(
-                zip(literal_eval(row['cat'].replace('nan', 'None')),
-                    literal_eval(row['cat_lab']),
-                    literal_eval(row['percentage']),
-                    literal_eval(row['count'])),
-                columns=['cat', 'cat_lab', 'percentage', 'count'])
-            # Replace NaN with max number so stays at end of sequence
-            df['cat'] = df['cat'].fillna(df['cat'].max()+1)
-            # Add the string columns (no extraction needed)
-            df['measure'] = row['measure']
-            df['measure_lab'] = row['measure_lab']
-            df['group'] = row[group_lab]
-            df_list.append(df)
-        # As we still want a bar when n<10, we create a record still but label
-        # it to indicate n<10
-        else:
-            df = row.to_frame().T[['measure', 'measure_lab']]
-            df['group'] = row[group_lab]
-            df['cat'] = 0
-            df['cat_lab'] = 'Less than 10 responses'
-            df['count'] = np.nan
-            df['percentage'] = 100
-            df_list.append(df)
-
-    chosen_result = pd.concat(df_list)
+    # Extract the nested lists in the dataframe
+    chosen_result = extract_nested_results(chosen, group_lab)
 
     return chosen_result
 
