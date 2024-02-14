@@ -25,3 +25,5 @@ if check_password():
     st.write('Page content)
     ...
 ```
+
+The actions above (migrate, superuser, adding users) will have generated and modified a db.sqlite3. Make sure you push this up to GitHub repository - I found that the app failed on deployment without it.
