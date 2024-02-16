@@ -512,8 +512,8 @@ def write_comparison_result(chosen_school, between_schools, group,
 
     # Display message if it was less than 10 (and so NaN)
     if np.isnan(school_mean):
-        description += f'''
-There were less than ten complete responses from {group} pupils at your school,
+        description += '''
+There were less than ten complete responses from these pupils at your school,
 so the results are not shown.
 '''
     # Otherwise...
@@ -532,8 +532,8 @@ so the results are not shown.
         description += f'''
 Your school had {topic_count} complete responses. Across
 Northern Devon, there were {total_responses} complete responses from
-{total_schools} schools. The average score for the {group} pupils at your
-school, compared to other schools in Northern Devon, was:'''
+{total_schools} schools. The average score for the pupils at your school,
+compared to other schools in Northern Devon, was:'''
 
     # Add description to page
     if output == 'streamlit':
