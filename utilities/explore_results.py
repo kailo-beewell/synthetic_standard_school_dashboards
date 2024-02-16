@@ -473,9 +473,8 @@ school is average, below average or above average.'''
         return content
 
 
-def write_comparison_result(
-        chosen_school, chosen_variable_lab, between_schools, group,
-        output='streamlit', content=None):
+def write_comparison_result(chosen_school, between_schools, group,
+                            output='streamlit', content=None):
     '''
     Write the introduction to the comparison section (heading, description
     and RAG rating)
@@ -484,8 +483,6 @@ def write_comparison_result(
     ----------
     chosen_school : string
         Name of chosen school
-    chosen_variable_lab : string
-        Label for the chosen variable (e.g. 'Autonomy')
     between_schools: dataframe
         Dataframe with scores for the chosen variable in each school
     output : string
@@ -523,14 +520,17 @@ so the results are not shown.
     else:
         # Get count of pupils who completed the topic questions
         topic_count = int(between_schools.loc[
-            between_schools['school_lab'] == chosen_school, 'count'].to_list()[0])
+            between_schools['school_lab'] == chosen_school,
+            'count'].to_list()[0])
 
-        # Get total responses and total schools (can just take first item as whole
-        # column will be the same value for each school)
-        total_responses = str(int(between_schools['total_pupils'].to_list()[0]))
-        total_schools = str(int(between_schools['group_n'].to_list()[0]))
+        # Get total responses and total schools (can just take first item as
+        # whole column will be the same value for each school)
+        total_responses = str(int(
+            between_schools['total_pupils'].to_list()[0]))
+        total_schools = str(int(
+            between_schools['group_n'].to_list()[0]))
         description += f'''
-From {group} pupils, your school had {topic_count} complete responses. Across
+Your school had {topic_count} complete responses. Across
 Northern Devon, there were {total_responses} complete responses from
 {total_schools} schools. The average score for the {group} pupils at your
 school, compared to other schools in Northern Devon, was:'''
@@ -564,7 +564,7 @@ school, compared to other schools in Northern Devon, was:'''
 
 def create_explore_topic_page(
         chosen_variable_lab, topic_dict, df_scores, chosen_school,
-        chosen_group, df_prop, school_size, content):
+        chosen_group, df_prop, content):
     '''
     Add an explore results page with responses to a given topic to report HTML.
 
@@ -584,8 +584,6 @@ def create_explore_topic_page(
     df_prop : dataframe
         Dataframe with the proportion of pupils providing each response to each
         survey question
-    school_size : integer
-        Total pupils who completed at least one question at that school
     content : list
         Optional input used when output=='pdf', contains HTML for report.
 
@@ -618,17 +616,24 @@ def create_explore_topic_page(
         df=df_scores, chosen_group=chosen_group, output='compare',
         chosen_variable=chosen_variable+'_score')
 
-    # Write the comparison intro text (title, description, RAG rating)
+    # Write the comparison intro text
     content = write_comparison_intro(
         chosen_variable, chosen_variable_lab, score_descriptions,
         output='pdf', content=content)
-    content = write_comparison_result(
-        chosen_school, chosen_variable_lab, between_schools,
-        output='pdf', content=content)
 
-    # Create ordered bar chart
-    content = details_ordered_bar(
-        school_scores=between_schools, school_name=chosen_school, font_size=16,
-        output='pdf', content=content)
+    # Filter to each group (will just be 'all' if was for all pupils), then
+    # print the results and create the ordered bar chart for each
+    for group in order:
+        temp_content = []
+        # Filter to group and get result
+        group_result = between_schools[between_schools[group_lab] == group]
+        temp_content = write_comparison_result(
+            chosen_school, group_result, group, output='pdf',
+            content=temp_content)
+        # Insert temp_content into a div class and add to content
+        content.append(f'''
+    <div class='responses_container'>
+        {''.join(temp_content)}
+    </div>''')
 
     return content

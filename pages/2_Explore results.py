@@ -107,8 +107,7 @@ if check_password():
         group_result = between_schools[between_schools[group_lab] == group]
         with st.container(border=True):
             write_comparison_result(
-                st.session_state.school, chosen_variable_lab,
-                group_result, group)
+                st.session_state.school, group_result, group)
 
     # Add caveat for interpretation
     blank_lines(1)
