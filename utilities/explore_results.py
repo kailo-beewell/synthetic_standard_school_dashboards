@@ -2,6 +2,7 @@
 Helper functions for the explore_results() section of dashboard and PDF report.
 '''
 import pandas as pd
+import numpy as np
 import streamlit as st
 from markdown import markdown
 from utilities.bar_charts_text import create_response_description
@@ -499,43 +500,65 @@ def write_comparison_result(
     content : list
         Optional return, used when output=='pdf', contains HTML for report.
     '''
-
-    # Get count of pupils who completed the topic questions
-    topic_count = int(between_schools.loc[
-        between_schools['school_lab'] == chosen_school, 'count'].to_list()[0])
-
-    # Get total responses and total schools (can just take first item as whole
-    # column will be the same value for each school)
-    total_responses = str(int(between_schools['total_pupils'].to_list()[0]))
-    total_schools = str(int(between_schools['group_n'].to_list()[0]))
-
-    # Description text (with optional modification if group = 'All' - removing
-    # title and not saying type of pupil)
+    # Provide title, unless looking at all pupils, in which case drop group too
     if group != 'All':
-        description = f'''
-**{group}**
+        description = f'''**{group}**
 
 '''
     else:
         group = ''
         description = ''
-    description += f'''
-Your school had {topic_count} complete responses. Across Northern Devon, there
-were {total_responses} complete responses from {total_schools} schools. The
-average score for the {group} pupils at your school, compared to other schools
-in Northern Devon, was:'''
 
-    # Get RAG rating for that school
-    devon_rag = between_schools.loc[
-        between_schools['school_lab'] == chosen_school, 'rag'].to_list()[0]
+    # Get number of responses at school
+    school_mean = between_schools.loc[
+        between_schools['school_lab'] == chosen_school, 'mean'].to_list()[0]
 
-    # Add description to dashboard or report, alongside a RAG box with result
+    # Display message if it was less than 10 (and so NaN)
+    if np.isnan(school_mean):
+        description += f'''
+There were less than ten complete responses from {group} pupils at your school,
+so the results are not shown.
+'''
+    # Otherwise...
+    else:
+        # Get count of pupils who completed the topic questions
+        topic_count = int(between_schools.loc[
+            between_schools['school_lab'] == chosen_school, 'count'].to_list()[0])
+
+        # Get total responses and total schools (can just take first item as whole
+        # column will be the same value for each school)
+        total_responses = str(int(between_schools['total_pupils'].to_list()[0]))
+        total_schools = str(int(between_schools['group_n'].to_list()[0]))
+        description += f'''
+From {group} pupils, your school had {topic_count} complete responses. Across
+Northern Devon, there were {total_responses} complete responses from
+{total_schools} schools. The average score for the {group} pupils at your
+school, compared to other schools in Northern Devon, was:'''
+
+    # Add description to page
     if output == 'streamlit':
         st.markdown(description)
-        result_box(devon_rag)
     elif output == 'pdf':
         content.append(markdown(description))
-        content.append(result_box(devon_rag, 'pdf'))
+
+    # If school wasn't NaN...
+    if not np.isnan(school_mean):
+        # Get RAG rating
+        devon_rag = between_schools.loc[
+            between_schools['school_lab'] == chosen_school, 'rag'].to_list()[0]
+        # Drop any schools that were NaN (i.e. n<10)
+        between_schools = between_schools[between_schools['mean'].notna()]
+        # Add the RAG result and ordered bar chart
+        if output == 'streamlit':
+            result_box(devon_rag)
+            details_ordered_bar(between_schools, chosen_school)
+        elif output == 'pdf':
+            content.append(result_box(devon_rag, 'pdf'))
+            content = details_ordered_bar(
+                school_scores=between_schools, school_name=chosen_school,
+                font_size=16, output='pdf', content=content)
+
+    if output == 'pdf':
         return content
 
 

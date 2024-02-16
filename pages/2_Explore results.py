@@ -1,7 +1,6 @@
 import streamlit as st
 from utilities.page_setup import page_setup, blank_lines
 from utilities.authentication import check_password
-from utilities.bar_charts import details_ordered_bar
 from utilities.score_descriptions import score_descriptions
 from utilities.import_data import import_tidb_data
 from utilities.explore_results import (
@@ -110,7 +109,6 @@ if check_password():
             write_comparison_result(
                 st.session_state.school, chosen_variable_lab,
                 group_result, group)
-            details_ordered_bar(group_result, st.session_state.school)
 
     # Add caveat for interpretation
     blank_lines(1)
