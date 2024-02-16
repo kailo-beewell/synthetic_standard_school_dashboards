@@ -8,7 +8,8 @@ from contextlib import nullcontext
 from utilities.convert_image import convert_fig_to_html
 
 
-def survey_responses(dataset, font_size=16, output='streamlit', content=None):
+def survey_responses(dataset, font_size=16, output='streamlit', content=None,
+                     yaxis_title='Percentage of pupils<br>providing response'):
     '''
     Create bar charts for each of the quetsions in the provided dataframe.
     The dataframe should contain questions which all have the same set
@@ -25,6 +26,8 @@ def survey_responses(dataset, font_size=16, output='streamlit', content=None):
         Must be either 'streamlit' or 'pdf, default is 'streamlit.
     content : list
         Optional input used when output=='pdf', contains HTML for report.
+    yaxis_title : string
+        Label for Y axis - default label provided.
 
     Returns
     -------
@@ -118,7 +121,7 @@ shown for {kept} pupils.'''
                     titlefont=dict(color='#05291F', size=font_size)),
                 # Set y axis title, labels, colour and size
                 yaxis=dict(
-                    title='Percentage of pupils<br>providing response',
+                    title=yaxis_title,
                     titlefont=dict(color='#05291F', size=font_size),
                     tickfont=dict(color='#05291F', size=font_size),
                     ticksuffix='%'

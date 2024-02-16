@@ -102,6 +102,9 @@ def demographic_plots(dem_prop, chosen_school, chosen_group,
     content : list
         Optional return, used when output=='pdf', contains HTML for report.
     '''
+    # Define list of variables that are from council
+    council = ['year_group', 'fsm', 'sen', 'ethnicity', 'english_additional']
+
     # Filter to results from current school
     chosen = dem_prop[dem_prop['school_lab'] == chosen_school]
 
@@ -158,13 +161,22 @@ def demographic_plots(dem_prop, chosen_school, chosen_group,
                         content.append(f'''
 <p>{markdown(response_descrip[measure])}</p>''')
 
-            # Create the plot
+            # Create the plot - with different yaxis label if from council
             to_plot = chosen_result[chosen_result['measure'] == measure]
+            council_label = 'Percentage of pupils'
             if output == 'streamlit':
-                survey_responses(to_plot)
+                if any(measure in s for s in council):
+                    survey_responses(to_plot, yaxis_title=council_label)
+                else:
+                    survey_responses(to_plot)
             elif output == 'pdf':
-                content = survey_responses(
-                    to_plot, font_size=14, output='pdf', content=content)
+                if any(measure in s for s in council):
+                    content = survey_responses(
+                        to_plot, font_size=14, output='pdf', content=content,
+                        yaxis_title=council_label)
+                else:
+                    content = survey_responses(
+                        to_plot, font_size=14, output='pdf', content=content)
 
     if output == 'pdf':
         return content
