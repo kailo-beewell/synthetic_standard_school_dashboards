@@ -250,7 +250,8 @@ def summary_table(df_scores, chosen_group, chosen_school,
     '''
     # Filter by chosen grouping and school
     chosen, pivot_var, order = filter_by_group(
-        df_scores, chosen_group, chosen_school, 'summary')
+        df=df_scores, chosen_group=chosen_group, output='summary',
+        chosen_school=chosen_school)
 
     # Filter to variable relevant for summary page
     chosen = chosen[~chosen['variable'].isin([

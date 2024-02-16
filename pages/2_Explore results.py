@@ -11,10 +11,10 @@ from utilities.explore_results import (
     write_response_section_intro,
     get_chosen_result,
     create_bar_charts,
-    get_between_schools,
-    write_comparison_intro
+    write_comparison_intro,
+    write_comparison_result
 )
-from utilities.reshape_data import get_school_size
+from utilities.reshape_data import filter_by_group
 from utilities.reuse_text import text_caution_comparing
 
 # Set page configuration
@@ -33,8 +33,9 @@ if check_password():
     df_prop = st.session_state.responses
     counts = st.session_state.counts
 
-    ###########################################################################
-    # Getting topics
+    ##################
+    # Getting topics #
+    ##################
 
     # Create dictionary of topics
     topic_dict = create_topic_dict(df_scores)
@@ -48,8 +49,9 @@ if check_password():
     topic_list = list(topic_dict.keys())
     default = topic_list.index(st.session_state['chosen_variable_lab'])
 
-    ###########################################################################
-    # Page introduction
+    #####################
+    # Page introduction #
+    #####################
 
     write_page_title()
 
@@ -71,8 +73,9 @@ if check_password():
     write_topic_intro(chosen_variable, chosen_variable_lab, df_scores)
     blank_lines(1)
 
-    ###########################################################################
-    # Responses to each question...
+    #################################
+    # Responses to each question... #
+    #################################
 
     # Section header and description
     write_response_section_intro(chosen_variable_lab)
@@ -85,29 +88,31 @@ if check_password():
     create_bar_charts(chosen_variable, chosen_result)
     blank_lines(3)
 
-    ###########################################################################
-    # Comparator chart between schools...
+    #######################################
+    # Comparator chart between schools... #
+    #######################################
 
     # Create dataframe based on chosen variable
-    between_schools = get_between_schools(df_scores, chosen_variable)
+    between_schools, group_lab, order = filter_by_group(
+        df=df_scores, chosen_group=chosen_group, output='compare',
+        chosen_variable=chosen_variable+'_score')
 
-    # Write the comparison intro text (title, description, RAG rating)
-    school_size = get_school_size(counts, st.session_state.school)
+    # Write the comparison introduction
     write_comparison_intro(
-        school_size, st.session_state.school, chosen_variable,
-        chosen_variable_lab, score_descriptions, between_schools)
+        chosen_variable, chosen_variable_lab, score_descriptions)
 
-    # Create ordered bar chart
-    details_ordered_bar(between_schools, st.session_state.school)
+    # Filter to each group (will just be 'all' if was for all pupils), then
+    # print the results and create the ordered bar chart for each
+    for group in order:
+        blank_lines(1)
+        group_result = between_schools[between_schools[group_lab] == group]
+        with st.container(border=True):
+            write_comparison_result(
+                st.session_state.school, chosen_variable_lab,
+                group_result, group)
+            details_ordered_bar(group_result, st.session_state.school)
 
     # Add caveat for interpretation
-    st.subheader('Comparing between schools')
+    blank_lines(1)
+    st.subheader('Recommendation when making comparisons')
     st.markdown(text_caution_comparing())
-
-    # Draft phrasing for benchmarking (not currently included in dashboards):
-    # When comparing to the Greater Manchester data, be aware that (i) there
-    # are likely to be greater differences in population characteristics
-    # between Northern Devon and Greater Manchester than between different
-    # areas in Northern Devon, and (ii) the Greater Manchester data were
-    # collected in Autumn Term 2021 while the Havering data was collected in
-    # Summer Term 2023.
