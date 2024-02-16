@@ -1,5 +1,5 @@
 import streamlit as st
-from utilities.page_setup import page_setup
+from utilities.page_setup import page_setup, page_footer
 from utilities.authentication import check_password
 from utilities.stylable_container import header_container
 from utilities.reuse_text import text_how_use
@@ -8,9 +8,6 @@ from utilities.reuse_text import text_how_use
 page_setup()
 
 if check_password():
-
-    # Add name of school (to help with monitoring)
-    st.markdown(st.session_state.school)
 
     # Page title
     st.title('About')
@@ -194,6 +191,8 @@ Satisfaction of 15-Year-Old Students in 46 Countries. Child Ind Res 14,
 [7] #BeeWell Programme Team (2021). #BeeWell survey. Manchester: University of
 Manchester. Available at: https://gmbeewell.org/wp-content/uploads/2021/09/BeeW
 ell-Questionnaires-Booklet.pdf</p>''', unsafe_allow_html=True)
+
+    page_footer(st.session_state.school)
 
     # with st.expander('Release Notes', expanded=expand):
     #     st.markdown(Path('changelog.md').read_text(), unsafe_allow_html=True)

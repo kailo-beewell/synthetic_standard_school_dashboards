@@ -1,5 +1,5 @@
 import streamlit as st
-from utilities.page_setup import page_setup, blank_lines
+from utilities.page_setup import page_setup, blank_lines, page_footer
 from utilities.authentication import check_password
 from utilities.import_data import import_tidb_data
 from utilities.summary_rag import summary_intro, summary_table
@@ -16,9 +16,6 @@ if check_password():
     # Get data from session state
     counts = st.session_state.counts
     data = st.session_state.scores_rag
-
-    # Add name of school (to help with monitoring)
-    st.markdown(st.session_state.school)
 
     # Set button css for this page
     st.markdown('''
@@ -79,3 +76,5 @@ completed each of the questions used to calculate that topic - so does not
 include any reflection of results from pupils who did not complete some or all
 of the questions for that topic.
 ''')
+
+    page_footer(st.session_state.school)

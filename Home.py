@@ -1,5 +1,5 @@
 import streamlit as st
-from utilities.page_setup import page_setup, blank_lines
+from utilities.page_setup import page_setup, blank_lines, page_footer
 from utilities.authentication import check_password
 from utilities.import_data import import_tidb_data
 from utilities.static_report import create_static_report
@@ -13,9 +13,6 @@ if check_password():
 
     # Import the data from TiDB Cloud if not already in session state
     import_tidb_data()
-
-    # Add name of school (to help with monitoring)
-    st.markdown(st.session_state.school)
 
     # Title and introduction
     st.title('The #BeeWell Survey')
@@ -110,3 +107,5 @@ check out the video below. This video (which was designed for pupils) explains
 what pupils could expect from taking part in the survey. For more information,
 see the 'About' page of the dashboard.''')
     st.video('https://youtu.be/jmYH7F2Bd4Q')
+
+    page_footer(st.session_state.school)

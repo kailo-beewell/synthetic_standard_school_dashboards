@@ -1,5 +1,5 @@
 import streamlit as st
-from utilities.page_setup import page_setup, blank_lines
+from utilities.page_setup import page_setup, blank_lines, page_footer
 from utilities.authentication import check_password
 from utilities.score_descriptions import score_descriptions
 from utilities.import_data import import_tidb_data
@@ -23,9 +23,6 @@ if check_password():
 
     # Import the data from TiDB Cloud if not already in session state
     import_tidb_data()
-
-    # Add name of school (to help with monitoring)
-    st.markdown(st.session_state.school)
 
     # Assign the data from the session state
     df_scores = st.session_state.scores_rag
@@ -113,3 +110,5 @@ if check_password():
     blank_lines(1)
     st.subheader('Recommendation when making comparisons')
     st.markdown(text_caution_comparing())
+
+    page_footer(st.session_state.school)
