@@ -6,10 +6,10 @@ import plotly.express as px
 import streamlit as st
 from contextlib import nullcontext
 from utilities.convert_image import convert_fig_to_html
+from markdown import markdown
 
 
-def survey_responses(dataset, font_size=16, output='streamlit', content=None,
-                     yaxis_title='Percentage of pupils<br>providing response'):
+def survey_responses(dataset, font_size=16, output='streamlit', content=None):
     '''
     Create bar charts for each of the quetsions in the provided dataframe.
     The dataframe should contain questions which all have the same set
@@ -26,8 +26,6 @@ def survey_responses(dataset, font_size=16, output='streamlit', content=None,
         Must be either 'streamlit' or 'pdf, default is 'streamlit.
     content : list
         Optional input used when output=='pdf', contains HTML for report.
-    yaxis_title : string
-        Label for Y axis - default label provided.
 
     Returns
     -------
@@ -57,8 +55,8 @@ def survey_responses(dataset, font_size=16, output='streamlit', content=None,
             # Filter to the relevant measure
             df = dataset[dataset['measure_lab'] == measure]
 
-            # Check if there are any groups where n<10 - if one of the groups
-            # are, remove it from the dataframe and print and explanation
+            # Check if there are any groups where n<10 overall - if one of the
+            # groups are, remove it from dataframe and print explanation
             mask = df['cat_lab'] == 'Less than 10 responses'
             under_10 = df[mask]
             if len(under_10.index) == 1:
@@ -76,7 +74,7 @@ shown for {kept} pupils.'''
 There were less than 10 responses from {unique_groups[0]} pupils and from
 {unique_groups[1]} pupils, so no results can be shown.'''
 
-            # Streamlit and PDF: Print explanation on page
+            # Print explanation on page for the removal of n<10 overall
             if len(under_10.index) > 0:
                 if output == 'streamlit':
                     st.markdown(explanation)
@@ -85,6 +83,28 @@ There were less than 10 responses from {unique_groups[0]} pupils and from
 
             # Create plot if there was at least one group without NaN
             if len(under_10.index) < 2:
+
+                # First, check for any individual categories censored due to
+                # n<10 (this is relevant to demographic page, the explore
+                # results page won't have any)
+                # If there are any rows with NaN...
+                null_mask = df['count'].isnull()
+                if sum(null_mask) > 0:
+                    # Filter to NaN rows amd get the categories as a string
+                    dropped = df.loc[null_mask, ['cat_lab', 'group']]
+                    for school in dropped['group'].drop_duplicates():
+                        dropped_string = ', '.join(dropped.loc[
+                            dropped['group'] == school, 'cat_lab'].values)
+                        # Print explanation of this censoring
+                        explanation = f'''
+Due to small sample sizes, response rates are hidden for:
+
+* {school}: {dropped_string}'''
+                        if output == 'streamlit':
+                            st.markdown(explanation)
+                        elif output == 'pdf':
+                            temp_content.append(markdown(explanation))
+
                 # Create colour map
                 unique_groups = np.unique(df['group'])
                 if (len(unique_groups) == 1):
@@ -116,6 +136,13 @@ There were less than 10 responses from {unique_groups[0]} pupils and from
                 # Add percent sign to the numbers labelling the bars
                 fig.for_each_trace(lambda t: t.update(
                     texttemplate=t.texttemplate + ' %'))
+
+                # Choose survey or council label for y axis, based on tick for
+                # x axis ('no response' is survey, 'no data' is council)
+                if 'No response' in df['cat_lab'].values:
+                    yaxis_title = 'Percentage of pupils<br>providing response'
+                else:
+                    yaxis_title = 'Percentage of pupils'
 
                 # Make changes to figure design...
                 fig.update_layout(

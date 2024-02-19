@@ -116,8 +116,8 @@ def extract_nested_results(chosen, group_lab, plot_group=False):
             df = pd.DataFrame(
                 zip(literal_eval(row['cat'].replace('nan', 'None')),
                     literal_eval(row['cat_lab']),
-                    literal_eval(row['percentage']),
-                    literal_eval(row['count'])),
+                    literal_eval(row['percentage'].replace('nan', 'None')),
+                    literal_eval(row['count'].replace('nan', 'None'))),
                 columns=['cat', 'cat_lab', 'percentage', 'count'])
             # Replace NaN with max number so stays at end of sequence
             df['cat'] = df['cat'].fillna(df['cat'].max()+1)
