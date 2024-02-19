@@ -6,6 +6,7 @@ import plotly.express as px
 import streamlit as st
 from contextlib import nullcontext
 from utilities.convert_image import convert_fig_to_html
+from markdown import markdown
 
 
 def survey_responses(dataset, font_size=16, output='streamlit', content=None):
@@ -54,107 +55,143 @@ def survey_responses(dataset, font_size=16, output='streamlit', content=None):
             # Filter to the relevant measure
             df = dataset[dataset['measure_lab'] == measure]
 
-            # Check if there are any groups where n<10 - if one of the groups
-            # are, remove it from the dataframe and print and explanation
+            # Check if there are any groups where n<10 overall - if one of the
+            # groups are, remove it from dataframe and print explanation
             mask = df['cat_lab'] == 'Less than 10 responses'
             under_10 = df[mask]
             if len(under_10.index) == 1:
-
                 # Remove group from dataframe
                 df = df[~mask]
-
                 # Create explanation
                 dropped = np.unique(under_10['group'])[0]
                 kept = np.unique(df['group'])[0]
                 explanation = f'''
 There were less than 10 responses from {dropped} pupils so results are just
 shown for {kept} pupils.'''
+            elif len(under_10.index) == 2:
+                unique_groups = np.unique(df['group'])
+                explanation = f'''
+There were less than 10 responses from {unique_groups[0]} pupils and from
+{unique_groups[1]} pupils, so no results can be shown.'''
 
-                # Streamlit and PDF: Print explanation
+            # Print explanation on page for the removal of n<10 overall
+            if len(under_10.index) > 0:
                 if output == 'streamlit':
                     st.markdown(explanation)
                 elif output == 'pdf':
                     temp_content.append(f'<p>{explanation}</p>')
 
-            # Create colour map
-            unique_groups = np.unique(df['group'])
-            if (len(unique_groups) == 1):
-                colour_map = {unique_groups[0]: '#FF6E4A'}
-            else:
-                colour_map = {unique_groups[0]: '#ffb49a',
-                              unique_groups[1]: '#e05a38'}
+            # Create plot if there was at least one group without NaN
+            if len(under_10.index) < 2:
 
-            # Create figure
-            fig = px.bar(
-                df, x='cat_lab', y='percentage',
-                # Set colours and grouping
-                color='group', barmode='group', color_discrete_map=colour_map,
-                # Label bars with the percentage to 1 decimal place
-                text_auto='.1f',
-                # Specify what to show when hover over the bars
-                hover_data={
-                    'cat_lab': True,
-                    'percentage': ':.1f',
-                    'count': True,
-                    'measure_lab': False,
-                    'group': False})
+                # First, check for any individual categories censored due to
+                # n<10 (this is relevant to demographic page, the explore
+                # results page won't have any)
+                # If there are any rows with NaN...
+                null_mask = df['count'].isnull()
+                if sum(null_mask) > 0:
+                    # Filter to NaN rows amd get the categories as a string
+                    dropped = df.loc[null_mask, ['cat_lab', 'group']]
+                    for school in dropped['group'].drop_duplicates():
+                        dropped_string = ', '.join(dropped.loc[
+                            dropped['group'] == school, 'cat_lab'].values)
+                        # Print explanation of this censoring
+                        explanation = f'''
+Due to small sample sizes, response rates are hidden for:
 
-            # Set x axis to type category, else only shows integer categories
-            # if you have a mix of numbers and strings
-            fig.update_layout(xaxis_type='category')
+* {school}: {dropped_string}'''
+                        if output == 'streamlit':
+                            st.markdown(explanation)
+                        elif output == 'pdf':
+                            temp_content.append(markdown(explanation))
 
-            # Add percent sign to the numbers labelling the bars
-            fig.for_each_trace(lambda t: t.update(
-                texttemplate=t.texttemplate + ' %'))
+                # Create colour map
+                unique_groups = np.unique(df['group'])
+                if (len(unique_groups) == 1):
+                    colour_map = {unique_groups[0]: '#FF6E4A'}
+                else:
+                    colour_map = {unique_groups[0]: '#ffb49a',
+                                  unique_groups[1]: '#e05a38'}
 
-            # Make changes to figure design...
-            fig.update_layout(
-                # Set font size of bar labels
-                font=dict(size=font_size),
-                # Set x axis title, labels, colour and size
-                xaxis=dict(
-                    title='Response',
-                    tickfont=dict(color='#05291F', size=font_size),
-                    titlefont=dict(color='#05291F', size=font_size)),
-                # Set y axis title, labels, colour and size
-                yaxis=dict(
-                    title='Percentage of pupils<br>providing response',
-                    titlefont=dict(color='#05291F', size=font_size),
-                    tickfont=dict(color='#05291F', size=font_size),
-                    ticksuffix='%'
-                ),
-                # Legend title and labels and remove interactivity
-                legend=dict(
-                    title='Pupils',
-                    font=dict(color='#05291F', size=font_size),
-                    itemclick=False, itemdoubleclick=False),
-                # Legend title font
-                legend_title=dict(
-                    font=dict(color='#05291F', size=font_size)))
+                # Create figure
+                fig = px.bar(
+                    df, x='cat_lab', y='percentage',
+                    # Set colours and grouping
+                    color='group', barmode='group',
+                    color_discrete_map=colour_map,
+                    # Label bars with the percentage to 1 decimal place
+                    text_auto='.1f',
+                    # Specify what to show when hover over the bars
+                    hover_data={
+                        'cat_lab': True,
+                        'percentage': ':.1f',
+                        'count': True,
+                        'measure_lab': False,
+                        'group': False})
 
-            # Disable zooming and panning
-            fig.layout.xaxis.fixedrange = True
-            fig.layout.yaxis.fixedrange = True
+                # Set x axis to type category, else only shows integer
+                # categories if you have a mix of numbers and strings
+                fig.update_layout(xaxis_type='category')
 
-            # Streamlit: Create plot on streamlit app, hiding the plotly
-            # settings bar
-            if output == 'streamlit':
-                st.plotly_chart(fig, use_container_width=True,
-                                config={'displayModeBar': False})
+                # Add percent sign to the numbers labelling the bars
+                fig.for_each_trace(lambda t: t.update(
+                    texttemplate=t.texttemplate + ' %'))
 
-            # PDF: Write image to a temporary PNG file, convert that to HTML,
-            # and add the image HTML to temp_content
-            elif output == 'pdf':
+                # Choose survey or council label for y axis, based on tick for
+                # x axis ('no response' is survey, 'no data' is council)
+                if 'No response' in df['cat_lab'].values:
+                    yaxis_title = 'Percentage of pupils<br>providing response'
+                else:
+                    yaxis_title = 'Percentage of pupils'
 
-                # Get the HTML image tag for the figure and add to temp_content
-                temp_content.append(convert_fig_to_html(
-                    fig=fig, alt_text=measure))
+                # Make changes to figure design...
+                fig.update_layout(
+                    # Set font size of bar labels
+                    font=dict(size=font_size),
+                    # Set x axis title, labels, colour and size
+                    xaxis=dict(
+                        title='Response',
+                        tickfont=dict(color='#05291F', size=font_size),
+                        titlefont=dict(color='#05291F', size=font_size)),
+                    # Set y axis title, labels, colour and size
+                    yaxis=dict(
+                        title=yaxis_title,
+                        titlefont=dict(color='#05291F', size=font_size),
+                        tickfont=dict(color='#05291F', size=font_size),
+                        ticksuffix='%'
+                    ),
+                    # Legend title and labels and remove interactivity
+                    legend=dict(
+                        title='Pupils',
+                        font=dict(color='#05291F', size=font_size),
+                        itemclick=False, itemdoubleclick=False),
+                    # Legend title font
+                    legend_title=dict(
+                        font=dict(color='#05291F', size=font_size)))
 
-                # Insert temp_content into a div class and add to content
-                content.append(f'''
-<div class='responses_container'>
-    {''.join(temp_content)}
-</div>''')
+                # Disable zooming and panning
+                fig.layout.xaxis.fixedrange = True
+                fig.layout.yaxis.fixedrange = True
+
+                # Streamlit: Create plot on streamlit app, hiding the plotly
+                # settings bar
+                if output == 'streamlit':
+                    st.plotly_chart(fig, use_container_width=True,
+                                    config={'displayModeBar': False})
+
+                # PDF: Write image to a temporary PNG file, convert that
+                # to HTML, and add the image HTML to temp_content
+                elif output == 'pdf':
+
+                    # Make and add HTML image tag to temp_content
+                    temp_content.append(convert_fig_to_html(
+                        fig=fig, alt_text=measure))
+
+                    # Insert temp_content into a div class and add to content
+                    content.append(f'''
+    <div class='responses_container'>
+        {''.join(temp_content)}
+    </div>''')
 
     # At the end of the loop, if PDF report, return content
     if output == 'pdf':

@@ -59,9 +59,14 @@ def login_screen():
     st.markdown('''
 Please enter your school username and password to login to the dashboard.
 
-For this synthetic dashboard, we have six schools, named **School A, B, C, D,
-E and F**. You can login to any of these with each following a format of a
-username like '**schoola**' and password like '**schoolapassword**'.
+For this synthetic dashboard, we have six schools - choose a username and
+password from the following:
+* '**schoola**' and '**schoolapassword**' - n<10 for some demographic responses
+* '**schoolb**' and '**schoolbpassword**' - no SEN
+* '**schoolc**' and '**schoolcpassword**'
+* '**schoold**' and '**schooldpassword**'
+* '**schoole**' and '**schoolepassword**'
+* '**schoolf**' and '**schoolfpassword**' - no Year 10s
 ''')
 
 

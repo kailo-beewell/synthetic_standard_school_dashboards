@@ -299,7 +299,7 @@ def results_by_school_and_group(
 
     Returns
     -------
-    result : pandas DataFramne
+    result : pandas DataFrame
         Dataframe where each row has the aggregation results, along with
         the relevant school and pupil groups used in that calculation
     '''
@@ -366,7 +366,26 @@ def results_by_school_and_group(
     return result
 
 
-def aggregate_proportions(data, response_col, labels):
+def convert_boolean(true_list, false_list, mask):
+    '''
+    Conditionally replace values of boolean list from one list when True and
+    another when False.
+
+    Parameters
+    ----------
+    true_list : list
+        Contains values to use if True
+    false_list : list
+        Contains values to use if False
+    mask : list
+        Boolean list
+    '''
+    iter_true = iter(true_list)
+    iter_false = iter(false_list)
+    return [next(iter_true) if item else next(iter_false) for item in mask]
+
+
+def aggregate_proportions(data, response_col, labels, hide_low_response=False):
     '''
     Aggregates each of the columns provided by response_col, for the chosen
     dataset.
@@ -395,6 +414,10 @@ def aggregate_proportions(data, response_col, labels):
         Dictionary with all possible questions as keys, then values are another
         dictionary where keys are all the possible numeric (or nan) answers to
         the question, and values are the relevant label for each answer.
+    hide_low_response : boolean
+        Whether to hide responses when a response option gets less than 10
+        responses (rather than norm elsewhere, which is just requiring 10
+        responses to the entire item rather than to each response option)
 
     Returns
     -------
@@ -454,14 +477,34 @@ def aggregate_proportions(data, response_col, labels):
         # version
         percentages = [(x/sum(counts))*100 for x in counts]
 
+        # If True to hide when individual response options are n<10
+        if hide_low_response:
+            # Create mask which is TRUE when responses where n>=10 (ignoring
+            # final option (non-response) which we don't mind being n<10)
+            mask = [x >= 10 for x in counts[:-1]]
+
+            # If all >=10, keep non-response
+            if all(mask):
+                mask += [True]
+            # If any option is <10, also hide non-response (else could deduce)
+            else:
+                mask += [False]
+
+            # Use mask to set values to NaN
+            counts = convert_boolean(
+                counts, np.full(len(counts), np.nan), mask)
+            percentages = convert_boolean(
+                percentages, np.full(len(percentages), np.nan), mask)
+
         # Create dataframe row using the calculated data
+        # Use np.nansum() so it ignores NaN when calculating sum
         df_row = pd.DataFrame({
             'cat': [cat],
             'cat_lab': [cat_lab],
             'count': [counts],
             'percentage': [percentages],
             'measure': col,
-            'n_responses': sum(counts)
+            'n_responses': np.nansum(counts)
         })
         # Append to list
         rows.append(df_row)

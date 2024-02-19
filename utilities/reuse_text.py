@@ -65,3 +65,11 @@ include any reflection of results from pupils who did not complete some or all
 of the questions for that topic.
 '''
     return text
+
+# Draft phrasing for benchmarking (not currently included in dashboards):
+# When comparing to the Greater Manchester data, be aware that (i) there
+# are likely to be greater differences in population characteristics
+# between Northern Devon and Greater Manchester than between different
+# areas in Northern Devon, and (ii) the Greater Manchester data were
+# collected in Autumn Term 2021 while the Havering data was collected in
+# Summer Term 2023.

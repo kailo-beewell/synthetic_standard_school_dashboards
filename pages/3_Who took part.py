@@ -1,5 +1,5 @@
 import streamlit as st
-from utilities.page_setup import page_setup, blank_lines
+from utilities.page_setup import page_setup, blank_lines, page_footer
 from utilities.authentication import check_password
 from utilities.import_data import import_tidb_data
 from utilities.reshape_data import get_school_size
@@ -14,9 +14,6 @@ if check_password():
 
     # Import the data from TiDB Cloud if not already in session state
     import_tidb_data()
-
-    # Add name of school (to help with monitoring)
-    st.markdown(st.session_state.school)
 
     # Assign data from the session state
     dem_prop = st.session_state.demographic
@@ -40,3 +37,5 @@ if check_password():
 
     # Filter to results from current school
     chosen = dem_prop[dem_prop['school_lab'] == st.session_state.school]
+
+    page_footer(st.session_state.school)

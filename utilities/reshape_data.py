@@ -7,7 +7,8 @@ from ast import literal_eval
 import numpy as np
 
 
-def filter_by_group(df, chosen_group, chosen_school, output):
+def filter_by_group(df, chosen_group, output,
+                    chosen_school=None, chosen_variable=None):
     '''
     Filter dataframe so just contains rows relevant for chosen group (either
     results from all pupils, or from the two chosen groups) and school
@@ -19,10 +20,12 @@ def filter_by_group(df, chosen_group, chosen_school, output):
     chosen_group : string
         The group for results to be viewed by - one of: 'For all pupils',
         'By year group', 'By gender', 'By FSM', or 'By SEN'
-    chosen_school : string
-        Name of the school to filter results for
     output : string
         Defines where data will be used - either 'explore' or 'summary'
+    chosen_school : string
+        Optional input, name of a school to filter to as well
+    chosen_variable : string
+        Optional input, name of a variable to filter to as well
 
     Returns
     -------
@@ -41,6 +44,9 @@ def filter_by_group(df, chosen_group, chosen_school, output):
     elif output == 'summary':
         group_lab = None
         order = None
+    elif output == 'compare':
+        group_lab = 'year_group_lab'
+        order = ['All']
 
     # Depending on chosen breakdown, alter one of the above variables
     # If the chosen group was All, then no changes are made, as this is default
@@ -61,18 +67,27 @@ def filter_by_group(df, chosen_group, chosen_school, output):
         sen = ['SEN', 'Non-SEN']
         order = ['SEN', 'Non-SEN']
 
-    # Filter to chosen variable and school
+    # Filter to chosen group
     chosen = df[
-        (df['school_lab'] == chosen_school) &
         (df['year_group_lab'].isin(year_group)) &
         (df['gender_lab'].isin(gender)) &
         (df['fsm_lab'].isin(fsm)) &
         (df['sen_lab'].isin(sen))]
 
+    # Filter to chosen school, if relevant
+    if chosen_school is not None:
+        chosen = chosen[chosen['school_lab'] == chosen_school]
+
+    # Filter to chosen variable, if relevant
+    if chosen_variable is not None:
+        chosen = chosen[chosen['variable'] == chosen_variable]
+
     # Return the relevant results for the given output
     if output == 'explore':
         return chosen, group_lab
     elif output == 'summary':
+        return chosen, group_lab, order
+    elif output == 'compare':
         return chosen, group_lab, order
 
 
@@ -101,8 +116,8 @@ def extract_nested_results(chosen, group_lab, plot_group=False):
             df = pd.DataFrame(
                 zip(literal_eval(row['cat'].replace('nan', 'None')),
                     literal_eval(row['cat_lab']),
-                    literal_eval(row['percentage']),
-                    literal_eval(row['count'])),
+                    literal_eval(row['percentage'].replace('nan', 'None')),
+                    literal_eval(row['count'].replace('nan', 'None'))),
                 columns=['cat', 'cat_lab', 'percentage', 'count'])
             # Replace NaN with max number so stays at end of sequence
             df['cat'] = df['cat'].fillna(df['cat'].max()+1)

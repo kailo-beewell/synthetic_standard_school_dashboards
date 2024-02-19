@@ -158,13 +158,13 @@ def demographic_plots(dem_prop, chosen_school, chosen_group,
                         content.append(f'''
 <p>{markdown(response_descrip[measure])}</p>''')
 
-            # Create the plot
+            # Filter data for that measure and produce plot
             to_plot = chosen_result[chosen_result['measure'] == measure]
             if output == 'streamlit':
                 survey_responses(to_plot)
             elif output == 'pdf':
                 content = survey_responses(
-                    to_plot, font_size=14, output='pdf', content=content)
+                        to_plot, font_size=14, output='pdf', content=content)
 
     if output == 'pdf':
         return content

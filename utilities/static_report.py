@@ -181,7 +181,7 @@ style='width:650px; height:192px;'>'''
     for chosen_variable_lab in topic_dict.keys():
         content = create_explore_topic_page(
             chosen_variable_lab, topic_dict, df_scores, chosen_school,
-            chosen_group, df_prop, school_size, content)
+            chosen_group, df_prop, content)
 
     #########################
     # Who took part section #

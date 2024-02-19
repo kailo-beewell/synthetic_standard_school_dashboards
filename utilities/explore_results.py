@@ -2,6 +2,7 @@
 Helper functions for the explore_results() section of dashboard and PDF report.
 '''
 import pandas as pd
+import numpy as np
 import streamlit as st
 from markdown import markdown
 from utilities.bar_charts_text import create_response_description
@@ -227,7 +228,8 @@ def get_chosen_result(chosen_variable, chosen_group, df, school):
 
     '''
     # Filter by the specified school and grouping
-    chosen, group_lab = filter_by_group(df, chosen_group, school, 'explore')
+    chosen, group_lab = filter_by_group(df=df, chosen_group=chosen_group,
+                                        output='explore', chosen_school=school)
 
     # Filter by the chosen variable
     chosen = chosen[chosen['group'] == chosen_variable]
@@ -417,45 +419,15 @@ def create_bar_charts(chosen_variable, chosen_result,
         return content
 
 
-def get_between_schools(df, chosen_variable):
-    '''
-    Get dataframe with scores from different schools for the chosen variable
-
-    Parameters
-    ----------
-    df : dataframe
-        Dataframe with the scores for each variable for each school
-    chosen_variable : string
-        Chosen variable (e.g. 'autonomy')
-
-    Returns
-    -------
-    between_schools : dataframe
-        Dataframe with score on the chosen variable for each school
-    '''
-    between_schools = df[
-        (df['variable'].str.replace('_score', '') == chosen_variable) &
-        (df['year_group_lab'] == 'All') &
-        (df['gender_lab'] == 'All') &
-        (df['fsm_lab'] == 'All') &
-        (df['sen_lab'] == 'All')]
-
-    return between_schools
-
-
 def write_comparison_intro(
-        school_size, chosen_school, chosen_variable, chosen_variable_lab,
-        score_descriptions, between_schools, output='streamlit', content=None):
+        chosen_variable, chosen_variable_lab, score_descriptions,
+        output='streamlit', content=None):
     '''
     Write the introduction to the comparison section (heading, description
     and RAG rating)
 
     Parameters
     ----------
-    school_size : integer
-        Total number of pupils at school (who answered at least one question)
-    chosen_school : string
-        Name of chosen school
     chosen_variable : string
         Chosen variable (e.g. 'autonomy')
     chosen_variable_lab : string
@@ -463,8 +435,6 @@ def write_comparison_intro(
     score_descriptions : dictionary
         Dictionary with variable and then the appropriate descriptions for this
         section (range of score, and interpretation of score)
-    between_schools: dataframe
-        Dataframe with scores for the chosen variable in each school
     output : string
         Specifies whether to write for 'streamlit' (default) or 'pdf'.
     content : list
@@ -475,14 +445,6 @@ def write_comparison_intro(
     content : list
         Optional return, used when output=='pdf', contains HTML for report.
     '''
-    # Get count of pupils who completed the topic questions
-    topic_count = int(between_schools.loc[
-        between_schools['school_lab'] == chosen_school, 'count'].to_list()[0])
-
-    # Get RAG rating for that school
-    devon_rag = between_schools.loc[
-        between_schools['school_lab'] == chosen_school, 'rag'].to_list()[0]
-
     # Heading
     heading = 'Comparison with other schools'
     if output == 'streamlit':
@@ -495,35 +457,114 @@ def write_comparison_intro(
     description = f'''
 In this section, an overall score for the topic of
 '{chosen_variable_lab.lower()}' has been calculated for each pupil with
-complete responses on this question. For this topic, your school had
-{topic_count} complete responses (out of a possible {school_size}).
-
-Possible scores for each pupil on this topic range from
-{score_descriptions[chosen_variable][0]} with
+complete responses on this question. Possible scores for each pupil on this
+topic range from {score_descriptions[chosen_variable][0]} with
 **higher scores indicating {score_descriptions[chosen_variable][1]}** -
-and vice versa for lower scores.
+and vice versa for lower scores. The mean score of the pupils at you
+school is compared with pupils who completed the same survey questions at other
+schools. This allows you to see whether the typical score for pupils at your
+school is average, below average or above average.'''
 
-The mean score of the pupils at you school is compared with pupils who
-completed the same survey questions at other schools. This allows you to see
-whether the  score for pupils at your school is average, below average or above
-average. This matches the scores presented on the 'Summary' page.
-
-The average score for {chosen_variable_lab.lower()} at your school, compared to
-other schools in Northern Devon, was:'''
-
-    # Add description to dashboard or report, alongside a RAG box with result
+    # Add description to dashboard or report
     if output == 'streamlit':
         st.markdown(description)
-        result_box(devon_rag)
     elif output == 'pdf':
         content.append(markdown(description))
-        content.append(result_box(devon_rag, 'pdf'))
+        return content
+
+
+def write_comparison_result(chosen_school, between_schools, group,
+                            output='streamlit', content=None):
+    '''
+    Write the introduction to the comparison section (heading, description
+    and RAG rating)
+
+    Parameters
+    ----------
+    chosen_school : string
+        Name of chosen school
+    between_schools: dataframe
+        Dataframe with scores for the chosen variable in each school
+    output : string
+        Specifies whether to write for 'streamlit' (default) or 'pdf'.
+    content : list
+        Optional input used when output=='pdf', contains HTML for report.
+    group : string
+        Pupil group
+
+    Returns
+    -------
+    content : list
+        Optional return, used when output=='pdf', contains HTML for report.
+    '''
+    # Provide title, unless looking at all pupils, in which case drop group too
+    if group != 'All':
+        description = f'''**{group}**
+
+'''
+    else:
+        group = ''
+        description = ''
+
+    # Get number of responses at school
+    school_mean = between_schools.loc[
+        between_schools['school_lab'] == chosen_school, 'mean'].to_list()[0]
+
+    # Display message if it was less than 10 (and so NaN)
+    if np.isnan(school_mean):
+        description += '''
+There were less than ten complete responses from these pupils at your school,
+so the results are not shown.
+'''
+    # Otherwise...
+    else:
+        # Get count of pupils who completed the topic questions
+        topic_count = int(between_schools.loc[
+            between_schools['school_lab'] == chosen_school,
+            'count'].to_list()[0])
+
+        # Get total responses and total schools (can just take first item as
+        # whole column will be the same value for each school)
+        total_responses = str(int(
+            between_schools['total_pupils'].to_list()[0]))
+        total_schools = str(int(
+            between_schools['group_n'].to_list()[0]))
+        description += f'''
+Your school had {topic_count} complete responses. Across
+Northern Devon, there were {total_responses} complete responses from
+{total_schools} schools. The average score for the pupils at your school,
+compared to other schools in Northern Devon, was:'''
+
+    # Add description to page
+    if output == 'streamlit':
+        st.markdown(description)
+    elif output == 'pdf':
+        content.append(markdown(description))
+
+    # If school wasn't NaN...
+    if not np.isnan(school_mean):
+        # Get RAG rating
+        devon_rag = between_schools.loc[
+            between_schools['school_lab'] == chosen_school, 'rag'].to_list()[0]
+        # Drop any schools that were NaN (i.e. n<10)
+        between_schools = between_schools[between_schools['mean'].notna()]
+        # Add the RAG result and ordered bar chart
+        if output == 'streamlit':
+            result_box(devon_rag)
+            details_ordered_bar(between_schools, chosen_school)
+        elif output == 'pdf':
+            content.append(result_box(devon_rag, 'pdf'))
+            content = details_ordered_bar(
+                school_scores=between_schools, school_name=chosen_school,
+                font_size=16, output='pdf', content=content)
+
+    if output == 'pdf':
         return content
 
 
 def create_explore_topic_page(
         chosen_variable_lab, topic_dict, df_scores, chosen_school,
-        chosen_group, df_prop, school_size, content):
+        chosen_group, df_prop, content):
     '''
     Add an explore results page with responses to a given topic to report HTML.
 
@@ -543,8 +584,6 @@ def create_explore_topic_page(
     df_prop : dataframe
         Dataframe with the proportion of pupils providing each response to each
         survey question
-    school_size : integer
-        Total pupils who completed at least one question at that school
     content : list
         Optional input used when output=='pdf', contains HTML for report.
 
@@ -573,16 +612,28 @@ def create_explore_topic_page(
         chosen_variable, chosen_result, output='pdf', content=content)
 
     # Create dataframe based on chosen variable
-    between_schools = get_between_schools(df_scores, chosen_variable)
+    between_schools, group_lab, order = filter_by_group(
+        df=df_scores, chosen_group=chosen_group, output='compare',
+        chosen_variable=chosen_variable+'_score')
 
-    # Write the comparison intro text (title, description, RAG rating)
+    # Write the comparison intro text
     content = write_comparison_intro(
-        school_size, chosen_school, chosen_variable, chosen_variable_lab,
-        score_descriptions, between_schools, output='pdf', content=content)
-
-    # Create ordered bar chart
-    content = details_ordered_bar(
-        school_scores=between_schools, school_name=chosen_school, font_size=16,
+        chosen_variable, chosen_variable_lab, score_descriptions,
         output='pdf', content=content)
+
+    # Filter to each group (will just be 'all' if was for all pupils), then
+    # print the results and create the ordered bar chart for each
+    for group in order:
+        temp_content = []
+        # Filter to group and get result
+        group_result = between_schools[between_schools[group_lab] == group]
+        temp_content = write_comparison_result(
+            chosen_school, group_result, group, output='pdf',
+            content=temp_content)
+        # Insert temp_content into a div class and add to content
+        content.append(f'''
+    <div class='responses_container'>
+        {''.join(temp_content)}
+    </div>''')
 
     return content

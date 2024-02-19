@@ -65,3 +65,21 @@ def blank_lines(n):
     while counter < n:
         st.text('')
         counter += 1
+
+
+def page_footer(school):
+    '''
+    Create a footer for each page
+
+    Parameters
+    ----------
+    school : string
+        Name of the chosen school for this dashboard
+    '''
+    blank_lines(2)
+    st.divider()
+    st.markdown(f'''
+<p style='font-size: 12px;'>
+This dashboard shows results for pupils at {school}. If you have any
+questions, you can get in touch with the Kailo team by emailing
+kailobeewell@dartington.org.uk.''', unsafe_allow_html=True)
