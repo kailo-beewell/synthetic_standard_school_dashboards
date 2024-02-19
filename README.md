@@ -8,7 +8,7 @@ These are created using completely random synthetic data, so this repository is 
 
 Streamlit Community Cloud only appears to work with virtual environment (states compatability with environment.yml but failed), so we use a virtual environment with the requirements.txt file provided and python version 3.9.12 (with community cloud set up on python 3.9).
 
-Manage streamlit apps here: https://share.streamlit.io/. To push changes to the app from main, go that site and select 'reboot' (won't implement changes automatically from main).
+Manage streamlit apps here: https://share.streamlit.io/. To push changes to the app from main, go that site and select 'reboot' (won't implement changes automatically from main). You can log into the Streamlit site via your GitHub account and then - assumiung you have the appropriate access permissions - will be able to see the applications hosted as part of the kailo-beewell organisation.
 
 User authentication is managed using **Django** - learn more about this from the `authentication_guide.md`.
 
