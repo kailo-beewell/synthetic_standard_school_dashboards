@@ -1,6 +1,6 @@
 cat,cat_lab,count,percentage,measure,n_responses,school_lab,school_group,school_group_lab,plot_group,measure_lab
 "[1, 2, 3, 4, 5, 6, nan]","['Girl', 'Boy', 'Non-binary', 'I describe myself in another way', 'Currently unsure', 'Prefer not to say', 'No response']","[16, 26, 15, 18, 15, 21, 17]","[12.5, 20.3125, 11.71875, 14.0625, 11.71875, 16.40625, 13.28125]",gender,128.0,School A,1,Your school,gender,Gender
-"[1, 2, 3, 4, 5, nan]","['Yes', 'No', 'Prefer not to say', 'I describe myself in another way', 'Not sure', 'No response']","[24, 24, 5, 1, 0, 74]","[18.75, 18.75, 3.90625, 0.78125, 0.0, 57.8125]",transgender,128.0,School A,1,Your school,gender,Do you consider yourself to be transgender?
+"[1, 2, 3, 4, 5, nan]","['Yes', 'No', 'Prefer not to say', 'I describe myself in another way', 'Not sure', 'No response']","[24, 24, nan, nan, nan, nan]","[18.75, 18.75, nan, nan, nan, nan]",transgender,48.0,School A,1,Your school,gender,Do you consider yourself to be transgender?
 "[1, 2, 3, 4, 5, 6, nan]","['Bi/pansexual', 'Gay/lesbian', 'Heterosexual/straight', 'I describe myself in another way', 'Currently unsure', 'Prefer not to say', 'No response']","[22, 26, 15, 19, 29, 16, 1]","[17.1875, 20.3125, 11.71875, 14.84375, 22.65625, 12.5, 0.78125]",sexual_orientation,128.0,School A,1,Your school,sexual_orientation,Sexual orientation
 "[1, 2, 3, nan]","['Yes', 'No', 'Unsure', 'No response']","[41, 33, 34, 20]","[32.03125, 25.78125, 26.5625, 15.625]",neurodivergent,128.0,School A,1,Your school,neuro,Do you identify as neurodivergent?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[38, 43, 42, 5]","[29.6875, 33.59375, 32.8125, 3.90625]",birth_parent1,128.0,School A,1,Your school,birth,Was birth parent 1 born outside the UK?
@@ -47,7 +47,7 @@ health condition or drug/alcohol dependency?"
 foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[75, 52, 5]","[56.81818181818182, 39.39393939393939, 3.787878787878788]",year_group,132.0,School B,1,Your school,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[60, 62, 10]","[45.45454545454545, 46.96969696969697, 7.575757575757576]",fsm,132.0,School B,1,Your school,fsm,Free school meals
-"[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[125, 0, 7]","[94.6969696969697, 0.0, 5.303030303030303]",sen,132.0,School B,1,Your school,neuro,Special educational needs
+"[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[125, nan, nan]","[94.6969696969697, nan, nan]",sen,125.0,School B,1,Your school,neuro,Special educational needs
 "[1, 2, nan]","['Ethnic minority', 'White British', 'No data']","[59, 67, 6]","[44.696969696969695, 50.75757575757576, 4.545454545454546]",ethnicity,132.0,School B,1,Your school,ethnicity,Ethnicity
 "[0, 1, nan]","['No', 'Yes', 'No data']","[59, 64, 9]","[44.696969696969695, 48.484848484848484, 6.8181818181818175]",english_additional,132.0,School B,1,Your school,english_additional,English as an additional language
 "[1, 2, 3, 4, 5, 6, nan]","['Girl', 'Boy', 'Non-binary', 'I describe myself in another way', 'Currently unsure', 'Prefer not to say', 'No response']","[90, 122, 78, 103, 98, 105, 72]","[13.47305389221557, 18.263473053892216, 11.676646706586826, 15.419161676646706, 14.67065868263473, 15.718562874251496, 10.778443113772456]",gender,668.0,School B,0,Other schools,gender,Gender
@@ -181,7 +181,7 @@ responsibilities for a family member - e.g. due to illness, disability, mental
 health condition or drug/alcohol dependency?"
 "[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[37, 27, 38, 8]","[33.63636363636363, 24.545454545454547, 34.54545454545455, 7.2727272727272725]",care_experience,110.0,School F,1,Your school,care_experience,"Are you or have you ever been in care (living in a
 foster placement, residential placement, or private/kinship care)?"
-"[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[100, 0, 10]","[90.9090909090909, 0.0, 9.090909090909092]",year_group,110.0,School F,1,Your school,year_group,Year group
+"[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[100, nan, nan]","[90.9090909090909, nan, nan]",year_group,100.0,School F,1,Your school,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[44, 54, 12]","[40.0, 49.09090909090909, 10.909090909090908]",fsm,110.0,School F,1,Your school,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[52, 51, 7]","[47.27272727272727, 46.36363636363636, 6.363636363636363]",sen,110.0,School F,1,Your school,neuro,Special educational needs
 "[1, 2, nan]","['Ethnic minority', 'White British', 'No data']","[60, 46, 4]","[54.54545454545454, 41.81818181818181, 3.6363636363636362]",ethnicity,110.0,School F,1,Your school,ethnicity,Ethnicity
