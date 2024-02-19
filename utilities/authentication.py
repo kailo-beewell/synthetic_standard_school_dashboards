@@ -61,7 +61,7 @@ Please enter your school username and password to login to the dashboard.
 
 For this synthetic dashboard, we have six schools - choose a username and
 password from the following:
-* '**schoola**' and '**schoolapassword**'
+* '**schoola**' and '**schoolapassword**' - n<10 for some demographic responses
 * '**schoolb**' and '**schoolbpassword**' - no SEN
 * '**schoolc**' and '**schoolcpassword**'
 * '**schoold**' and '**schooldpassword**'

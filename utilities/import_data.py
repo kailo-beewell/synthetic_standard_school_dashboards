@@ -46,6 +46,7 @@ def import_tidb_data(tests=False):
     # First, check if everything is in the session state - if so, don't need to
     # connect, but if missing stuff, will want to connect
     items = ['scores', 'scores_rag', 'responses', 'counts', 'demographic']
+
     if not all([x in st.session_state for x in items]):
 
         # Create temporary PEM file for setting up the connection
