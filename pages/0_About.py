@@ -1,8 +1,8 @@
 import streamlit as st
-from utilities.page_setup import page_setup, page_footer
-from utilities.authentication import check_password
-from utilities.stylable_container import header_container
-from utilities.reuse_text import text_how_use
+from kailo_beewell_dashboard.page_setup import page_setup, page_footer
+from kailo_beewell_dashboard.authentication import check_password
+from kailo_beewell_dashboard.stylable_container import header_container
+from kailo_beewell_dashboard.reuse_text import text_how_use
 
 # Set page configuration
 page_setup()

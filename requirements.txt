@@ -27,6 +27,8 @@ django==4.2.9
 # To run jupyter notebooks
 ipykernel==6.29.0
 
-# No version for security updates.
-# As of 7th Feb 2024, using 1.31.0
-streamlit
+# No version for security updates
+streamlit>=1.31.1
+
+# Local import of functions for the dashboard
+../kailo_beewell_dashboard_package/dist/kailo_beewell_dashboard-0.1.3-py3-none-any.whl

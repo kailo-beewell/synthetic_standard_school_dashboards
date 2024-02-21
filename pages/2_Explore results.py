@@ -1,9 +1,10 @@
 import streamlit as st
-from utilities.page_setup import page_setup, blank_lines, page_footer
-from utilities.authentication import check_password
-from utilities.score_descriptions import score_descriptions
-from utilities.import_data import import_tidb_data
-from utilities.explore_results import (
+from kailo_beewell_dashboard.page_setup import (
+    page_setup, blank_lines, page_footer)
+from kailo_beewell_dashboard.authentication import check_password
+from kailo_beewell_dashboard.score_descriptions import score_descriptions
+from kailo_beewell_dashboard.import_data import import_tidb_data
+from kailo_beewell_dashboard.explore_results import (
     write_page_title,
     create_topic_dict,
     write_topic_intro,
@@ -11,10 +12,9 @@ from utilities.explore_results import (
     get_chosen_result,
     create_bar_charts,
     write_comparison_intro,
-    write_comparison_result
-)
-from utilities.reshape_data import filter_by_group
-from utilities.reuse_text import text_caution_comparing
+    write_comparison_result)
+from kailo_beewell_dashboard.reshape_data import filter_by_group
+from kailo_beewell_dashboard.reuse_text import text_caution_comparing
 
 # Set page configuration
 page_setup()
