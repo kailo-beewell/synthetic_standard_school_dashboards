@@ -1,11 +1,11 @@
 import streamlit as st
-from utilities.page_setup import page_setup, blank_lines, page_footer
-from utilities.authentication import check_password
-from utilities.import_data import import_tidb_data
-from utilities.reshape_data import get_school_size
-from utilities.who_took_part import (
-    create_demographic_page_intro,
-    demographic_plots)
+from kailo_beewell_dashboard.page_setup import (
+    page_setup, blank_lines, page_footer)
+from kailo_beewell_dashboard.authentication import check_password
+from kailo_beewell_dashboard.import_data import import_tidb_data
+from kailo_beewell_dashboard.reshape_data import get_school_size
+from kailo_beewell_dashboard.who_took_part import (
+    create_demographic_page_intro, demographic_plots)
 
 # Set page configuration
 page_setup()

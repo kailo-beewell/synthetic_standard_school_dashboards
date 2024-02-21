@@ -1,8 +1,9 @@
 import streamlit as st
-from utilities.page_setup import page_setup, blank_lines, page_footer
-from utilities.authentication import check_password
-from utilities.import_data import import_tidb_data
-from utilities.static_report import create_static_report
+from kailo_beewell_dashboard.page_setup import (
+    page_setup, blank_lines, page_footer)
+from kailo_beewell_dashboard.authentication import check_password
+from kailo_beewell_dashboard.import_data import import_tidb_data
+from kailo_beewell_dashboard.static_report import create_static_report
 import weasyprint
 from tempfile import NamedTemporaryFile
 
