@@ -1,5 +1,8 @@
 # 🐝 Synthetic standard school dashboards
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![ORCID: Amy Heather](https://img.shields.io/badge/ORCID_Amy_Heather-0000--0002--6596--3479-brightgreen)](https://orcid.org/0000-0002-6596-3479)
+
 Dashboards for schools who completed the standard #BeeWell survey in 2023/24. 🏫
 
 These are created using completely random synthetic data, so this repository is public, as it contains no project data. The prototypes will be used to create official dashboards using actual school data after data collection.
