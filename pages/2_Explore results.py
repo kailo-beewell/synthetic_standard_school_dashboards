@@ -22,7 +22,7 @@ page_setup('standard')
 if check_password():
 
     # Import the data from TiDB Cloud if not already in session state
-    import_tidb_data()
+    import_tidb_data('standard')
 
     # Assign the data from the session state
     df_scores = st.session_state.scores_rag

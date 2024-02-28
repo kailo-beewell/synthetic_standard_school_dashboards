@@ -7,12 +7,12 @@ from kailo_beewell_dashboard.summary_rag import summary_intro, summary_table
 from kailo_beewell_dashboard.reshape_data import get_school_size
 
 # Set page configuration
-page_setup()
+page_setup('standard')
 
 if check_password():
 
     # Import the data from TiDB Cloud if not already in session state
-    import_tidb_data()
+    import_tidb_data('standard')
 
     # Get data from session state
     counts = st.session_state.counts
