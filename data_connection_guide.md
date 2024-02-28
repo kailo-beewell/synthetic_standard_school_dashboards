@@ -15,7 +15,7 @@ Below are **step-by-step guides on how to set up connection with data source**..
 3. You'll have Cluster0 automatically created and in account. Click on the cluster, then go to Data > Import and drag and drop a csv file.
     * Location will be "Local" as we upload from our computer.
     * Set the database (synthetic_standard_survey) and table name (I chose to match filename e.g. overall_counts).
-    * For **aggregate_responses** and **aggregate_responses_rag** and **aggregate_demographic**, set **counts** and **percentages** columns to **VARCHAR(512)**. This means they are read as strings and ensures exact match to CSV (e.g. 0.0 rather than 0), and avoids errors relating to NaN in the lists.
+    * For **aggregate_responses** and **aggregate_scores_rag** and **aggregate_demographic**, set **counts** and **percentages** columns to **VARCHAR(512)**. This means they are read as strings and ensures exact match to CSV (e.g. 0.0 rather than 0), and avoids errors relating to NaN in the lists.
     * If you are **replacing a file**, you'll need to delete it first, otherwise it will append new rows to the existing table. To do this, go to 'Chat2Query', and run `DROP TABLE table_name;`, before then going to 'Import' and uploading the file.
     * I found some unusual behaviour when replacing one of the tables, where using the same name as before, it was doing something (modifying order maybe, not clear) causing it to not match the CSV file - this was resolved by deleting the back-ups
 
