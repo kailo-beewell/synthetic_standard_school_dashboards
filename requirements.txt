@@ -1,7 +1,7 @@
 geopandas==0.9.0
 numpy==1.26.0
 pandas==2.1.1
-pip==23.3.2
+pip==24.0
 plotly==5.9.0
 
 # For linting jupyter notebooks
