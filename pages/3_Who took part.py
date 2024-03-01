@@ -8,12 +8,12 @@ from kailo_beewell_dashboard.who_took_part import (
     create_demographic_page_intro, demographic_plots)
 
 # Set page configuration
-page_setup()
+page_setup('standard')
 
-if check_password():
+if check_password('standard'):
 
     # Import the data from TiDB Cloud if not already in session state
-    import_tidb_data()
+    import_tidb_data('standard')
 
     # Assign data from the session state
     dem_prop = st.session_state.demographic
@@ -34,8 +34,5 @@ if check_password():
 
     # Create the figures (with their titles and descriptions)
     demographic_plots(dem_prop, st.session_state.school, chosen_group)
-
-    # Filter to results from current school
-    chosen = dem_prop[dem_prop['school_lab'] == st.session_state.school]
 
     page_footer(st.session_state.school)

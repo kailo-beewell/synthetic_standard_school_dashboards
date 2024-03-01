@@ -8,12 +8,12 @@ import weasyprint
 from tempfile import NamedTemporaryFile
 
 # Set page configuration
-page_setup()
+page_setup('standard')
 
-if check_password():
+if check_password('standard'):
 
     # Import the data from TiDB Cloud if not already in session state
-    import_tidb_data()
+    import_tidb_data('standard')
 
     # Title and introduction
     st.title('The #BeeWell Survey')

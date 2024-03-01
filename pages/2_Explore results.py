@@ -14,15 +14,15 @@ from kailo_beewell_dashboard.explore_results import (
     write_comparison_intro,
     write_comparison_result)
 from kailo_beewell_dashboard.reshape_data import filter_by_group
-from kailo_beewell_dashboard.reuse_text import text_caution_comparing
+from kailo_beewell_dashboard.reuse_text import reuse_text
 
 # Set page configuration
-page_setup()
+page_setup('standard')
 
-if check_password():
+if check_password('standard'):
 
     # Import the data from TiDB Cloud if not already in session state
-    import_tidb_data()
+    import_tidb_data('standard')
 
     # Assign the data from the session state
     df_scores = st.session_state.scores_rag
@@ -109,6 +109,6 @@ if check_password():
     # Add caveat for interpretation
     blank_lines(1)
     st.subheader('Recommendation when making comparisons')
-    st.markdown(text_caution_comparing())
+    st.markdown(reuse_text['caution_comparing'])
 
     page_footer(st.session_state.school)
