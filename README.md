@@ -10,6 +10,6 @@ These are created using completely random synthetic data, so this repository is 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://synthetic-beewell-kailo-standard-school-dashboard.streamlit.app/)
 
 This app is created using the package `kailo-beewell-dashboard`. See:
-* [PyPI package](https://pypi.org/project/kailo-beewell-dashboard/)
-* [GitHub repository](https://github.com/kailo-beewell/kailo_beewell_dashboard_package)
-* How to guides covering key processes for the dashboards (e.g. authentication, hosting data, package maintenance)
+* [Package on PyPI](https://pypi.org/project/kailo-beewell-dashboard/)
+* [Package GitHub repository](https://github.com/kailo-beewell/kailo_beewell_dashboard_package)
+* [PyPi package documentation](https://kailo-beewell-dashboard.readthedocs.io/en/latest/index.html) - this includes how-to guides covering key processes for the dashboards (e.g. authentication, hosting data, package maintenance)
