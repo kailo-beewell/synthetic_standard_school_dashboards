@@ -9,7 +9,7 @@ from kailo_beewell_dashboard.reshape_data import get_school_size
 # Set page configuration
 page_setup('standard')
 
-if check_password():
+if check_password('standard'):
 
     # Import the data from TiDB Cloud if not already in session state
     import_tidb_data('standard')
