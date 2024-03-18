@@ -7,7 +7,9 @@ Dashboards for schools who completed the standard #BeeWell survey in 2023/24. ðŸ
 
 These are created using completely random synthetic data, so this repository is public, as it contains no project data. The prototypes will be used to create official dashboards using actual school data after data collection.
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://synthetic-beewell-kailo-standard-school-dashboard.streamlit.app/)
+View the dashboard:
+* **Stable version** from [forked repository](https://github.com/kailo-beewell/synthetic_standard_school_dashboard_stable_release): [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://synthetic-beewell-kailo-standard-school-dashboard.streamlit.app/)
+* **Development version** from this repository: [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://dev-synthetic-beewell-kailo-standard-school-dashboard.streamlit.app/)
 
 This app is created using the package `kailo-beewell-dashboard`. See:
 * [Package on PyPI](https://pypi.org/project/kailo-beewell-dashboard/)
