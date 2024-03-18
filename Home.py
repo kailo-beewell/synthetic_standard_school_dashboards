@@ -4,6 +4,7 @@ from kailo_beewell_dashboard.page_setup import (
 from kailo_beewell_dashboard.authentication import check_password
 from kailo_beewell_dashboard.import_data import import_tidb_data
 from kailo_beewell_dashboard.static_report import create_static_report
+from kailo_beewell_dashboard.images import get_image_path
 import weasyprint
 from tempfile import NamedTemporaryFile
 
@@ -24,7 +25,8 @@ You can use this dashboard to explore results from pupils at your school.</p>
 ''', unsafe_allow_html=True)
 
     # Image
-    st.image('images/home_image_3_transparent.png', use_column_width=True)
+    st.image(get_image_path('home_image_3_transparent.png'),
+             use_column_width=True)
 
     # Pages of the dashboard
     st.subheader('What each page of the dashboard can tell you')

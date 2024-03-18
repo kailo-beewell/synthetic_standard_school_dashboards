@@ -3,6 +3,7 @@ from kailo_beewell_dashboard.page_setup import page_setup, page_footer
 from kailo_beewell_dashboard.authentication import check_password
 from kailo_beewell_dashboard.stylable_container import header_container
 from kailo_beewell_dashboard.reuse_text import reuse_text
+from kailo_beewell_dashboard.images import get_image_path
 
 # Set page configuration
 page_setup('standard')
@@ -21,7 +22,8 @@ if check_password('standard'):
     header_container('green_container', '🌿 Kailo', '#D9ECCA')
     with st.expander('What is Kailo?', expanded=expand):
         st.markdown(reuse_text['kailo'])
-        st.image('images/kailo_systems_adapted.png')
+        st.image(get_image_path('kailo_systems_adapted.png'),
+                 use_column_width=True)
 
     header_container('orange_container', '🐝 The #BeeWell survey', '#F7DCC8')
     with st.expander('Who took part in the #BeeWell survey in Devon?',
@@ -32,7 +34,7 @@ North Devon and Torridge completed the standard version of the #BeeWell survey.
 
 A symbol version of the survey was also completed by pupils in Years 7 to 11
 from **two non-mainstream schools** in Northern Devon.''')
-        st.image('images/northern_devon.png')
+        st.image(get_image_path('northern_devon.png'), use_column_width=True)
 
     with st.expander('What topics did the survey cover?', expanded=expand):
         st.markdown('''
@@ -70,7 +72,7 @@ people and school staff in Northern Devon, as well as researchers and public
 health professionals, amongst others, to choose, adapt and/or develop
 appropriate questions for the survey. We'd like to extend our thanks to
 everyone who supported this process.''')
-        st.image('images/canva_people.png')
+        st.image(get_image_path('canva_people.png'), use_column_width=True)
 
     with st.expander('Where else have these surveys been completed?',
                      expanded=expand):
@@ -83,7 +85,7 @@ schools** having now taken part in #BeeWell.
 
 You can find out more about other sites at
 https://beewellprogramme.org/.''')
-        st.image('images/beewell_map.png')
+        st.image(get_image_path('beewell_map.png'), use_column_width=True)
 
     header_container('blue_container', '📊 Dashboard', '#D0C9FF')
 
@@ -100,12 +102,12 @@ insight into responses.''')
 
     with st.expander('How should we use these results?', expanded=expand):
         st.markdown(reuse_text['how_to_use_results'])
-        st.image('images/thinking.png')
+        st.image(get_image_path('thinking.png'), use_column_width=True)
 
     with st.expander('Can I access this dashboard on different devices?',
                      expanded=expand):
         st.markdown(reuse_text['view_devices'])
-        st.image('images/devices.png')
+        st.image(get_image_path('devices.png'), use_column_width=True)
 
     with st.expander('''
 Will there be support available for interpreting and actioning on the dashboard
