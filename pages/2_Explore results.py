@@ -1,20 +1,20 @@
-import streamlit as st
-from kailo_beewell_dashboard.page_setup import (
-    page_setup, blank_lines, page_footer)
 from kailo_beewell_dashboard.authentication import check_password
-from kailo_beewell_dashboard.score_descriptions import score_descriptions
-from kailo_beewell_dashboard.import_data import import_tidb_data
 from kailo_beewell_dashboard.explore_results import (
-    write_page_title,
-    create_topic_dict,
-    write_topic_intro,
-    write_response_section_intro,
-    get_chosen_result,
+    choose_topic,
     create_bar_charts,
     write_comparison_intro,
-    write_comparison_result)
+    write_comparison_result,
+    write_page_title,
+    write_response_section_intro,
+    write_topic_intro,
+    get_chosen_result)
+from kailo_beewell_dashboard.import_data import import_tidb_data
+from kailo_beewell_dashboard.page_setup import (
+    blank_lines, page_footer, page_setup)
 from kailo_beewell_dashboard.reshape_data import filter_by_group
-from kailo_beewell_dashboard.reuse_text import reuse_text
+from kailo_beewell_dashboard.reuse_text import caution_comparing
+from kailo_beewell_dashboard.score_descriptions import score_descriptions
+import streamlit as st
 
 # Set page configuration
 page_setup('standard')
@@ -29,22 +29,6 @@ if check_password('standard'):
     df_prop = st.session_state.responses
     counts = st.session_state.counts
 
-    ##################
-    # Getting topics #
-    ##################
-
-    # Create dictionary of topics
-    topic_dict = create_topic_dict(df_scores)
-
-    # If session state doesn't contain chosen variable, default to Autonomy
-    # If it does (i.e. set from Summary page), use that
-    if 'chosen_variable_lab' not in st.session_state:
-        st.session_state['chosen_variable_lab'] = 'Autonomy'
-
-    # Convert topics to list and find index of the session state variable
-    topic_list = list(topic_dict.keys())
-    default = topic_list.index(st.session_state['chosen_variable_lab'])
-
     #####################
     # Page introduction #
     #####################
@@ -52,11 +36,8 @@ if check_password('standard'):
     write_page_title()
 
     # Select topic
-    chosen_variable_lab = st.selectbox(
-        '**Topic:**', topic_dict.keys(), index=default)
-
-    # Convert from variable_lab to variable
-    chosen_variable = topic_dict[chosen_variable_lab]
+    chosen_variable_lab, chosen_variable = choose_topic(
+        df_scores, include_raw_name=True)
 
     # Select pupils to view results for
     chosen_group = st.selectbox(
@@ -109,6 +90,6 @@ if check_password('standard'):
     # Add caveat for interpretation
     blank_lines(1)
     st.subheader('Recommendation when making comparisons')
-    st.markdown(reuse_text['caution_comparing'])
+    st.markdown(caution_comparing(type='school'))
 
     page_footer(st.session_state.school)
