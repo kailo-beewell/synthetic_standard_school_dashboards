@@ -7,10 +7,10 @@ cat,cat_lab,count,percentage,measure,n_responses,school_lab,school_group,school_
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[50, 38, 36, 4]","[39.0625, 29.6875, 28.125, 3.125]",birth_parent2,128.0,School A,1,Your school,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[37, 39, 50, 2]","[28.90625, 30.46875, 39.0625, 1.5625]",birth_you,128.0,School A,1,Your school,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[56, 70, 2]","[43.75, 54.6875, 1.5625]",young_carer,128.0,School A,1,Your school,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[36, 39, 40, 13]","[28.125, 30.46875, 31.25, 10.15625]",care_experience,128.0,School A,1,Your school,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[36, 39, 40, 13]","[28.125, 30.46875, 31.25, 10.15625]",care_experience,128.0,School A,1,Your school,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[62, 52, 14]","[48.4375, 40.625, 10.9375]",year_group,128.0,School A,1,Your school,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[59, 54, 15]","[46.09375, 42.1875, 11.71875]",fsm,128.0,School A,1,Your school,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[57, 64, 7]","[44.53125, 50.0, 5.46875]",sen,128.0,School A,1,Your school,neuro,Special educational needs
@@ -24,10 +24,10 @@ foster placement, residential placement, or private/kinship care)?"
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[226, 221, 198, 27]","[33.63095238095239, 32.88690476190476, 29.464285714285715, 4.017857142857143]",birth_parent2,672.0,School A,0,Other schools,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[197, 239, 210, 26]","[29.315476190476193, 35.56547619047619, 31.25, 3.869047619047619]",birth_you,672.0,School A,0,Other schools,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[321, 319, 32]","[47.767857142857146, 47.470238095238095, 4.761904761904762]",young_carer,672.0,School A,0,Other schools,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[213, 178, 205, 76]","[31.69642857142857, 26.488095238095237, 30.505952380952383, 11.30952380952381]",care_experience,672.0,School A,0,Other schools,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[213, 178, 205, 76]","[31.69642857142857, 26.488095238095237, 30.505952380952383, 11.30952380952381]",care_experience,672.0,School A,0,Other schools,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[354, 260, 58]","[52.67857142857143, 38.69047619047619, 8.630952380952381]",year_group,672.0,School A,0,Other schools,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[271, 325, 76]","[40.327380952380956, 48.36309523809524, 11.30952380952381]",fsm,672.0,School A,0,Other schools,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[389, 250, 33]","[57.886904761904766, 37.202380952380956, 4.910714285714286]",sen,672.0,School A,0,Other schools,neuro,Special educational needs
@@ -41,10 +41,10 @@ foster placement, residential placement, or private/kinship care)?"
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[44, 50, 33, 5]","[33.33333333333333, 37.878787878787875, 25.0, 3.787878787878788]",birth_parent2,132.0,School B,1,Your school,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[38, 41, 47, 6]","[28.78787878787879, 31.060606060606062, 35.60606060606061, 4.545454545454546]",birth_you,132.0,School B,1,Your school,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[63, 63, 6]","[47.72727272727273, 47.72727272727273, 4.545454545454546]",young_carer,132.0,School B,1,Your school,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[47, 36, 36, 13]","[35.60606060606061, 27.27272727272727, 27.27272727272727, 9.848484848484848]",care_experience,132.0,School B,1,Your school,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[47, 36, 36, 13]","[35.60606060606061, 27.27272727272727, 27.27272727272727, 9.848484848484848]",care_experience,132.0,School B,1,Your school,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[70, 52, 10]","[53.03030303030303, 39.39393939393939, 7.575757575757576]",year_group,132.0,School B,1,Your school,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[61, 55, 16]","[46.21212121212121, 41.66666666666667, 12.121212121212121]",fsm,132.0,School B,1,Your school,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[127, nan, nan]","[96.21212121212122, nan, nan]",sen,127.0,School B,1,Your school,neuro,Special educational needs
@@ -58,10 +58,10 @@ foster placement, residential placement, or private/kinship care)?"
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[232, 209, 201, 26]","[34.73053892215569, 31.2874251497006, 30.08982035928144, 3.8922155688622757]",birth_parent2,668.0,School B,0,Other schools,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[196, 237, 213, 22]","[29.34131736526946, 35.47904191616767, 31.886227544910177, 3.293413173652695]",birth_you,668.0,School B,0,Other schools,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[314, 326, 28]","[47.00598802395209, 48.80239520958084, 4.191616766467066]",young_carer,668.0,School B,0,Other schools,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[202, 181, 209, 76]","[30.239520958083833, 27.095808383233532, 31.2874251497006, 11.377245508982035]",care_experience,668.0,School B,0,Other schools,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[202, 181, 209, 76]","[30.239520958083833, 27.095808383233532, 31.2874251497006, 11.377245508982035]",care_experience,668.0,School B,0,Other schools,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[346, 260, 62]","[51.796407185628745, 38.92215568862276, 9.281437125748502]",year_group,668.0,School B,0,Other schools,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[269, 324, 75]","[40.26946107784431, 48.50299401197605, 11.22754491017964]",fsm,668.0,School B,0,Other schools,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[319, 314, 35]","[47.75449101796407, 47.00598802395209, 5.239520958083832]",sen,668.0,School B,0,Other schools,neuro,Special educational needs
@@ -75,10 +75,10 @@ foster placement, residential placement, or private/kinship care)?"
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[35, 36, 34, 6]","[31.53153153153153, 32.432432432432435, 30.630630630630627, 5.405405405405405]",birth_parent2,111.0,School C,1,Your school,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[30, 45, 33, 3]","[27.027027027027028, 40.54054054054054, 29.72972972972973, 2.7027027027027026]",birth_you,111.0,School C,1,Your school,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[57, 50, 4]","[51.35135135135135, 45.04504504504504, 3.6036036036036037]",young_carer,111.0,School C,1,Your school,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[28, 35, 38, 10]","[25.225225225225223, 31.53153153153153, 34.234234234234236, 9.00900900900901]",care_experience,111.0,School C,1,Your school,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[28, 35, 38, 10]","[25.225225225225223, 31.53153153153153, 34.234234234234236, 9.00900900900901]",care_experience,111.0,School C,1,Your school,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[37, 62, 12]","[33.33333333333333, 55.85585585585585, 10.81081081081081]",year_group,111.0,School C,1,Your school,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[45, 55, 11]","[40.54054054054054, 49.549549549549546, 9.90990990990991]",fsm,111.0,School C,1,Your school,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[59, 46, 6]","[53.153153153153156, 41.44144144144144, 5.405405405405405]",sen,111.0,School C,1,Your school,neuro,Special educational needs
@@ -92,10 +92,10 @@ foster placement, residential placement, or private/kinship care)?"
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[241, 223, 200, 25]","[34.97822931785196, 32.365747460087086, 29.027576197387518, 3.6284470246734397]",birth_parent2,689.0,School C,0,Other schools,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[204, 233, 227, 25]","[29.60812772133527, 33.81712626995646, 32.94629898403483, 3.6284470246734397]",birth_you,689.0,School C,0,Other schools,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[320, 339, 30]","[46.44412191582003, 49.20174165457185, 4.354136429608127]",young_carer,689.0,School C,0,Other schools,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[221, 182, 207, 79]","[32.075471698113205, 26.41509433962264, 30.043541364296082, 11.46589259796807]",care_experience,689.0,School C,0,Other schools,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[221, 182, 207, 79]","[32.075471698113205, 26.41509433962264, 30.043541364296082, 11.46589259796807]",care_experience,689.0,School C,0,Other schools,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[379, 250, 60]","[55.00725689404935, 36.284470246734394, 8.708272859216255]",year_group,689.0,School C,0,Other schools,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[285, 324, 80]","[41.36429608127721, 47.02467343976778, 11.611030478955007]",fsm,689.0,School C,0,Other schools,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[387, 268, 34]","[56.16835994194484, 38.89695210449927, 4.934687953555878]",sen,689.0,School C,0,Other schools,neuro,Special educational needs
@@ -109,10 +109,10 @@ foster placement, residential placement, or private/kinship care)?"
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[41, 33, 28, 5]","[38.31775700934579, 30.8411214953271, 26.168224299065418, 4.672897196261682]",birth_parent2,107.0,School D,1,Your school,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[26, 45, 30, 6]","[24.299065420560748, 42.05607476635514, 28.037383177570092, 5.607476635514018]",birth_you,107.0,School D,1,Your school,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[46, 55, 6]","[42.99065420560748, 51.4018691588785, 5.607476635514018]",young_carer,107.0,School D,1,Your school,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[28, 35, 30, 14]","[26.168224299065418, 32.71028037383177, 28.037383177570092, 13.084112149532709]",care_experience,107.0,School D,1,Your school,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[28, 35, 30, 14]","[26.168224299065418, 32.71028037383177, 28.037383177570092, 13.084112149532709]",care_experience,107.0,School D,1,Your school,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[47, 53, 7]","[43.925233644859816, 49.532710280373834, 6.5420560747663545]",year_group,107.0,School D,1,Your school,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[41, 50, 16]","[38.31775700934579, 46.728971962616825, 14.953271028037381]",fsm,107.0,School D,1,Your school,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[51, 52, 4]","[47.66355140186916, 48.598130841121495, 3.7383177570093453]",sen,107.0,School D,1,Your school,neuro,Special educational needs
@@ -126,10 +126,10 @@ foster placement, residential placement, or private/kinship care)?"
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[235, 226, 206, 26]","[33.910533910533914, 32.61183261183261, 29.725829725829726, 3.751803751803752]",birth_parent2,693.0,School D,0,Other schools,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[208, 233, 230, 22]","[30.014430014430015, 33.62193362193362, 33.18903318903319, 3.1746031746031744]",birth_you,693.0,School D,0,Other schools,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[331, 334, 28]","[47.76334776334777, 48.1962481962482, 4.040404040404041]",young_carer,693.0,School D,0,Other schools,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[221, 182, 215, 75]","[31.89033189033189, 26.262626262626267, 31.024531024531026, 10.822510822510822]",care_experience,693.0,School D,0,Other schools,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[221, 182, 215, 75]","[31.89033189033189, 26.262626262626267, 31.024531024531026, 10.822510822510822]",care_experience,693.0,School D,0,Other schools,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[369, 259, 65]","[53.246753246753244, 37.37373737373738, 9.37950937950938]",year_group,693.0,School D,0,Other schools,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[289, 329, 75]","[41.702741702741704, 47.474747474747474, 10.822510822510822]",fsm,693.0,School D,0,Other schools,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[395, 262, 36]","[56.99855699855701, 37.8066378066378, 5.194805194805195]",sen,693.0,School D,0,Other schools,neuro,Special educational needs
@@ -143,10 +143,10 @@ foster placement, residential placement, or private/kinship care)?"
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[28, 31, 42, 5]","[26.41509433962264, 29.245283018867923, 39.62264150943396, 4.716981132075472]",birth_parent2,106.0,School E,1,Your school,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[38, 32, 33, 3]","[35.84905660377358, 30.18867924528302, 31.132075471698112, 2.8301886792452833]",birth_you,106.0,School E,1,Your school,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[51, 51, 4]","[48.113207547169814, 48.113207547169814, 3.7735849056603774]",young_carer,106.0,School E,1,Your school,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[36, 23, 33, 14]","[33.9622641509434, 21.69811320754717, 31.132075471698112, 13.20754716981132]",care_experience,106.0,School E,1,Your school,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[36, 23, 33, 14]","[33.9622641509434, 21.69811320754717, 31.132075471698112, 13.20754716981132]",care_experience,106.0,School E,1,Your school,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[48, 47, 11]","[45.28301886792453, 44.339622641509436, 10.377358490566039]",year_group,106.0,School E,1,Your school,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[42, 52, 12]","[39.62264150943396, 49.056603773584904, 11.320754716981133]",fsm,106.0,School E,1,Your school,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[46, 53, 7]","[43.39622641509434, 50.0, 6.60377358490566]",sen,106.0,School E,1,Your school,neuro,Special educational needs
@@ -160,10 +160,10 @@ foster placement, residential placement, or private/kinship care)?"
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[248, 228, 192, 26]","[35.73487031700288, 32.85302593659942, 27.6657060518732, 3.7463976945244957]",birth_parent2,694.0,School E,0,Other schools,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[196, 246, 227, 25]","[28.24207492795389, 35.44668587896253, 32.70893371757925, 3.602305475504323]",birth_you,694.0,School E,0,Other schools,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[326, 338, 30]","[46.97406340057637, 48.70317002881844, 4.322766570605188]",young_carer,694.0,School E,0,Other schools,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[213, 194, 212, 75]","[30.69164265129683, 27.953890489913547, 30.547550432276655, 10.806916426512968]",care_experience,694.0,School E,0,Other schools,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[213, 194, 212, 75]","[30.69164265129683, 27.953890489913547, 30.547550432276655, 10.806916426512968]",care_experience,694.0,School E,0,Other schools,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[368, 265, 61]","[53.02593659942363, 38.18443804034582, 8.789625360230549]",year_group,694.0,School E,0,Other schools,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[288, 327, 79]","[41.4985590778098, 47.11815561959654, 11.38328530259366]",fsm,694.0,School E,0,Other schools,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[400, 261, 33]","[57.636887608069166, 37.60806916426513, 4.755043227665706]",sen,694.0,School E,0,Other schools,neuro,Special educational needs
@@ -177,10 +177,10 @@ foster placement, residential placement, or private/kinship care)?"
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[38, 34, 34, 4]","[34.54545454545455, 30.909090909090907, 30.909090909090907, 3.6363636363636362]",birth_parent2,110.0,School F,1,Your school,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[37, 37, 31, 5]","[33.63636363636363, 33.63636363636363, 28.18181818181818, 4.545454545454546]",birth_you,110.0,School F,1,Your school,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[53, 50, 7]","[48.18181818181818, 45.45454545454545, 6.363636363636363]",young_carer,110.0,School F,1,Your school,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[36, 28, 37, 9]","[32.72727272727273, 25.454545454545453, 33.63636363636363, 8.181818181818182]",care_experience,110.0,School F,1,Your school,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[36, 28, 37, 9]","[32.72727272727273, 25.454545454545453, 33.63636363636363, 8.181818181818182]",care_experience,110.0,School F,1,Your school,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[103, nan, nan]","[93.63636363636364, nan, nan]",year_group,103.0,School F,1,Your school,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[42, 54, 14]","[38.18181818181819, 49.09090909090909, 12.727272727272727]",fsm,110.0,School F,1,Your school,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[52, 53, 5]","[47.27272727272727, 48.18181818181818, 4.545454545454546]",sen,110.0,School F,1,Your school,neuro,Special educational needs
@@ -194,10 +194,10 @@ foster placement, residential placement, or private/kinship care)?"
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[238, 225, 200, 27]","[34.492753623188406, 32.608695652173914, 28.985507246376812, 3.91304347826087]",birth_parent2,690.0,School F,0,Other schools,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[197, 241, 229, 23]","[28.550724637681157, 34.92753623188406, 33.18840579710145, 3.3333333333333335]",birth_you,690.0,School F,0,Other schools,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[324, 339, 27]","[46.95652173913044, 49.130434782608695, 3.91304347826087]",young_carer,690.0,School F,0,Other schools,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[213, 189, 208, 80]","[30.869565217391305, 27.391304347826086, 30.144927536231886, 11.594202898550725]",care_experience,690.0,School F,0,Other schools,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[213, 189, 208, 80]","[30.869565217391305, 27.391304347826086, 30.144927536231886, 11.594202898550725]",care_experience,690.0,School F,0,Other schools,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[313, 312, 65]","[45.36231884057971, 45.21739130434783, 9.420289855072465]",year_group,690.0,School F,0,Other schools,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[288, 325, 77]","[41.73913043478261, 47.10144927536232, 11.159420289855072]",fsm,690.0,School F,0,Other schools,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[394, 261, 35]","[57.10144927536231, 37.826086956521735, 5.072463768115942]",sen,690.0,School F,0,Other schools,neuro,Special educational needs
@@ -211,10 +211,10 @@ foster placement, residential placement, or private/kinship care)?"
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[40, 37, 27, 2]","[37.735849056603776, 34.90566037735849, 25.471698113207548, 1.8867924528301887]",birth_parent2,106.0,School G,1,Your school,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[28, 39, 36, 3]","[26.41509433962264, 36.79245283018868, 33.9622641509434, 2.8301886792452833]",birth_you,106.0,School G,1,Your school,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[51, 50, 5]","[48.113207547169814, 47.16981132075472, 4.716981132075472]",young_carer,106.0,School G,1,Your school,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[38, 21, 31, 16]","[35.84905660377358, 19.81132075471698, 29.245283018867923, 15.09433962264151]",care_experience,106.0,School G,1,Your school,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[38, 21, 31, 16]","[35.84905660377358, 19.81132075471698, 29.245283018867923, 15.09433962264151]",care_experience,106.0,School G,1,Your school,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[49, 46, 11]","[46.22641509433962, 43.39622641509434, 10.377358490566039]",year_group,106.0,School G,1,Your school,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[40, 59, 7]","[37.735849056603776, 55.660377358490564, 6.60377358490566]",fsm,106.0,School G,1,Your school,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[54, 46, 6]","[50.943396226415096, 43.39622641509434, 5.660377358490567]",sen,106.0,School G,1,Your school,neuro,Special educational needs
@@ -228,10 +228,10 @@ foster placement, residential placement, or private/kinship care)?"
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[236, 222, 207, 29]","[34.00576368876081, 31.988472622478387, 29.827089337175792, 4.178674351585014]",birth_parent2,694.0,School G,0,Other schools,birth,Was birth parent 2 born outside the UK?
 "[1, 2, 3, nan]","['Yes', 'No', ""I don't know"", 'No response']","[206, 239, 224, 25]","[29.68299711815562, 34.43804034582133, 32.27665706051873, 3.602305475504323]",birth_you,694.0,School G,0,Other schools,birth,Were you born outside the UK?
 "[0, 1, nan]","['No', 'Yes', 'No response']","[326, 339, 29]","[46.97406340057637, 48.84726224783862, 4.178674351585014]",young_carer,694.0,School G,0,Other schools,young_carer,"In the last year, have you regularly taken on caring
-responsibilities for a family member - e.g. due to illness, disability, mental
-health condition or drug/alcohol dependency?"
-"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[211, 196, 214, 73]","[30.403458213256485, 28.24207492795389, 30.835734870317005, 10.518731988472622]",care_experience,694.0,School G,0,Other schools,care_experience,"Are you or have you ever been in care (living in a
-foster placement, residential placement, or private/kinship care)?"
+    responsibilities for a family member - e.g. due to illness, disability,
+    mental health condition or drug/alcohol dependency?"
+"[1, 0, 2, nan]","['Yes', 'No', 'Unsure', 'No response']","[211, 196, 214, 73]","[30.403458213256485, 28.24207492795389, 30.835734870317005, 10.518731988472622]",care_experience,694.0,School G,0,Other schools,care_experience,"Are you or have you ever been in care (living in
+    a foster placement, residential placement, or private/kinship care)?"
 "[8, 10, nan]","['Year 8', 'Year 10', 'No data']","[367, 266, 61]","[52.88184438040345, 38.328530259366, 8.789625360230549]",year_group,694.0,School G,0,Other schools,year_group,Year group
 "[0, 1, nan]","['Non-FSM', 'FSM', 'No data']","[290, 320, 84]","[41.78674351585015, 46.10951008645533, 12.103746397694524]",fsm,694.0,School G,0,Other schools,fsm,Free school meals
 "[0, 1, nan]","['Non-SEN', 'SEN', 'No data']","[392, 268, 34]","[56.48414985590778, 38.61671469740634, 4.899135446685879]",sen,694.0,School G,0,Other schools,neuro,Special educational needs
