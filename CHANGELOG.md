@@ -9,6 +9,24 @@ This should align with releases on [GitHub](https://github.com/kailo-beewell/syn
 
 Writing of this changelog is supported by comparison of main and forked repositories on GitHub, and from [changelog of the kailo_beewell_dashboard package](https://github.com/kailo-beewell/kailo_beewell_dashboard_package/blob/main/CHANGELOG.md).
 
+## 0.1.1
+
+**Release date:** 12th April 2024
+
+**Contributors:** Amy Heather
+
+Modifications to use kailo_beewell_dashboard==0.3.2
+
+### Changed
+
+* Using new functions - e.g. for aggregation, adding topics, adding labels, choosing topic
+
+### Removed
+
+* Removed irrelevant data (shapefiles and fake inputs to redcap)
+* Removed addition of MSOA to the synthetic data
+* CSS files and images (as now in package)
+
 ## 0.1.0
 
 **Release date:** 18th March 2024
