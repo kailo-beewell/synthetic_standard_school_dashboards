@@ -1,12 +1,12 @@
-geopandas==0.9.0
+# For package installation
+pip==24.0
+
+# For data processing
 numpy==1.26.0
 pandas==2.1.1
-pip==24.0
-plotly==5.9.0
 
-# For linting jupyter notebooks
-nbqa==1.7.1
-flake8==7.0.0
+# To create plots
+plotly==5.9.0
 
 # To link with TiDB Cloud
 PyMySQL==1.1.0
@@ -20,15 +20,26 @@ kaleido==0.2.1
 # To convert HTML report to PDF report
 weasyprint==60.2
 
-# Not latest version as Streamlit Community Cloud had error that couldn't
-# satsify requirement django==5.0.1
+# For user authentication
 django==4.2.9
 
 # To run jupyter notebooks
 ipykernel==6.29.0
 
-# No version for security updates
-streamlit>=1.31.1
+# To create a streamlit dashboard
+streamlit>=1.32.2
 
-# Functions for the dashboard
-kailo-beewell-dashboard==0.2.0
+# To upload package to PYPI
+twine==5.0.0
+
+# To produce readthedocs
+sphinx==7.2.6
+sphinx-rtd-theme==2.0.0
+myst-parser==2.0.0
+sphinx-autoapi==3.0.0
+
+# To generate previews of figures in notebooks
+matplotlib==3.8.3
+
+# Local live import of functions for the dashboard
+kailo_beewell_dashboard==0.3.1
