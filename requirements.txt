@@ -42,4 +42,4 @@ sphinx-autoapi==3.0.0
 matplotlib==3.8.3
 
 # Local live import of functions for the dashboard
-kailo_beewell_dashboard==0.3.1
+kailo_beewell_dashboard==0.3.2
